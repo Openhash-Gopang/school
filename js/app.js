@@ -100,13 +100,12 @@ function renderSevenSteps() {
 function renderProfGrid(elId, count) {
   const el = document.getElementById(elId);
   if (!el) return;
-  const profs = AI_PROFESSORS.slice(0, count);
-  el.innerHTML = profs.map(p => `
-    <div class="prof-card" onclick="navigate('professors')">
-      <div class="prof-icon">${p.icon}</div>
-      <div class="prof-name">${p.name}</div>
-      <div class="prof-spec">${p.spec}</div>
-      <div class="prof-status"></div>
+  el.innerHTML = AI_PROFESSOR.domains.slice(0, count).map(domain => `
+    <div class="prof-card" onclick="navigate('professor')">
+      <div style="width:32px;height:32px;border-radius:6px;background:var(--sb-green-bg);border:1px solid var(--sb-green-bd);display:flex;align-items:center;justify-content:center;margin:0 auto 8px;font-size:13px;font-weight:700;color:var(--sb-green-txt)">AI</div>
+      <div class="prof-name">AI 교수</div>
+      <div class="prof-spec">${domain}</div>
+      <div class="prof-dot"></div>
     </div>
   `).join('');
 }
@@ -196,20 +195,20 @@ function renderCurriculum() {
 function renderProfessors() {
   const el = document.getElementById('professors-grid');
   if (!el) return;
-  el.innerHTML = AI_PROFESSORS.map(p => `
-    <div class="card" style="cursor:pointer" onclick="openProfModal('${p.id}')">
+  // AI 교수 1명 — 담당 분야별 카드
+  el.innerHTML = AI_PROFESSOR.domains.map(domain => `
+    <div class="card" style="cursor:pointer" onclick="navigate('professor')">
       <div class="card-body" style="text-align:center;padding:18px 14px">
-        <div style="width:40px;height:40px;border-radius:8px;background:${p.color}18;border:1px solid ${p.color}33;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;font-size:15px;font-weight:700;color:${p.color}">${p.name[0]}</div>
-        <div style="font-size:13px;font-weight:600;color:var(--sb-txt);margin-bottom:3px">${p.name}</div>
-        <div style="font-size:11px;color:var(--sb-txt3);line-height:1.4;margin-bottom:10px">${p.spec}</div>
+        <div style="width:40px;height:40px;border-radius:8px;background:var(--sb-green-bg);border:1px solid var(--sb-green-bd);display:flex;align-items:center;justify-content:center;margin:0 auto 10px;font-size:15px;font-weight:700;color:var(--sb-green-txt)">AI</div>
+        <div style="font-size:13px;font-weight:600;color:var(--sb-txt);margin-bottom:3px">AI 교수</div>
+        <div style="font-size:11px;color:var(--sb-txt3);line-height:1.4;margin-bottom:10px">${domain}</div>
         <div style="display:flex;justify-content:center;gap:5px;flex-wrap:wrap">
           <span class="badge badge-green">활성</span>
-          <span class="badge badge-gray">담당 ${Math.floor(Math.random()*80+50)}명</span>
         </div>
       </div>
       <div class="card-footer">
-        <span>정확도</span>
-        <span style="color:var(--sb-green-txt);font-weight:600">${(Math.random()*3+96).toFixed(1)}%</span>
+        <span>담당 분야</span>
+        <span style="color:var(--sb-green-txt);font-weight:600">${domain.split('·')[0].trim()}</span>
       </div>
     </div>
   `).join('');
@@ -218,11 +217,12 @@ function renderProfessors() {
 function renderProfGrid(elId, count) {
   const el = document.getElementById(elId);
   if (!el) return;
-  el.innerHTML = AI_PROFESSORS.slice(0, count).map(p => `
-    <div class="prof-card" onclick="navigate('professors')">
-      <div style="width:32px;height:32px;border-radius:6px;background:${p.color}18;border:1px solid ${p.color}33;display:flex;align-items:center;justify-content:center;margin:0 auto 8px;font-size:13px;font-weight:700;color:${p.color}">${p.name[0]}</div>
-      <div class="prof-name">${p.name}</div>
-      <div class="prof-spec">${p.spec}</div>
+  // AI 교수는 1명 — 담당 분야를 카드로 표시
+  el.innerHTML = AI_PROFESSOR.domains.slice(0, count).map(domain => `
+    <div class="prof-card" onclick="navigate('professor')">
+      <div style="width:32px;height:32px;border-radius:6px;background:var(--sb-green-bg);border:1px solid var(--sb-green-bd);display:flex;align-items:center;justify-content:center;margin:0 auto 8px;font-size:13px;font-weight:700;color:var(--sb-green-txt)">AI</div>
+      <div class="prof-name">AI 교수</div>
+      <div class="prof-spec">${domain}</div>
       <div class="prof-dot"></div>
     </div>
   `).join('');
@@ -357,12 +357,10 @@ function openStudentModal(idx) {
   modal.classList.add('open');
 }
 
-function openProfModal(id) {
-  const prof = AI_PROFESSORS.find(p => p.id === id);
-  if (!prof) return;
+function openProfModal() {
   const modal = document.getElementById('prof-modal');
   if (!modal) return;
-  document.getElementById('prof-modal-title').textContent = prof.name + ' (' + prof.spec + ')';
+  document.getElementById('prof-modal-title').textContent = 'AI 교수 — ' + AI_PROFESSOR.desc;
   modal.classList.add('open');
 }
 
