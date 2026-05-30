@@ -588,3 +588,32 @@ button { font-family: var(--font); cursor: pointer; }
   .prof-grid { grid-template-columns: repeat(2,1fr); }
   .page      { padding: 14px 16px 40px; }
 }
+
+/* ── Lucide 아이콘 공통 ── */
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: currentColor;
+}
+.icon svg {
+  width: 16px; height: 16px;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+}
+.icon-sm svg { width: 14px; height: 14px; }
+.icon-lg svg { width: 18px; height: 18px; }
+.icon-xl svg { width: 20px; height: 20px; }
+
+/* 페이지 타이틀 아이콘 */
+.page-title-wrap {
+  display: flex; align-items: center; gap: 8px;
+}
+.page-title-wrap .icon svg {
+  width: 18px; height: 18px;
+  stroke: var(--sb-txt3);
+}

@@ -9,6 +9,44 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
 <link rel="stylesheet" href="css/school.css">
+
+<!-- Lucide 아이콘 SVG 헬퍼 -->
+<script>
+function ic(name, cls) {
+  const paths = {
+    home:       '<path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>',
+    user:       '<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
+    users:      '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+    'book-open':'<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>',
+    cpu:        '<rect width="16" height="16" x="4" y="4" rx="2"/><rect width="6" height="6" x="9" y="9" rx="1"/><path d="M15 2v2M15 20v2M2 15h2M2 9h2M20 15h2M20 9h2M9 2v2M9 20v2"/>',
+    settings:   '<path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/>',
+    target:     '<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>',
+    'bar-chart':'<line x1="12" x2="12" y1="20" y2="10"/><line x1="18" x2="18" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="16"/>',
+    shield:     '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',
+    key:        '<circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6"/><path d="m15.5 7.5 3 3L22 7l-3-3"/>',
+    refresh:    '<path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/>',
+    zap:        '<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>',
+    lock:       '<rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
+    plus:       '<line x1="12" x2="12" y1="5" y2="19"/><line x1="5" x2="19" y1="12" y2="12"/>',
+    'layout':   '<rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/>',
+    'graduation':'<path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/>',
+    'list':     '<line x1="8" x2="21" y1="6" y2="6"/><line x1="8" x2="21" y1="12" y2="12"/><line x1="8" x2="21" y1="18" y2="18"/><line x1="3" x2="3.01" y1="6" y2="6"/><line x1="3" x2="3.01" y1="12" y2="12"/><line x1="3" x2="3.01" y1="18" y2="18"/>',
+    'trending': '<polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/>',
+    'award':    '<circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/>',
+    'external': '<path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" x2="21" y1="14" y2="3"/>',
+    'chevron-right': '<polyline points="9 18 15 12 9 6"/>',
+    'activity': '<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>',
+  };
+  const p = paths[name] || '';
+  const c = cls ? ` ${cls}` : '';
+  return `<span class="icon${c}"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">${p}</svg></span>`;
+}
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('[data-icon]').forEach(el => {
+    el.innerHTML = ic(el.dataset.icon, el.dataset.iconClass || '');
+  });
+});
+</script>
 </head>
 <body>
 
@@ -19,85 +57,82 @@
   </div>
   <div class="topbar-divider"></div>
   <div class="topbar-breadcrumb">
-    <span style="color:var(--sb-txt2)">고팡</span>
+    <span style="color:var(--sb-txt3)">고팡</span>
     <span class="sep">/</span>
     <span>K-School</span>
     <span class="sep">/</span>
-    <span style="color:var(--sb-txt2);font-weight:400" id="current-page-label">대시보드</span>
+    <span style="color:var(--sb-txt3);font-weight:400" id="current-page-label">대시보드</span>
   </div>
   <div class="topbar-right">
-    <span id="auth-badge" style="font-size:11px;font-weight:700;cursor:pointer;color:var(--sb-txt3)">L0</span>
+    <span id="auth-badge" style="font-size:11px;font-weight:600;cursor:pointer;color:var(--sb-txt3)">L0</span>
     <div class="topbar-divider"></div>
     <button class="tb-btn" onclick="navigate('students')">학생 관리</button>
-    <button class="tb-btn-green tb-btn" onclick="openNewStudentModal()">+ 학생 등록</button>
+    <button class="tb-btn-green tb-btn" onclick="openNewStudentModal()">
+      <span data-icon="plus" data-icon-class="icon-sm"></span> 학생 등록
+    </button>
     <div class="tb-avatar">주</div>
   </div>
 </header>
 
-<!-- ══ 사이드바 (Supabase 호버 확장) ══ -->
+<!-- ══ 사이드바 ══ -->
 <nav class="sidebar" id="sidebar">
 
-  <!-- 프로젝트 -->
   <div class="sidebar-section">
     <div class="sb-nav-item active" data-page="dashboard" onclick="navigate('dashboard')">
-      <div class="sb-nav-icon">🏠</div>
+      <div class="sb-nav-icon" data-icon="layout"></div>
       <div class="sb-nav-label">대시보드</div>
     </div>
   </div>
 
-  <!-- 학생 관리 -->
   <div class="sidebar-section">
     <div class="sidebar-section-label">학생 관리</div>
     <div class="sb-nav-item" data-page="students" onclick="navigate('students')">
-      <div class="sb-nav-icon">👤</div>
+      <div class="sb-nav-icon" data-icon="users"></div>
       <div class="sb-nav-label">학생 목록</div>
       <div class="sb-nav-badge">1,247</div>
     </div>
     <div class="sb-nav-item" data-page="curriculum" onclick="navigate('curriculum')">
-      <div class="sb-nav-icon">📋</div>
+      <div class="sb-nav-icon" data-icon="book-open"></div>
       <div class="sb-nav-label">커리큘럼</div>
     </div>
   </div>
 
-  <!-- AI 시스템 -->
   <div class="sidebar-section">
     <div class="sidebar-section-label">AI 시스템</div>
     <div class="sb-nav-item" data-page="professors" onclick="navigate('professors')">
-      <div class="sb-nav-icon">🤖</div>
+      <div class="sb-nav-icon" data-icon="cpu"></div>
       <div class="sb-nav-label">AI 교수진</div>
       <div class="sb-nav-badge">10명</div>
     </div>
     <div class="sb-nav-item" data-page="optimizer" onclick="navigate('optimizer')">
-      <div class="sb-nav-icon">⚙️</div>
+      <div class="sb-nav-icon" data-icon="settings"></div>
       <div class="sb-nav-label">7단계 최적화</div>
     </div>
     <div class="sb-nav-item" data-page="career" onclick="navigate('career')">
-      <div class="sb-nav-icon">🎯</div>
+      <div class="sb-nav-icon" data-icon="target"></div>
       <div class="sb-nav-label">진로 예측</div>
     </div>
   </div>
 
-  <!-- 분석·보안 -->
   <div class="sidebar-section">
     <div class="sidebar-section-label">분석 · 보안</div>
     <div class="sb-nav-item" data-page="analytics" onclick="navigate('analytics')">
-      <div class="sb-nav-icon">📊</div>
+      <div class="sb-nav-icon" data-icon="bar-chart"></div>
       <div class="sb-nav-label">성과 분석</div>
     </div>
     <div class="sb-nav-item" data-page="privacy" onclick="navigate('privacy')">
-      <div class="sb-nav-icon">🔒</div>
+      <div class="sb-nav-icon" data-icon="shield"></div>
       <div class="sb-nav-label">프라이버시</div>
     </div>
   </div>
 
-  <!-- 하단 -->
   <div class="sidebar-section" style="margin-top:auto">
     <div class="sb-nav-item" onclick="showAuthPanel()">
-      <div class="sb-nav-icon">🔑</div>
+      <div class="sb-nav-icon" data-icon="key"></div>
       <div class="sb-nav-label">인증 설정</div>
     </div>
     <div class="sb-nav-item" onclick="window.open('https://gopang.net','_blank')">
-      <div class="sb-nav-icon" style="font-size:12px;font-weight:900;color:var(--sb-green)">G</div>
+      <div class="sb-nav-icon" data-icon="external"></div>
       <div class="sb-nav-label" style="color:var(--sb-green)">고팡 앱</div>
     </div>
   </div>
@@ -110,17 +145,23 @@
   <div id="page-dashboard" class="page active">
     <div class="page-header">
       <div>
-        <div class="page-title">📚 K-School 대시보드</div>
+        <div class="page-title page-title-wrap">
+          <span data-icon="layout" data-icon-class="icon-lg"></span>
+          K-School 대시보드
+        </div>
         <div class="page-sub">7단계 개인-사회 통합 최적화 AI 교육 시스템 · 유치원 ~ 대학원 통합 플랫폼</div>
       </div>
       <div class="page-actions">
-        <button class="btn">새로고침</button>
-        <button class="btn btn-primary" onclick="navigate('optimizer')">⚡ 최적화 실행</button>
+        <button class="btn" onclick="navigate('dashboard')">
+          <span data-icon="refresh" data-icon-class="icon-sm"></span> 새로고침
+        </button>
+        <button class="btn btn-primary" onclick="navigate('optimizer')">
+          <span data-icon="zap" data-icon-class="icon-sm"></span> 최적화 실행
+        </button>
       </div>
     </div>
 
-    <!-- KPI -->
-    <div class="kpi-grid" style="margin-bottom:20px">
+    <div class="kpi-grid">
       <div class="kpi">
         <div class="kpi-label">총 학생 수</div>
         <div class="kpi-value" id="kpi-students">—</div>
@@ -130,13 +171,11 @@
       <div class="kpi">
         <div class="kpi-label">역량 매칭 정확도</div>
         <div class="kpi-value" id="kpi-accuracy">—</div>
-        <div class="kpi-unit">정확도</div>
         <div class="kpi-trend up">↑ 기존 대비 3배</div>
       </div>
       <div class="kpi">
         <div class="kpi-label">학습자 만족도</div>
         <div class="kpi-value" id="kpi-satisfaction">—</div>
-        <div class="kpi-unit">만족</div>
         <div class="kpi-trend up">↑ 기존 64.9% 대비</div>
       </div>
       <div class="kpi">
@@ -147,15 +186,13 @@
       </div>
     </div>
 
-    <!-- 알림 -->
     <div class="alert alert-green">
-      <span>✓</span>
+      <span data-icon="activity" data-icon-class="icon-sm" style="flex-shrink:0;margin-top:1px"></span>
       <span><strong>7단계 프로세스 98.7% 완료</strong> — 현재 5단계(맞춤형 교육 제공) 진행 중 · 재식별 공격 저항률 100% 유지 중</span>
     </div>
 
-    <div class="grid grid-2" style="gap:16px;margin-bottom:20px">
+    <div class="grid grid-2" style="gap:14px;margin-bottom:14px">
 
-      <!-- 학제 타임라인 -->
       <div class="card">
         <div class="card-hd">
           <div>
@@ -164,13 +201,12 @@
           </div>
         </div>
         <div class="card-body">
-          <div class="timeline" id="school-timeline" style="padding-top:8px"></div>
-          <div style="margin-top:16px" class="section-hd">학제별 학생 수</div>
-          <div id="stage-bars" style="display:flex;flex-direction:column;gap:8px"></div>
+          <div class="timeline" id="school-timeline"></div>
+          <div style="margin-top:18px" class="section-hd">학제별 학생 수</div>
+          <div id="stage-bars" style="display:flex;flex-direction:column;gap:7px"></div>
         </div>
       </div>
 
-      <!-- 7단계 프로세스 -->
       <div class="card">
         <div class="card-hd">
           <div>
@@ -186,11 +222,10 @@
 
     </div>
 
-    <!-- AI 교수진 미리보기 -->
     <div class="card">
       <div class="card-hd">
         <div>
-          <div class="card-title">AI 교수진 (10명 · 세계 최고 수준 지식 보유)</div>
+          <div class="card-title">AI 교수진 (10명)</div>
           <div class="card-sub">각 교수가 담당 학생의 전 학습 과정을 수십 년간 지도</div>
         </div>
         <button class="btn" style="margin-left:auto" onclick="navigate('professors')">전체 보기</button>
@@ -205,45 +240,37 @@
   <div id="page-students" class="page">
     <div class="page-header">
       <div>
-        <div class="page-title">👤 학생 목록</div>
+        <div class="page-title page-title-wrap">
+          <span data-icon="users" data-icon-class="icon-lg"></span> 학생 목록
+        </div>
         <div class="page-sub">1,247명 · 개별 맞춤형 AI 교육 진행 중</div>
       </div>
       <div class="page-actions">
-        <select class="sb-select" onchange="">
+        <select class="sb-select">
           <option>전체 학제</option>
-          <option>유치원</option>
-          <option>초등학교</option>
-          <option>중학교</option>
-          <option>고등학교</option>
-          <option>대학교</option>
-          <option>대학원</option>
+          <option>유치원</option><option>초등학교</option><option>중학교</option>
+          <option>고등학교</option><option>대학교</option><option>대학원</option>
         </select>
-        <button class="btn btn-primary" onclick="openNewStudentModal()">+ 학생 등록</button>
+        <button class="btn btn-primary" onclick="openNewStudentModal()">
+          <span data-icon="plus" data-icon-class="icon-sm"></span> 학생 등록
+        </button>
       </div>
     </div>
-
     <div class="sb-table-wrap">
       <div class="sb-table-toolbar">
         <div class="sb-table-search">
-          🔍 <span>이름, 진로, 학제 검색…</span>
+          <span data-icon="list" data-icon-class="icon-sm"></span>
+          <span style="color:var(--sb-txt4)">이름, 진로, 학제 검색…</span>
         </div>
         <button class="btn">필터</button>
         <button class="btn">내보내기</button>
       </div>
       <table class="sb-table">
         <thead>
-          <tr>
-            <th>이름</th>
-            <th>나이</th>
-            <th>학제</th>
-            <th>학습 진도</th>
-            <th>예측 진로</th>
-            <th>성취도</th>
-            <th>매칭률</th>
-          </tr>
+          <tr><th>이름</th><th>나이</th><th>학제</th><th>학습 진도</th><th>예측 진로</th><th>성취도</th><th>매칭률</th></tr>
         </thead>
         <tbody id="students-table-body">
-          <tr><td colspan="7" style="text-align:center;padding:32px;color:var(--sb-txt3)">로딩 중…</td></tr>
+          <tr><td colspan="7" style="text-align:center;padding:32px;color:var(--sb-txt4)">로딩 중…</td></tr>
         </tbody>
       </table>
     </div>
@@ -253,32 +280,22 @@
   <div id="page-curriculum" class="page">
     <div class="page-header">
       <div>
-        <div class="page-title">📋 개인 맞춤형 커리큘럼</div>
-        <div class="page-sub">AI 교수진이 실시간 생성 · 균형점 기반 최적 교과목 배정</div>
+        <div class="page-title page-title-wrap">
+          <span data-icon="book-open" data-icon-class="icon-lg"></span> 개인 맞춤형 커리큘럼
+        </div>
+        <div class="page-sub">AI 교수진 실시간 생성 · 균형점 기반 최적 교과목 배정</div>
       </div>
       <div class="page-actions">
         <select class="sb-select">
-          <option>김지아 (고2)</option>
-          <option>이현우 (초5)</option>
-          <option>박서연 (대2)</option>
+          <option>김지아 (고2)</option><option>이현우 (초5)</option><option>박서연 (대2)</option>
         </select>
         <button class="btn btn-primary">재생성</button>
       </div>
     </div>
-
-    <div class="grid grid-2" style="gap:16px;margin-bottom:16px">
-      <div class="kpi">
-        <div class="kpi-label">균형점 효용</div>
-        <div class="kpi-value" style="color:var(--sb-green)">0.847</div>
-        <div class="kpi-trend up">개인 0.854 · 사회 0.740</div>
-      </div>
-      <div class="kpi">
-        <div class="kpi-label">주당 학습 시간</div>
-        <div class="kpi-value">32h</div>
-        <div class="kpi-trend neu">8과목 · AI 주도 24h + 자기주도 8h</div>
-      </div>
+    <div class="grid grid-2" style="gap:12px;margin-bottom:14px">
+      <div class="kpi"><div class="kpi-label">균형점 효용</div><div class="kpi-value" style="color:var(--sb-green-txt)">0.847</div><div class="kpi-trend up">개인 0.854 · 사회 0.740</div></div>
+      <div class="kpi"><div class="kpi-label">주당 학습 시간</div><div class="kpi-value">32h</div><div class="kpi-trend neu">8과목 · AI 주도 24h + 자기주도 8h</div></div>
     </div>
-
     <div id="curriculum-panel"></div>
   </div>
 
@@ -286,32 +303,36 @@
   <div id="page-professors" class="page">
     <div class="page-header">
       <div>
-        <div class="page-title">🤖 AI 교수진 (10명)</div>
-        <div class="page-sub">세계 모든 지식을 보유 · 학생의 행복과 사회 발전을 동시 추구</div>
+        <div class="page-title page-title-wrap">
+          <span data-icon="cpu" data-icon-class="icon-lg"></span> AI 교수진 (10명)
+        </div>
+        <div class="page-sub">세계 모든 지식 보유 · 학생의 행복과 사회 발전을 동시 추구</div>
       </div>
     </div>
-    <div class="grid grid-4" id="professors-grid" style="gap:14px"></div>
+    <div class="grid grid-4" id="professors-grid" style="gap:12px"></div>
   </div>
 
   <!-- ── 7단계 최적화 ── -->
   <div id="page-optimizer" class="page">
     <div class="page-header">
       <div>
-        <div class="page-title">⚙️ 7단계 개인-사회 통합 최적화</div>
+        <div class="page-title page-title-wrap">
+          <span data-icon="settings" data-icon-class="icon-lg"></span> 7단계 개인-사회 통합 최적화
+        </div>
         <div class="page-sub">NSGA-II 기반 파레토 최적화 · 개인 행복 ↔ 사회 효용 균형점 탐색</div>
       </div>
       <div class="page-actions">
-        <button class="btn btn-primary" onclick="runOptimizer()">▶ 재실행</button>
+        <button class="btn btn-primary" onclick="runOptimizer()">
+          <span data-icon="zap" data-icon-class="icon-sm"></span> 재실행
+        </button>
       </div>
     </div>
-
-    <div class="grid grid-2" style="gap:16px;margin-bottom:20px">
-      <div class="kpi"><div class="kpi-label">통합 효용</div><div class="kpi-value" style="color:var(--sb-green)">0.801</div><div class="kpi-trend up">↑ 기존 0.520 대비 +54%</div></div>
-      <div class="kpi"><div class="kpi-label">프로세스 완료율</div><div class="kpi-value">98.7%</div><div class="kpi-trend up">5/7단계 완료</div></div>
+    <div class="grid grid-4" style="gap:12px;margin-bottom:14px">
+      <div class="kpi"><div class="kpi-label">통합 효용</div><div class="kpi-value" style="color:var(--sb-green-txt)">0.801</div><div class="kpi-trend up">↑ 기존 0.520 대비 +54%</div></div>
+      <div class="kpi"><div class="kpi-label">완료율</div><div class="kpi-value">98.7%</div><div class="kpi-trend up">5/7단계 완료</div></div>
       <div class="kpi"><div class="kpi-label">개인 효용</div><div class="kpi-value">0.845</div><div class="kpi-trend up">만족도 87.2%</div></div>
       <div class="kpi"><div class="kpi-label">사회 효용</div><div class="kpi-value">0.735</div><div class="kpi-trend up">생산성 41.3% 향상</div></div>
     </div>
-
     <div class="card">
       <div class="card-hd"><div class="card-title">7단계 프로세스 진행 현황</div></div>
       <div class="card-body"><div class="steps" id="optimizer-steps"></div></div>
@@ -322,7 +343,9 @@
   <div id="page-career" class="page">
     <div class="page-header">
       <div>
-        <div class="page-title">🎯 50년 장기 진로 예측</div>
+        <div class="page-title page-title-wrap">
+          <span data-icon="target" data-icon-class="icon-lg"></span> 50년 장기 진로 예측
+        </div>
         <div class="page-sub">AI-인간 역할 변화 동적 추적 · 개인 의사 반영 실시간 수정</div>
       </div>
       <div class="page-actions">
@@ -330,13 +353,11 @@
         <button class="btn btn-primary">진로 수정 요청</button>
       </div>
     </div>
-
     <div class="alert alert-blue">
-      <span>ℹ️</span>
-      <span>인간 고유 업무 식별 결과: <strong>AI 대체 불가 32.2%</strong> · <strong>협업 필요 48.9%</strong> · 대체 가능 18.9% — AI 윤리 연구자는 대체 불가 영역에 해당합니다.</span>
+      <span data-icon="activity" data-icon-class="icon-sm" style="flex-shrink:0;margin-top:1px"></span>
+      <span>인간 고유 업무 식별 결과: <strong>AI 대체 불가 32.2%</strong> · <strong>협업 필요 48.9%</strong> — AI 윤리 연구자는 대체 불가 영역에 해당합니다.</span>
     </div>
-
-    <div class="grid grid-2" style="gap:16px">
+    <div class="grid grid-2" style="gap:14px">
       <div class="card">
         <div class="card-hd"><div class="card-title">진로 적합도 예측</div><div class="card-sub">5차원 역량 분석 기반</div></div>
         <div class="card-body" id="career-bars"></div>
@@ -344,21 +365,21 @@
       <div class="card">
         <div class="card-hd"><div class="card-title">개인 의사 현황</div></div>
         <div class="card-body">
-          <div style="display:flex;flex-direction:column;gap:12px">
-            <div style="background:var(--sb-surface);border-radius:var(--r);padding:12px 14px">
-              <div style="font-size:11px;color:var(--sb-txt3);margin-bottom:4px">1순위 희망 직종</div>
-              <div style="font-size:14px;font-weight:700;color:var(--sb-green)">AI 윤리 연구자</div>
-              <div style="font-size:11px;color:var(--sb-txt2);margin-top:2px">시스템 추천과 일치 ✓</div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div style="background:var(--sb-surface);border-radius:var(--r2);padding:11px 13px;border:1px solid var(--sb-border)">
+              <div style="font-size:11px;color:var(--sb-txt3);margin-bottom:3px">1순위 희망 직종</div>
+              <div style="font-size:13px;font-weight:600;color:var(--sb-green-txt)">AI 윤리 연구자</div>
+              <div style="font-size:11px;color:var(--sb-txt3);margin-top:1px">시스템 추천과 일치</div>
             </div>
-            <div style="background:var(--sb-surface);border-radius:var(--r);padding:12px 14px">
-              <div style="font-size:11px;color:var(--sb-txt3);margin-bottom:4px">마지막 진로 수정</div>
-              <div style="font-size:13px;font-weight:600;color:var(--sb-txt)">2026-03-15</div>
-              <div style="font-size:11px;color:var(--sb-txt2);margin-top:2px">처리 시간: 1.8분</div>
+            <div style="background:var(--sb-surface);border-radius:var(--r2);padding:11px 13px;border:1px solid var(--sb-border)">
+              <div style="font-size:11px;color:var(--sb-txt3);margin-bottom:3px">마지막 진로 수정</div>
+              <div style="font-size:13px;font-weight:500;color:var(--sb-txt)">2026-03-15</div>
+              <div style="font-size:11px;color:var(--sb-txt3);margin-top:1px">처리 시간: 1.8분</div>
             </div>
-            <div style="background:var(--sb-surface);border-radius:var(--r);padding:12px 14px">
-              <div style="font-size:11px;color:var(--sb-txt3);margin-bottom:4px">사회 효용 기여도</div>
-              <div style="font-size:14px;font-weight:700;color:var(--sb-blue)">상위 8.3%</div>
-              <div style="font-size:11px;color:var(--sb-txt2);margin-top:2px">AI 윤리 분야 사회 수요 높음</div>
+            <div style="background:var(--sb-surface);border-radius:var(--r2);padding:11px 13px;border:1px solid var(--sb-border)">
+              <div style="font-size:11px;color:var(--sb-txt3);margin-bottom:3px">사회 효용 기여도</div>
+              <div style="font-size:13px;font-weight:600;color:var(--sb-blue-txt)">상위 8.3%</div>
+              <div style="font-size:11px;color:var(--sb-txt3);margin-top:1px">AI 윤리 분야 사회 수요 높음</div>
             </div>
           </div>
         </div>
@@ -370,31 +391,34 @@
   <div id="page-analytics" class="page">
     <div class="page-header">
       <div>
-        <div class="page-title">📊 성과 분석</div>
+        <div class="page-title page-title-wrap">
+          <span data-icon="bar-chart" data-icon-class="icon-lg"></span> 성과 분석
+        </div>
         <div class="page-sub">12개월 장기 추적 실증실험 · 전체 목표 달성률 100.3%</div>
       </div>
     </div>
-
-    <div class="alert alert-green" style="margin-bottom:20px">
-      <span>✓</span>
+    <div class="alert alert-green">
+      <span data-icon="award" data-icon-class="icon-sm" style="flex-shrink:0;margin-top:1px"></span>
       <span><strong>15개 통합 실증실험 완전 검증 완료</strong> · p &lt; 0.001 · Cohen's d = 2.86 · 목표 달성률 100.3%</span>
     </div>
-
     <div id="analytics-panel"></div>
-
-    <div style="margin-top:20px" class="card">
+    <div style="margin-top:14px" class="card">
       <div class="card-hd"><div class="card-title">선행기술 대비 성능</div></div>
-      <div class="card-body">
-        <div class="sb-table-wrap" style="border:none">
-          <table class="sb-table">
-            <thead><tr><th>시스템</th><th>학습 성취도</th><th>진로 명확성</th><th>프라이버시</th><th>편향 보정</th></tr></thead>
-            <tbody>
-              <tr><td><strong>본 시스템</strong></td><td style="color:var(--sb-green);font-weight:700">+36.1%</td><td style="color:var(--sb-green);font-weight:700">+31.4%</td><td style="color:var(--sb-green);font-weight:700">100%</td><td style="color:var(--sb-green);font-weight:700">0.00초</td></tr>
-              <tr><td style="color:var(--sb-txt2)">Khan Academy</td><td class="td-mono">+12%</td><td class="td-mono">+9.8%</td><td class="td-null">높은 위험</td><td class="td-null">사후처리</td></tr>
-              <tr><td style="color:var(--sb-txt2)">LinkedIn Career</td><td class="td-null">—</td><td class="td-mono">+11%</td><td class="td-null">미지원</td><td class="td-null">미지원</td></tr>
-            </tbody>
-          </table>
-        </div>
+      <div class="card-body" style="padding:0">
+        <table class="sb-table">
+          <thead><tr><th>시스템</th><th>학습 성취도</th><th>진로 명확성</th><th>프라이버시</th><th>편향 보정</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>본 시스템</strong></td>
+              <td style="color:var(--sb-green-txt);font-weight:600">+36.1%</td>
+              <td style="color:var(--sb-green-txt);font-weight:600">+31.4%</td>
+              <td style="color:var(--sb-green-txt);font-weight:600">100%</td>
+              <td style="color:var(--sb-green-txt);font-weight:600">0.00초</td>
+            </tr>
+            <tr><td class="td-null">Khan Academy</td><td class="td-mono">+12%</td><td class="td-mono">+9.8%</td><td class="td-null">높은 위험</td><td class="td-null">사후처리</td></tr>
+            <tr><td class="td-null">LinkedIn Career</td><td class="td-null">—</td><td class="td-mono">+11%</td><td class="td-null">미지원</td><td class="td-null">미지원</td></tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </div>
@@ -403,7 +427,9 @@
   <div id="page-privacy" class="page">
     <div class="page-header">
       <div>
-        <div class="page-title">🔒 프라이버시 보호</div>
+        <div class="page-title page-title-wrap">
+          <span data-icon="shield" data-icon-class="icon-lg"></span> 프라이버시 보호
+        </div>
         <div class="page-sub">EduCrypt 3단계 암호화 · 재식별 공격 저항률 100% · GDPR 준수</div>
       </div>
     </div>
@@ -412,19 +438,17 @@
 
 </main>
 
-<!-- ══ 모달들 ══ -->
-<!-- 인증 모달 -->
+<!-- ══ 모달 ══ -->
 <div class="modal-bg" id="auth-modal" onclick="if(event.target===this)closeModal('auth-modal')">
   <div class="modal"><div id="auth-modal-content"></div></div>
 </div>
 
-<!-- 학생 모달 -->
 <div class="modal-bg" id="student-modal" onclick="if(event.target===this)closeModal('student-modal')">
   <div class="modal">
     <div class="modal-hd">
-      <div style="font-size:18px">👤</div>
+      <span data-icon="user"></span>
       <div class="modal-title" id="student-modal-title">학생 프로파일</div>
-      <button class="btn" style="margin-left:auto" onclick="closeModal('student-modal')">✕</button>
+      <button class="btn" style="margin-left:auto;padding:2px 8px" onclick="closeModal('student-modal')">✕</button>
     </div>
     <div class="modal-body">
       <div class="tabs">
@@ -433,11 +457,11 @@
         <div class="tab">진로 예측</div>
         <div class="tab">성취 기록</div>
       </div>
-      <div class="grid grid-2" style="gap:12px">
+      <div class="grid grid-2" style="gap:10px">
         <div><div style="font-size:11px;color:var(--sb-txt3);margin-bottom:4px">현재 학제</div><span class="badge badge-purple">고등학교 2학년</span></div>
-        <div><div style="font-size:11px;color:var(--sb-txt3);margin-bottom:4px">통합 효용</div><span style="font-weight:700;color:var(--sb-green)">0.847</span></div>
-        <div><div style="font-size:11px;color:var(--sb-txt3);margin-bottom:4px">예측 진로</div><span style="font-weight:600">AI 윤리 연구자</span></div>
-        <div><div style="font-size:11px;color:var(--sb-txt3);margin-bottom:4px">성취도</div><span style="font-weight:700;color:var(--sb-green)">92점</span></div>
+        <div><div style="font-size:11px;color:var(--sb-txt3);margin-bottom:4px">통합 효용</div><span style="font-weight:600;color:var(--sb-green-txt)">0.847</span></div>
+        <div><div style="font-size:11px;color:var(--sb-txt3);margin-bottom:4px">예측 진로</div><span style="font-weight:500;font-size:12px">AI 윤리 연구자</span></div>
+        <div><div style="font-size:11px;color:var(--sb-txt3);margin-bottom:4px">성취도</div><span style="font-weight:600;color:var(--sb-green-txt)">92점</span></div>
       </div>
     </div>
     <div class="modal-ft">
@@ -447,18 +471,17 @@
   </div>
 </div>
 
-<!-- AI 교수 모달 -->
 <div class="modal-bg" id="prof-modal" onclick="if(event.target===this)closeModal('prof-modal')">
   <div class="modal">
     <div class="modal-hd">
-      <div style="font-size:18px">🤖</div>
+      <span data-icon="cpu"></span>
       <div class="modal-title" id="prof-modal-title">AI 교수</div>
-      <button class="btn" style="margin-left:auto" onclick="closeModal('prof-modal')">✕</button>
+      <button class="btn" style="margin-left:auto;padding:2px 8px" onclick="closeModal('prof-modal')">✕</button>
     </div>
     <div class="modal-body">
-      <div class="grid grid-2" style="gap:12px">
+      <div class="grid grid-2" style="gap:10px">
         <div class="kpi"><div class="kpi-label">담당 학생</div><div class="kpi-value">87명</div></div>
-        <div class="kpi"><div class="kpi-label">수업 정확도</div><div class="kpi-value" style="color:var(--sb-green)">97.4%</div></div>
+        <div class="kpi"><div class="kpi-label">수업 정확도</div><div class="kpi-value" style="color:var(--sb-green-txt)">97.4%</div></div>
       </div>
     </div>
     <div class="modal-ft">
@@ -468,13 +491,12 @@
 </div>
 
 <!-- 인증 로딩 -->
-<div id="auth-loading" style="display:none;position:fixed;inset:0;z-index:9999;background:var(--sb-bg);flex-direction:column;align-items:center;justify-content:center;gap:14px">
-  <div style="width:32px;height:32px;border:3px solid rgba(62,207,142,.2);border-top-color:var(--sb-green);border-radius:50%;animation:spin .7s linear infinite"></div>
-  <div style="font-size:14px;color:var(--sb-txt2);font-weight:600">고팡 인증 확인 중…</div>
-  <div style="font-size:11px;color:var(--sb-txt3)">gopang.net · K-School</div>
+<div id="auth-loading" style="display:none;position:fixed;inset:0;z-index:9999;flex-direction:column;align-items:center;justify-content:center;gap:12px">
+  <div class="spinner" style="width:20px;height:20px;border-width:2px"></div>
+  <div style="font-size:13px;color:var(--sb-txt2);font-weight:500">고팡 인증 확인 중…</div>
+  <div style="font-size:11px;color:var(--sb-txt4)">gopang.net · K-School</div>
 </div>
 
-<!-- ══ 스크립트 ══ -->
 <script src="js/config.js"></script>
 <script src="js/auth.js"></script>
 <script src="js/app.js"></script>
@@ -484,32 +506,26 @@ const PAGE_LABELS = {
   professors:'AI 교수진', optimizer:'7단계 최적화', career:'진로 예측',
   analytics:'성과 분석', privacy:'프라이버시',
 };
-
 const _origNavigate = navigate;
 window.navigate = function(page) {
   _origNavigate(page);
   const lbl = document.getElementById('current-page-label');
   if (lbl) lbl.textContent = PAGE_LABELS[page] || page;
+  // 페이지 전환 후 data-icon 재처리
+  document.querySelectorAll('[data-icon]').forEach(el => {
+    if (!el.innerHTML.trim()) el.innerHTML = ic(el.dataset.icon, el.dataset.iconClass || '');
+  });
 };
-
-function openNewStudentModal() {
-  alert('학생 등록 기능 — gopang.net 연동 필요 (L1 인증)');
-}
-
-function runOptimizer() {
-  alert('7단계 최적화 재실행 — 평균 2.3분 소요');
-}
+function openNewStudentModal() { alert('학생 등록 — gopang.net 연동 필요 (L1 인증)'); }
+function runOptimizer() { alert('7단계 최적화 재실행 — 평균 2.3분 소요'); }
 
 (async () => {
   document.getElementById('main').style.display = 'none';
   document.getElementById('auth-loading').style.display = 'flex';
-
   const user = await initAuth();
   if (!user) return;
-
   document.getElementById('auth-loading').style.display = 'none';
   document.getElementById('main').style.display = '';
-
   navigate('dashboard');
 })();
 </script>
