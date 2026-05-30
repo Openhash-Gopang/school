@@ -1,0 +1,545 @@
+{
+  "_meta": {
+    "title": "K-School Global Curriculum Classification",
+    "version": "1.0.0",
+    "released": "2026-05-31",
+    "standards": [
+      "UNESCO ISCED-F 2013 (ISBN 978-92-9189-179-5)",
+      "UNESCO ISCED 2011 (ISBN 978-92-9189-113-9)",
+      "IB Programme Framework: PYP / MYP / DP / CP 2023",
+      "OECD PISA 2022 Assessment Framework",
+      "UN SDG 4 Education 2030 Framework"
+    ],
+    "axis": {
+      "row": "Developmental Stage (age-based, not institution-based)",
+      "col": "ISCED-F 2013 Broad Field (00–10)"
+    },
+    "note": "Subject names follow ISCED-F 2013 English terms. Each stage maps to IB programme and Piaget developmental theory."
+  },
+
+  "developmental_stages": [
+    {
+      "id": "S0",
+      "label_en": "Early Childhood",
+      "label_ko": "영아·유아기",
+      "age_range": "0–2",
+      "isced_level": "ISCED 0 (early childhood educational development)",
+      "ib_programme": null,
+      "piaget": "Sensorimotor",
+      "approach": "Sensory play, attachment, motor development — no formal curriculum"
+    },
+    {
+      "id": "S1",
+      "label_en": "Pre-Primary",
+      "label_ko": "유아기",
+      "age_range": "3–5",
+      "isced_level": "ISCED 0 (pre-primary education)",
+      "ib_programme": "IB PYP (preparation)",
+      "piaget": "Pre-operational",
+      "approach": "Play-based learning, inquiry through senses, social-emotional foundation"
+    },
+    {
+      "id": "S2",
+      "label_en": "Lower Primary",
+      "label_ko": "아동기 전기",
+      "age_range": "6–8",
+      "isced_level": "ISCED 1",
+      "ib_programme": "IB PYP",
+      "piaget": "Concrete operational (early)",
+      "approach": "Story-based, concrete manipulatives, interdisciplinary inquiry"
+    },
+    {
+      "id": "S3",
+      "label_en": "Upper Primary",
+      "label_ko": "아동기 후기",
+      "age_range": "9–11",
+      "isced_level": "ISCED 1",
+      "ib_programme": "IB PYP",
+      "piaget": "Concrete operational (late)",
+      "approach": "Project-based learning, logical operations, community connection"
+    },
+    {
+      "id": "S4",
+      "label_en": "Lower Secondary",
+      "label_ko": "청소년 전기",
+      "age_range": "12–14",
+      "isced_level": "ISCED 2",
+      "ib_programme": "IB MYP (years 1–3)",
+      "piaget": "Formal operational (emerging)",
+      "approach": "Abstract reasoning begins, interdisciplinary units, service learning"
+    },
+    {
+      "id": "S5",
+      "label_en": "Upper Secondary",
+      "label_ko": "청소년 후기",
+      "age_range": "15–17",
+      "isced_level": "ISCED 3",
+      "ib_programme": "IB DP / MYP (years 4–5)",
+      "piaget": "Formal operational",
+      "approach": "Specialisation begins, extended essays, career exploration"
+    },
+    {
+      "id": "S6",
+      "label_en": "Post-Secondary / Undergraduate",
+      "label_ko": "성인 초기",
+      "age_range": "18–21",
+      "isced_level": "ISCED 5–6",
+      "ib_programme": "IB DP (completion) / University",
+      "piaget": "Post-formal (contextual)",
+      "approach": "Discipline depth, research methods, professional practice"
+    },
+    {
+      "id": "S7",
+      "label_en": "Graduate & Lifelong Learning",
+      "label_ko": "성인·평생학습",
+      "age_range": "22+",
+      "isced_level": "ISCED 7–8 + ISCED 0021 Literacy/Adult",
+      "ib_programme": null,
+      "piaget": "Post-formal",
+      "approach": "Research, specialisation, career change, re-skilling"
+    }
+  ],
+
+  "isced_f_fields": [
+    { "code": "00", "label_en": "Generic programmes and qualifications", "label_ko": "기초·일반 프로그램" },
+    { "code": "01", "label_en": "Education",                              "label_ko": "교육학" },
+    { "code": "02", "label_en": "Arts and Humanities",                   "label_ko": "예술·인문학" },
+    { "code": "03", "label_en": "Social Sciences, Journalism and Information", "label_ko": "사회과학·언론·정보" },
+    { "code": "04", "label_en": "Business, Administration and Law",      "label_ko": "경영·행정·법학" },
+    { "code": "05", "label_en": "Natural Sciences, Mathematics and Statistics", "label_ko": "자연과학·수학·통계" },
+    { "code": "06", "label_en": "Information and Communication Technologies", "label_ko": "정보통신기술(ICT)" },
+    { "code": "07", "label_en": "Engineering, Manufacturing and Construction", "label_ko": "공학·제조·건설" },
+    { "code": "08", "label_en": "Agriculture, Forestry, Fisheries and Veterinary", "label_ko": "농림수산·수의학" },
+    { "code": "09", "label_en": "Health and Welfare",                    "label_ko": "보건·복지" },
+    { "code": "10", "label_en": "Services",                              "label_ko": "서비스" }
+  ],
+
+  "curriculum": [
+
+    {
+      "stage_id": "S1",
+      "field_code": "00",
+      "subjects": [
+        { "id": "S1-00-01", "en": "Social and Emotional Learning (SEL)", "ko": "사회·정서 학습" },
+        { "id": "S1-00-02", "en": "Basic Numeracy (counting, shapes)", "ko": "기초 수감각 (수세기·도형)" },
+        { "id": "S1-00-03", "en": "Emergent Literacy (phonological awareness)", "ko": "언어 준비 (음운 인식)" },
+        { "id": "S1-00-04", "en": "Personal Skills (self-care, safety)", "ko": "생활 자립 (위생·안전)" },
+        { "id": "S1-00-05", "en": "Play and Inquiry", "ko": "놀이 및 탐구" }
+      ]
+    },
+    {
+      "stage_id": "S1",
+      "field_code": "02",
+      "subjects": [
+        { "id": "S1-02-01", "en": "Music and Rhythm", "ko": "음악·리듬" },
+        { "id": "S1-02-02", "en": "Visual Arts and Craft", "ko": "미술·만들기" },
+        { "id": "S1-02-03", "en": "Storytelling and Drama", "ko": "이야기·극놀이" },
+        { "id": "S1-02-04", "en": "Dance and Movement", "ko": "춤·신체 표현" }
+      ]
+    },
+    {
+      "stage_id": "S1",
+      "field_code": "09",
+      "subjects": [
+        { "id": "S1-09-01", "en": "Physical Development and Health", "ko": "신체 발달·건강" },
+        { "id": "S1-09-02", "en": "Nutrition and Hygiene Basics", "ko": "영양·위생 기초" }
+      ]
+    },
+
+    {
+      "stage_id": "S2",
+      "field_code": "00",
+      "subjects": [
+        { "id": "S2-00-01", "en": "Reading and Writing (mother tongue)", "ko": "읽기·쓰기 (모국어)" },
+        { "id": "S2-00-02", "en": "Basic Mathematics (arithmetic, geometry)", "ko": "기초 수학 (연산·도형)" },
+        { "id": "S2-00-03", "en": "Integrated Studies (thematic inquiry)", "ko": "통합 교과 (주제 탐구)" },
+        { "id": "S2-00-04", "en": "Personal and Social Development", "ko": "인성·사회성 발달" }
+      ]
+    },
+    {
+      "stage_id": "S2",
+      "field_code": "02",
+      "subjects": [
+        { "id": "S2-02-01", "en": "Music (singing, basic instruments)", "ko": "음악 (노래·기초 악기)" },
+        { "id": "S2-02-02", "en": "Visual Arts", "ko": "미술" },
+        { "id": "S2-02-03", "en": "Drama and Storytelling", "ko": "연극·이야기" },
+        { "id": "S2-02-04", "en": "First Language Literature", "ko": "모국어 문학" }
+      ]
+    },
+    {
+      "stage_id": "S2",
+      "field_code": "03",
+      "subjects": [
+        { "id": "S2-03-01", "en": "Social Studies (family, community, geography basics)", "ko": "사회 (가족·지역사회·지리 기초)" },
+        { "id": "S2-03-02", "en": "History (local and national stories)", "ko": "역사 (지역·국가 이야기)" }
+      ]
+    },
+    {
+      "stage_id": "S2",
+      "field_code": "05",
+      "subjects": [
+        { "id": "S2-05-01", "en": "Science (nature, living things, materials)", "ko": "과학 (자연·생물·물질)" },
+        { "id": "S2-05-02", "en": "Mathematics (number sense, measurement)", "ko": "수학 (수 감각·측정)" }
+      ]
+    },
+    {
+      "stage_id": "S2",
+      "field_code": "06",
+      "subjects": [
+        { "id": "S2-06-01", "en": "Digital Literacy (basic device use)", "ko": "디지털 기초 (기기 사용)" }
+      ]
+    },
+    {
+      "stage_id": "S2",
+      "field_code": "09",
+      "subjects": [
+        { "id": "S2-09-01", "en": "Physical Education and Health", "ko": "체육·건강" }
+      ]
+    },
+
+    {
+      "stage_id": "S3",
+      "field_code": "00",
+      "subjects": [
+        { "id": "S3-00-01", "en": "First Language (reading, writing, composition)", "ko": "모국어 (독해·작문·쓰기)" },
+        { "id": "S3-00-02", "en": "Foreign Language Introduction", "ko": "외국어 입문" },
+        { "id": "S3-00-03", "en": "Study Skills and Critical Thinking", "ko": "학습 방법·비판적 사고" }
+      ]
+    },
+    {
+      "stage_id": "S3",
+      "field_code": "02",
+      "subjects": [
+        { "id": "S3-02-01", "en": "Music (instrument, music theory basics)", "ko": "음악 (악기·기초 악리)" },
+        { "id": "S3-02-02", "en": "Visual Arts (drawing, painting, design)", "ko": "미술 (소묘·회화·디자인)" },
+        { "id": "S3-02-03", "en": "Literature and Creative Writing", "ko": "문학·창작" },
+        { "id": "S3-02-04", "en": "Drama and Theatre", "ko": "연극·극예술" }
+      ]
+    },
+    {
+      "stage_id": "S3",
+      "field_code": "03",
+      "subjects": [
+        { "id": "S3-03-01", "en": "Social Studies (geography, civics)", "ko": "사회 (지리·시민)" },
+        { "id": "S3-03-02", "en": "History (national and world)", "ko": "역사 (국사·세계사)" },
+        { "id": "S3-03-03", "en": "Ethics and Values", "ko": "윤리·가치관" }
+      ]
+    },
+    {
+      "stage_id": "S3",
+      "field_code": "05",
+      "subjects": [
+        { "id": "S3-05-01", "en": "Mathematics (fractions, decimals, algebra intro)", "ko": "수학 (분수·소수·대수 입문)" },
+        { "id": "S3-05-02", "en": "Science (earth, life, physical science)", "ko": "과학 (지구·생명·물리 과학)" },
+        { "id": "S3-05-03", "en": "Statistics Basics (data reading)", "ko": "통계 기초 (자료 읽기)" }
+      ]
+    },
+    {
+      "stage_id": "S3",
+      "field_code": "06",
+      "subjects": [
+        { "id": "S3-06-01", "en": "Digital Literacy and Computational Thinking", "ko": "디지털 리터러시·컴퓨팅 사고" },
+        { "id": "S3-06-02", "en": "Introduction to Coding (visual/block)", "ko": "코딩 입문 (블록형)" }
+      ]
+    },
+    {
+      "stage_id": "S3",
+      "field_code": "09",
+      "subjects": [
+        { "id": "S3-09-01", "en": "Physical Education", "ko": "체육" },
+        { "id": "S3-09-02", "en": "Health Education", "ko": "보건" }
+      ]
+    },
+
+    {
+      "stage_id": "S4",
+      "field_code": "00",
+      "subjects": [
+        { "id": "S4-00-01", "en": "Personal Skills (communication, collaboration)", "ko": "개인 역량 (소통·협력)" },
+        { "id": "S4-00-02", "en": "Study and Research Skills", "ko": "학습·연구 방법" }
+      ]
+    },
+    {
+      "stage_id": "S4",
+      "field_code": "02",
+      "subjects": [
+        { "id": "S4-02-01", "en": "First Language and Literature", "ko": "모국어·문학" },
+        { "id": "S4-02-02", "en": "Foreign Language 1", "ko": "외국어 1 (주로 영어)" },
+        { "id": "S4-02-03", "en": "Foreign Language 2 (optional)", "ko": "외국어 2 (선택)" },
+        { "id": "S4-02-04", "en": "Music", "ko": "음악" },
+        { "id": "S4-02-05", "en": "Visual Arts", "ko": "미술" },
+        { "id": "S4-02-06", "en": "Drama / Theatre Arts", "ko": "연극·공연예술" },
+        { "id": "S4-02-07", "en": "Philosophy and Ethics", "ko": "철학·윤리" },
+        { "id": "S4-02-08", "en": "History", "ko": "역사" }
+      ]
+    },
+    {
+      "stage_id": "S4",
+      "field_code": "03",
+      "subjects": [
+        { "id": "S4-03-01", "en": "Geography", "ko": "지리" },
+        { "id": "S4-03-02", "en": "Civics and Democracy", "ko": "시민·민주주의" },
+        { "id": "S4-03-03", "en": "Economics Basics", "ko": "경제 기초" },
+        { "id": "S4-03-04", "en": "Media and Information Literacy", "ko": "미디어·정보 리터러시" }
+      ]
+    },
+    {
+      "stage_id": "S4",
+      "field_code": "05",
+      "subjects": [
+        { "id": "S4-05-01", "en": "Mathematics (algebra, geometry, statistics)", "ko": "수학 (대수·기하·통계)" },
+        { "id": "S4-05-02", "en": "Biology", "ko": "생물" },
+        { "id": "S4-05-03", "en": "Chemistry (introduction)", "ko": "화학 입문" },
+        { "id": "S4-05-04", "en": "Physics (introduction)", "ko": "물리 입문" },
+        { "id": "S4-05-05", "en": "Earth and Environmental Science", "ko": "지구·환경 과학" }
+      ]
+    },
+    {
+      "stage_id": "S4",
+      "field_code": "06",
+      "subjects": [
+        { "id": "S4-06-01", "en": "Computer Science (text-based coding)", "ko": "컴퓨터 과학 (텍스트 코딩)" },
+        { "id": "S4-06-02", "en": "Digital Design and Media", "ko": "디지털 디자인·미디어" }
+      ]
+    },
+    {
+      "stage_id": "S4",
+      "field_code": "07",
+      "subjects": [
+        { "id": "S4-07-01", "en": "Design and Technology", "ko": "디자인·기술" }
+      ]
+    },
+    {
+      "stage_id": "S4",
+      "field_code": "09",
+      "subjects": [
+        { "id": "S4-09-01", "en": "Physical Education and Sport", "ko": "체육·스포츠" },
+        { "id": "S4-09-02", "en": "Health Education (mental and physical)", "ko": "보건 (정신·신체)" }
+      ]
+    },
+
+    {
+      "stage_id": "S5",
+      "field_code": "02",
+      "subjects": [
+        { "id": "S5-02-01", "en": "Language A: Literature (mother tongue)", "ko": "언어A: 문학 (모국어)" },
+        { "id": "S5-02-02", "en": "Language B: Foreign Language", "ko": "언어B: 외국어" },
+        { "id": "S5-02-03", "en": "History (20th century world history)", "ko": "역사 (20세기 세계사)" },
+        { "id": "S5-02-04", "en": "Philosophy", "ko": "철학" },
+        { "id": "S5-02-05", "en": "Music (theory and performance)", "ko": "음악 (이론·연주)" },
+        { "id": "S5-02-06", "en": "Visual Arts", "ko": "미술" },
+        { "id": "S5-02-07", "en": "Film Studies", "ko": "영화학" },
+        { "id": "S5-02-08", "en": "Classical Languages (Latin/Ancient Greek)", "ko": "고전어 (라틴·고대 그리스어)" }
+      ]
+    },
+    {
+      "stage_id": "S5",
+      "field_code": "03",
+      "subjects": [
+        { "id": "S5-03-01", "en": "Geography", "ko": "지리" },
+        { "id": "S5-03-02", "en": "Economics", "ko": "경제" },
+        { "id": "S5-03-03", "en": "Political Science", "ko": "정치학" },
+        { "id": "S5-03-04", "en": "Psychology", "ko": "심리학" },
+        { "id": "S5-03-05", "en": "Sociology", "ko": "사회학" },
+        { "id": "S5-03-06", "en": "Global Politics", "ko": "국제 정치" }
+      ]
+    },
+    {
+      "stage_id": "S5",
+      "field_code": "04",
+      "subjects": [
+        { "id": "S5-04-01", "en": "Business Management", "ko": "경영학" }
+      ]
+    },
+    {
+      "stage_id": "S5",
+      "field_code": "05",
+      "subjects": [
+        { "id": "S5-05-01", "en": "Mathematics: Analysis and Approaches", "ko": "수학: 분석·접근" },
+        { "id": "S5-05-02", "en": "Mathematics: Applications and Interpretation", "ko": "수학: 응용·해석" },
+        { "id": "S5-05-03", "en": "Physics", "ko": "물리" },
+        { "id": "S5-05-04", "en": "Chemistry", "ko": "화학" },
+        { "id": "S5-05-05", "en": "Biology", "ko": "생물" },
+        { "id": "S5-05-06", "en": "Environmental Systems and Societies", "ko": "환경 시스템·사회" },
+        { "id": "S5-05-07", "en": "Sports, Exercise and Health Science", "ko": "스포츠·운동·건강 과학" }
+      ]
+    },
+    {
+      "stage_id": "S5",
+      "field_code": "06",
+      "subjects": [
+        { "id": "S5-06-01", "en": "Computer Science", "ko": "컴퓨터 과학" },
+        { "id": "S5-06-02", "en": "Information Technology in a Global Society", "ko": "글로벌 사회와 IT" }
+      ]
+    },
+    {
+      "stage_id": "S5",
+      "field_code": "07",
+      "subjects": [
+        { "id": "S5-07-01", "en": "Design Technology", "ko": "디자인 기술" }
+      ]
+    },
+    {
+      "stage_id": "S5",
+      "field_code": "09",
+      "subjects": [
+        { "id": "S5-09-01", "en": "Physical Education", "ko": "체육" },
+        { "id": "S5-09-02", "en": "Health Science", "ko": "보건 과학" }
+      ]
+    },
+
+    {
+      "stage_id": "S6",
+      "field_code": "01",
+      "subjects": [
+        { "id": "S6-01-01", "en": "Education Science", "ko": "교육학" },
+        { "id": "S6-01-02", "en": "Curriculum and Pedagogy", "ko": "교육과정·교수법" },
+        { "id": "S6-01-03", "en": "Educational Psychology", "ko": "교육심리학" }
+      ]
+    },
+    {
+      "stage_id": "S6",
+      "field_code": "02",
+      "subjects": [
+        { "id": "S6-02-01", "en": "Literature (comparative, world)", "ko": "문학 (비교·세계)" },
+        { "id": "S6-02-02", "en": "Linguistics", "ko": "언어학" },
+        { "id": "S6-02-03", "en": "History", "ko": "역사학" },
+        { "id": "S6-02-04", "en": "Archaeology", "ko": "고고학" },
+        { "id": "S6-02-05", "en": "Philosophy", "ko": "철학" },
+        { "id": "S6-02-06", "en": "Religion and Theology", "ko": "종교학·신학" },
+        { "id": "S6-02-07", "en": "Fine Arts", "ko": "순수 미술" },
+        { "id": "S6-02-08", "en": "Music (Musicology, Performance)", "ko": "음악학·연주" },
+        { "id": "S6-02-09", "en": "Theatre and Film Studies", "ko": "연극·영화학" },
+        { "id": "S6-02-10", "en": "Cultural Studies", "ko": "문화학" }
+      ]
+    },
+    {
+      "stage_id": "S6",
+      "field_code": "03",
+      "subjects": [
+        { "id": "S6-03-01", "en": "Economics", "ko": "경제학" },
+        { "id": "S6-03-02", "en": "Political Science", "ko": "정치학" },
+        { "id": "S6-03-03", "en": "Sociology", "ko": "사회학" },
+        { "id": "S6-03-04", "en": "Anthropology", "ko": "인류학" },
+        { "id": "S6-03-05", "en": "Psychology", "ko": "심리학" },
+        { "id": "S6-03-06", "en": "Journalism and Media", "ko": "저널리즘·미디어" },
+        { "id": "S6-03-07", "en": "Information Science and Library", "ko": "정보학·문헌정보" },
+        { "id": "S6-03-08", "en": "International Relations", "ko": "국제관계학" }
+      ]
+    },
+    {
+      "stage_id": "S6",
+      "field_code": "04",
+      "subjects": [
+        { "id": "S6-04-01", "en": "Business Administration", "ko": "경영학" },
+        { "id": "S6-04-02", "en": "Accounting and Finance", "ko": "회계·금융" },
+        { "id": "S6-04-03", "en": "Marketing", "ko": "마케팅" },
+        { "id": "S6-04-04", "en": "Law", "ko": "법학" },
+        { "id": "S6-04-05", "en": "Public Administration", "ko": "행정학" },
+        { "id": "S6-04-06", "en": "Entrepreneurship", "ko": "창업학" }
+      ]
+    },
+    {
+      "stage_id": "S6",
+      "field_code": "05",
+      "subjects": [
+        { "id": "S6-05-01", "en": "Mathematics", "ko": "수학" },
+        { "id": "S6-05-02", "en": "Statistics and Data Science", "ko": "통계학·데이터 과학" },
+        { "id": "S6-05-03", "en": "Physics", "ko": "물리학" },
+        { "id": "S6-05-04", "en": "Chemistry", "ko": "화학" },
+        { "id": "S6-05-05", "en": "Biology", "ko": "생물학" },
+        { "id": "S6-05-06", "en": "Earth and Environmental Science", "ko": "지구·환경 과학" },
+        { "id": "S6-05-07", "en": "Astronomy and Astrophysics", "ko": "천문학·천체물리학" }
+      ]
+    },
+    {
+      "stage_id": "S6",
+      "field_code": "06",
+      "subjects": [
+        { "id": "S6-06-01", "en": "Computer Science", "ko": "컴퓨터 과학" },
+        { "id": "S6-06-02", "en": "Artificial Intelligence and Machine Learning", "ko": "인공지능·머신러닝" },
+        { "id": "S6-06-03", "en": "Software Engineering", "ko": "소프트웨어 공학" },
+        { "id": "S6-06-04", "en": "Cybersecurity", "ko": "사이버보안" },
+        { "id": "S6-06-05", "en": "Networks and Telecommunications", "ko": "네트워크·정보통신" },
+        { "id": "S6-06-06", "en": "Database Systems", "ko": "데이터베이스" }
+      ]
+    },
+    {
+      "stage_id": "S6",
+      "field_code": "07",
+      "subjects": [
+        { "id": "S6-07-01", "en": "Civil Engineering", "ko": "토목공학" },
+        { "id": "S6-07-02", "en": "Mechanical Engineering", "ko": "기계공학" },
+        { "id": "S6-07-03", "en": "Electrical and Electronic Engineering", "ko": "전기·전자공학" },
+        { "id": "S6-07-04", "en": "Chemical Engineering", "ko": "화학공학" },
+        { "id": "S6-07-05", "en": "Architecture and Urban Planning", "ko": "건축·도시계획" },
+        { "id": "S6-07-06", "en": "Aerospace Engineering", "ko": "항공우주공학" },
+        { "id": "S6-07-07", "en": "Biomedical Engineering", "ko": "의공학" },
+        { "id": "S6-07-08", "en": "Materials Science", "ko": "재료공학" },
+        { "id": "S6-07-09", "en": "Manufacturing and Industrial Engineering", "ko": "제조·산업공학" }
+      ]
+    },
+    {
+      "stage_id": "S6",
+      "field_code": "08",
+      "subjects": [
+        { "id": "S6-08-01", "en": "Agriculture and Agronomy", "ko": "농학·작물학" },
+        { "id": "S6-08-02", "en": "Forestry", "ko": "산림학" },
+        { "id": "S6-08-03", "en": "Fisheries and Aquaculture", "ko": "수산·양식학" },
+        { "id": "S6-08-04", "en": "Veterinary Science", "ko": "수의학" },
+        { "id": "S6-08-05", "en": "Food Science and Technology", "ko": "식품과학·기술" }
+      ]
+    },
+    {
+      "stage_id": "S6",
+      "field_code": "09",
+      "subjects": [
+        { "id": "S6-09-01", "en": "Medicine", "ko": "의학" },
+        { "id": "S6-09-02", "en": "Nursing", "ko": "간호학" },
+        { "id": "S6-09-03", "en": "Pharmacy", "ko": "약학" },
+        { "id": "S6-09-04", "en": "Dentistry", "ko": "치의학" },
+        { "id": "S6-09-05", "en": "Public Health and Epidemiology", "ko": "공중보건·역학" },
+        { "id": "S6-09-06", "en": "Social Work", "ko": "사회복지학" },
+        { "id": "S6-09-07", "en": "Sports Science and Kinesiology", "ko": "스포츠 과학·운동학" },
+        { "id": "S6-09-08", "en": "Psychology (clinical)", "ko": "심리학 (임상)" }
+      ]
+    },
+    {
+      "stage_id": "S6",
+      "field_code": "10",
+      "subjects": [
+        { "id": "S6-10-01", "en": "Tourism and Hospitality", "ko": "관광·호텔경영" },
+        { "id": "S6-10-02", "en": "Transport and Logistics", "ko": "물류·운송" },
+        { "id": "S6-10-03", "en": "Security Services", "ko": "보안 서비스" },
+        { "id": "S6-10-04", "en": "Culinary Arts", "ko": "조리학" }
+      ]
+    },
+
+    {
+      "stage_id": "S7",
+      "field_code": "00",
+      "subjects": [
+        { "id": "S7-00-01", "en": "Adult Literacy and Numeracy (ISCED 0021)", "ko": "성인 문해·수리 교육" },
+        { "id": "S7-00-02", "en": "Personal Development and Life Skills", "ko": "자기계발·생활 역량" },
+        { "id": "S7-00-03", "en": "Career Transition and Re-skilling", "ko": "진로 전환·재교육" }
+      ]
+    },
+    {
+      "stage_id": "S7",
+      "field_code": "05",
+      "subjects": [
+        { "id": "S7-05-01", "en": "Advanced Mathematics and Research Methods", "ko": "고급 수학·연구 방법론" },
+        { "id": "S7-05-02", "en": "Interdisciplinary Science (PhD level)", "ko": "융합 과학 (박사급)" }
+      ]
+    },
+    {
+      "stage_id": "S7",
+      "field_code": "06",
+      "subjects": [
+        { "id": "S7-06-01", "en": "Advanced AI and Quantum Computing", "ko": "고급 AI·양자컴퓨팅" },
+        { "id": "S7-06-02", "en": "Robotics and Automation", "ko": "로보틱스·자동화" }
+      ]
+    }
+
+  ]
+}
