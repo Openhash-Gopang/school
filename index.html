@@ -99,10 +99,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   <div class="sidebar-section">
     <div class="sidebar-section-label">AI 시스템</div>
-    <div class="sb-nav-item" data-page="professors" onclick="navigate('professors')">
+    <div class="sb-nav-item" data-page="professor" onclick="navigate('professor')">
       <div class="sb-nav-icon" data-icon="cpu"></div>
-      <div class="sb-nav-label">AI 교수진</div>
-      <div class="sb-nav-badge">10명</div>
+      <div class="sb-nav-label">AI 교수</div>
+    </div>
+    <div class="sb-nav-item" data-page="professors" onclick="navigate('professors')">
+      <div class="sb-nav-icon" data-icon="users"></div>
+      <div class="sb-nav-label">학생 관리</div>
     </div>
     <div class="sb-nav-item" data-page="optimizer" onclick="navigate('optimizer')">
       <div class="sb-nav-icon" data-icon="settings"></div>
@@ -299,7 +302,20 @@ document.addEventListener('DOMContentLoaded', () => {
     <div id="curriculum-panel"></div>
   </div>
 
-  <!-- ── AI 교수진 ── -->
+  <!-- ── AI 교수 (채팅) ── -->
+  <div id="page-professor" class="page">
+    <div class="page-header">
+      <div>
+        <div class="page-title page-title-wrap">
+          <span data-icon="cpu" data-icon-class="icon-lg"></span> AI 교수
+        </div>
+        <div class="page-sub">세상의 모든 지식 · 학생 맞춤 전담 지도 · 유치원~대학원</div>
+      </div>
+    </div>
+    <div id="tab-professor"></div>
+  </div>
+
+  <!-- ── AI 교수진 (관리용) ── -->
   <div id="page-professors" class="page">
     <div class="page-header">
       <div>
@@ -503,8 +519,8 @@ document.addEventListener('DOMContentLoaded', () => {
 <script>
 const PAGE_LABELS = {
   dashboard:'대시보드', students:'학생 목록', curriculum:'커리큘럼',
-  professors:'AI 교수진', optimizer:'7단계 최적화', career:'진로 예측',
-  analytics:'성과 분석', privacy:'프라이버시',
+  professor:'AI 교수', professors:'학생 관리', optimizer:'7단계 최적화',
+  career:'진로 예측', analytics:'성과 분석', privacy:'프라이버시',
 };
 const _origNavigate = navigate;
 window.navigate = function(page) {
@@ -526,7 +542,11 @@ function runOptimizer() { alert('7단계 최적화 재실행 — 평균 2.3분 �
   if (!user) return;
   document.getElementById('auth-loading').style.display = 'none';
   document.getElementById('main').style.display = '';
-  navigate('dashboard');
+
+  // GWP ctx가 있으면 AI 교수 탭으로 바로 이동
+  const params = new URLSearchParams(location.search);
+  const startPage = params.get('ctx') ? 'professor' : 'dashboard';
+  navigate(startPage);
 })();
 </script>
 </body>

@@ -18,6 +18,7 @@ function navigate(page) {
     dashboard:   renderDashboard,
     students:    renderStudents,
     curriculum:  renderCurriculum,
+    professor:   renderAIProfessor,
     professors:  renderProfessors,
     optimizer:   renderOptimizer,
     career:      renderCareer,
@@ -363,4 +364,176 @@ function openProfModal(id) {
   if (!modal) return;
   document.getElementById('prof-modal-title').textContent = prof.name + ' (' + prof.spec + ')';
   modal.classList.add('open');
+}
+
+// ══════════════════════════════════════
+// AI 교수 채팅 (GWP ctx 연동)
+// ══════════════════════════════════════
+
+let _systemPrompt  = null;
+let _chatHistory   = [];
+let _studentProfile = null;
+
+// 시스템 프롬프트 로드
+async function loadSystemPrompt() {
+  if (_systemPrompt) return _systemPrompt;
+  try {
+    const r = await fetch(SYSTEM_PROMPT_URL);
+    _systemPrompt = await r.text();
+  } catch(e) {
+    _systemPrompt = 'You are K-School AI Professor. Adapt to the student profile provided.';
+  }
+  return _systemPrompt;
+}
+
+// GWP ctx 파라미터 수신 (고팡에서 호출 시)
+function initGwpContext() {
+  const params = new URLSearchParams(location.search);
+  const ctx = params.get('ctx');
+  if (!ctx) return null;
+  try { return decodeURIComponent(ctx); } catch { return null; }
+}
+
+// 학생 프로파일 → 시스템 프롬프트에 주입
+function buildSystemWithProfile(basePrompt, profile) {
+  if (!profile) return basePrompt;
+  const block = `
+[STUDENT_PROFILE]
+이름: ${profile.name || '학생'}
+나이: ${profile.age || '미상'}세
+성별: ${profile.gender || '미상'}
+학제: ${profile.stage || '미상'}
+성격: ${profile.personality || '미파악'}
+취향: ${profile.interests || '미파악'}
+학습 스타일: ${profile.learning_style || '미파악'}
+현재 역량: ${profile.competencies || '미파악'}
+진로 균형점: ${profile.career_balance || '미파악'}
+균형점 효용: ${profile.utility_score || '미파악'}
+[/STUDENT_PROFILE]
+`;
+  return block + '\n' + basePrompt;
+}
+
+// AI 교수에게 메시지 전송
+async function sendToAIProfessor(userMessage) {
+  const sysPrompt = await loadSystemPrompt();
+  const fullSystem = buildSystemWithProfile(sysPrompt, _studentProfile);
+
+  _chatHistory.push({ role: 'user', content: userMessage });
+
+  const res = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model:      'claude-sonnet-4-20250514',
+      max_tokens: 1000,
+      system:     fullSystem,
+      messages:   _chatHistory,
+    }),
+  });
+
+  const data = await res.json();
+  const reply = data.content?.find(b => b.type === 'text')?.text || '(응답 없음)';
+  _chatHistory.push({ role: 'assistant', content: reply });
+  return reply;
+}
+
+// AI 교수 탭 렌더링
+function renderAIProfessor() {
+  const el = document.getElementById('tab-professor');
+  if (!el) return;
+
+  const gwpCtx = initGwpContext();
+
+  el.innerHTML = `
+    <div style="max-width:720px;margin:0 auto">
+      <!-- 교수 프로파일 카드 -->
+      <div class="card" style="margin-bottom:14px">
+        <div class="card-body" style="display:flex;align-items:center;gap:14px">
+          <div style="width:48px;height:48px;border-radius:10px;background:var(--sb-green-bg);border:1px solid var(--sb-green-bd);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+            <span data-icon="cpu" data-icon-class="icon-xl" style="color:var(--sb-green-txt)"></span>
+          </div>
+          <div style="flex:1">
+            <div style="font-size:14px;font-weight:600;color:var(--sb-txt);margin-bottom:2px">AI 교수</div>
+            <div style="font-size:11px;color:var(--sb-txt3);line-height:1.5">${AI_PROFESSOR.domains.join(' · ')}</div>
+          </div>
+          <span class="badge badge-green">온라인</span>
+        </div>
+      </div>
+
+      <!-- 채팅창 -->
+      <div class="card">
+        <div id="chat-messages" style="min-height:320px;max-height:480px;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px">
+          ${gwpCtx
+            ? `<div style="background:var(--sb-yellow-bg);border:1px solid var(--sb-yellow-bd);border-radius:var(--r2);padding:10px 13px;font-size:12px;color:var(--sb-yellow-txt)">
+                고팡에서 이어받은 질문: <strong>"${gwpCtx}"</strong>
+               </div>`
+            : `<div style="text-align:center;padding:24px;color:var(--sb-txt4);font-size:13px">
+                AI 교수에게 무엇이든 물어보세요
+               </div>`
+          }
+        </div>
+        <div style="border-top:1px solid var(--sb-border);padding:12px 14px;display:flex;gap:8px">
+          <input class="sb-input" id="chat-input" placeholder="질문을 입력하세요…"
+            onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();chatSend()}"
+            style="flex:1">
+          <button class="btn btn-primary" onclick="chatSend()" id="chat-send-btn">
+            <span data-icon="zap" data-icon-class="icon-sm"></span> 전송
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
+
+  // data-icon 처리
+  el.querySelectorAll('[data-icon]').forEach(e => {
+    e.innerHTML = ic(e.dataset.icon, e.dataset.iconClass || '');
+  });
+
+  // GWP ctx가 있으면 자동 전송
+  if (gwpCtx) {
+    setTimeout(() => chatSendMessage(gwpCtx), 300);
+  }
+}
+
+async function chatSend() {
+  const inp = document.getElementById('chat-input');
+  if (!inp || !inp.value.trim()) return;
+  const msg = inp.value.trim();
+  inp.value = '';
+  await chatSendMessage(msg);
+}
+
+async function chatSendMessage(msg) {
+  const container = document.getElementById('chat-messages');
+  const btn       = document.getElementById('chat-send-btn');
+  if (!container) return;
+
+  // 사용자 메시지
+  container.innerHTML += `
+    <div style="display:flex;justify-content:flex-end">
+      <div style="max-width:75%;background:var(--sb-green);color:#fff;border-radius:var(--r2) var(--r2) 0 var(--r2);padding:9px 13px;font-size:13px;line-height:1.5">${escHtml(msg)}</div>
+    </div>`;
+  container.scrollTop = container.scrollHeight;
+
+  if (btn) { btn.disabled = true; btn.textContent = '…'; }
+
+  // AI 응답
+  try {
+    const reply = await sendToAIProfessor(msg);
+    container.innerHTML += `
+      <div style="display:flex;justify-content:flex-start;gap:8px">
+        <div style="width:28px;height:28px;border-radius:6px;background:var(--sb-green-bg);border:1px solid var(--sb-green-bd);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:11px;font-weight:700;color:var(--sb-green-txt)">AI</div>
+        <div style="max-width:75%;background:var(--sb-surface);border:1px solid var(--sb-border);border-radius:var(--r2) var(--r2) var(--r2) 0;padding:9px 13px;font-size:13px;line-height:1.6;color:var(--sb-txt)">${reply.replace(/\n/g,'<br>')}</div>
+      </div>`;
+  } catch(e) {
+    container.innerHTML += `<div style="color:var(--sb-red-txt);font-size:12px;padding:8px">오류: ${e.message}</div>`;
+  }
+
+  container.scrollTop = container.scrollHeight;
+  if (btn) { btn.disabled = false; btn.innerHTML = ic('zap','icon-sm') + ' 전송'; }
+}
+
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
