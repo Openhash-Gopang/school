@@ -1,0 +1,488 @@
+{
+  "_meta": {
+    "title": "K-School Curriculum Generation Rules",
+    "version": "1.0.0",
+    "released": "2026-05-31",
+    "purpose": "AI 교수가 학생 프로파일과 이 원칙을 읽고 실시간으로 커리큘럼을 생성한다. 사전에 세션을 작성하지 않는다.",
+    "references": [
+      "IB Diploma Programme — Subject hours (HL 240h / SL 150h)",
+      "IB MYP — Minimum 50h per subject per year",
+      "IB PYP — Transdisciplinary themes, inquiry-based",
+      "UNESCO ISCED-F 2013",
+      "Piaget Developmental Stages",
+      "Bloom's Taxonomy (Revised) — 6 cognitive levels"
+    ]
+  },
+
+  "session_duration_by_stage": {
+    "_note": "1회 학습 시간 — 연령별 집중력 한계 기반",
+    "S1": { "minutes": 15, "note": "유아기 3–5세 · 놀이 단위" },
+    "S2": { "minutes": 20, "note": "아동기 전기 6–8세" },
+    "S3": { "minutes": 30, "note": "아동기 후기 9–11세" },
+    "S4": { "minutes": 45, "note": "청소년 전기 12–14세 · IB MYP 수업 단위" },
+    "S5": { "minutes": 60, "note": "청소년 후기 15–17세 · IB DP 수업 단위" },
+    "S6": { "minutes": 75, "note": "대학 18–21세 · 대학 강의 단위" },
+    "S7": { "minutes": 90, "note": "대학원·성인 22세+ · 세미나 단위" }
+  },
+
+  "total_hours_by_stage_and_type": {
+    "_note": "과목 유형별 총 학습 시간 — IB 수업 시수 준용 + 하위 학제 비례 산정",
+    "_ib_basis": "IB DP HL=240h, SL=150h, MYP=50h/year, PYP=통합 탐구",
+    "S1": {
+      "core":     { "hours": 30,  "duration_months": 12, "note": "주 2회 × 15분 × 12개월" },
+      "optional": { "hours": 15,  "duration_months": 6  }
+    },
+    "S2": {
+      "core":     { "hours": 60,  "duration_months": 12, "note": "주 3회 × 20분 × 12개월" },
+      "optional": { "hours": 30,  "duration_months": 6  }
+    },
+    "S3": {
+      "core":     { "hours": 90,  "duration_months": 12, "note": "주 3회 × 30분 × 12개월" },
+      "optional": { "hours": 45,  "duration_months": 6  }
+    },
+    "S4": {
+      "core":     { "hours": 150, "duration_months": 12, "note": "IB MYP 기준 200h/year의 75%" },
+      "optional": { "hours": 75,  "duration_months": 6  }
+    },
+    "S5": {
+      "HL":       { "hours": 240, "duration_months": 24, "note": "IB DP HL 기준" },
+      "SL":       { "hours": 150, "duration_months": 18, "note": "IB DP SL 기준" },
+      "optional": { "hours": 100, "duration_months": 12 }
+    },
+    "S6": {
+      "major":    { "hours": 300, "duration_months": 18, "note": "3학점×16주×2학기 + 실습" },
+      "elective": { "hours": 150, "duration_months": 12, "note": "3학점×16주×1학기" },
+      "lab":      { "hours": 60,  "duration_months": 6,  "note": "실험·실습 단독" }
+    },
+    "S7": {
+      "seminar":  { "hours": 90,  "duration_months": 6,  "note": "대학원 세미나" },
+      "research": { "hours": 400, "duration_months": 24, "note": "연구·논문 작성" },
+      "reskill":  { "hours": 60,  "duration_months": 3,  "note": "직업 재교육" }
+    }
+  },
+
+  "sessions_per_week_by_stage": {
+    "_note": "주당 세션 수 기본값 — 학생 요청에 따라 AI 교수가 조정",
+    "S1": 2,
+    "S2": 3,
+    "S3": 3,
+    "S4": 4,
+    "S5": 4,
+    "S6": 3,
+    "S7": 2
+  },
+
+  "session_composition": {
+    "_note": "3가지 구성 방식을 1회 세션 안에 모두 통합 적용",
+    "methods": [
+      {
+        "id": "topic",
+        "name": "토픽 단위",
+        "description": "OER 교재의 챕터 또는 섹션 1개를 한 세션의 주제로 설정. 교재 순서를 따르되 학생 수준에 맞게 건너뛰거나 보충.",
+        "rule": "1세션 = OER 챕터 1개 (분량이 많으면 2세션으로 분할, 적으면 2챕터 병합)"
+      },
+      {
+        "id": "time",
+        "name": "시간 단위",
+        "description": "세션 시간(stage별 고정)을 3구간으로 분할하여 페이스 조절.",
+        "rule": "도입(10%) + 핵심 학습(70%) + 복습·질의(20%)",
+        "example_S5": "60분 = 도입 6분 + 핵심 42분 + 복습 12분"
+      },
+      {
+        "id": "objective",
+        "name": "목표 단위",
+        "description": "Bloom's Taxonomy 6단계 중 해당 세션의 목표 레벨을 명시. 세션 종료 시 학생이 그 레벨에 도달했는지 확인.",
+        "bloom_levels": [
+          { "level": 1, "verb": "기억", "en": "Remember",  "example": "~을 말할 수 있다" },
+          { "level": 2, "verb": "이해", "en": "Understand", "example": "~을 설명할 수 있다" },
+          { "level": 3, "verb": "적용", "en": "Apply",      "example": "~을 풀 수 있다" },
+          { "level": 4, "verb": "분석", "en": "Analyze",    "example": "~을 비교·분석할 수 있다" },
+          { "level": 5, "verb": "평가", "en": "Evaluate",   "example": "~의 장단점을 판단할 수 있다" },
+          { "level": 6, "verb": "창조", "en": "Create",     "example": "~을 직접 설계·작성할 수 있다" }
+        ],
+        "rule": "S1–S2: Bloom 1–2 위주 / S3–S4: 1–4 / S5–S6: 3–6 / S7: 5–6"
+      }
+    ]
+  },
+
+  "curriculum_generation_algorithm": {
+    "_note": "AI 교수가 커리큘럼을 생성할 때 따르는 알고리즘",
+    "steps": [
+      {
+        "step": 1,
+        "name": "학생 프로파일 파악",
+        "actions": [
+          "나이 → stage(S1–S7) 결정",
+          "학습 스타일 파악 (시각·청각·체험·독서형)",
+          "현재 역량 파악 (해당 과목 사전 지식)",
+          "취향·진로 균형점 확인"
+        ]
+      },
+      {
+        "step": 2,
+        "name": "과목 유형 결정",
+        "actions": [
+          "S5: HL(심화) / SL(표준) 결정 → 총 시수 확정",
+          "S6: 전공필수 / 선택 / 실습 결정",
+          "학생 의향 우선, 진로 균형점 참고"
+        ]
+      },
+      {
+        "step": 3,
+        "name": "OER 교재 선택",
+        "actions": [
+          "curriculum_v2.json에서 해당 과목의 oer 목록 조회",
+          "학생 언어 설정에 맞는 교재 우선 선택",
+          "단일 교재 또는 복수 교재 병행 결정",
+          "교재의 챕터 목록을 토픽으로 변환"
+        ]
+      },
+      {
+        "step": 4,
+        "name": "세션 계획 생성",
+        "actions": [
+          "총 시수 ÷ 1회 시간 = 총 세션 수 계산",
+          "총 세션 수 ÷ 주당 세션 수 = 총 주 수 계산",
+          "토픽(챕터) 수와 세션 수를 매핑",
+          "각 세션에 Bloom 목표 레벨 할당",
+          "복습·평가 세션을 전체의 15%로 배치"
+        ]
+      },
+      {
+        "step": 5,
+        "name": "적응형 조정",
+        "actions": [
+          "학생이 70% 이상 이해하면 다음 세션 진행",
+          "이해도 50% 미만이면 동일 토픽 다른 예시로 재설명",
+          "학생 요청 시 언제든 속도·순서·깊이 조정",
+          "진로 변경 요청 시 커리큘럼 전면 재생성"
+        ]
+      }
+    ]
+  },
+
+  "standard_subject_templates": {
+    "_note": "분야별·단계별 대표 과목 템플릿 — AI 교수가 유사 과목에 적용",
+
+    "mathematics_S4": {
+      "subject": "Mathematics (Algebra, Geometry, Statistics)",
+      "stage": "S4", "type": "core",
+      "total_hours": 150, "duration_months": 12,
+      "sessions_per_week": 4, "session_minutes": 45,
+      "total_sessions": 200,
+      "oer_primary": "OpenStax Elementary Algebra 2e",
+      "topic_blocks": [
+        { "block": "수와 연산",       "sessions": 20, "bloom": [1,2,3] },
+        { "block": "변수와 방정식",   "sessions": 30, "bloom": [2,3,4] },
+        { "block": "함수와 그래프",   "sessions": 25, "bloom": [2,3,4] },
+        { "block": "기하 (도형)",     "sessions": 30, "bloom": [2,3,4] },
+        { "block": "통계와 확률",     "sessions": 25, "bloom": [2,3,4] },
+        { "block": "복습·평가",       "sessions": 30, "bloom": [3,4,5] }
+      ]
+    },
+
+    "biology_S5_SL": {
+      "subject": "Biology SL",
+      "stage": "S5", "type": "SL",
+      "total_hours": 150, "duration_months": 18,
+      "sessions_per_week": 3, "session_minutes": 60,
+      "total_sessions": 150,
+      "oer_primary": "OpenStax Biology 2e",
+      "topic_blocks": [
+        { "block": "세포 생물학",         "sessions": 20, "bloom": [1,2,3] },
+        { "block": "분자 생물학 (DNA)",   "sessions": 20, "bloom": [2,3,4] },
+        { "block": "유전학",              "sessions": 15, "bloom": [2,3,4] },
+        { "block": "진화",                "sessions": 15, "bloom": [3,4,5] },
+        { "block": "생태학",              "sessions": 20, "bloom": [3,4,5] },
+        { "block": "인체 생리학",         "sessions": 25, "bloom": [2,3,4] },
+        { "block": "실험·탐구 (IA)",      "sessions": 12, "bloom": [4,5,6] },
+        { "block": "복습·평가",           "sessions": 23, "bloom": [3,4,5] }
+      ]
+    },
+
+    "biology_S5_HL": {
+      "subject": "Biology HL",
+      "stage": "S5", "type": "HL",
+      "total_hours": 240, "duration_months": 24,
+      "sessions_per_week": 3, "session_minutes": 60,
+      "total_sessions": 240,
+      "oer_primary": "OpenStax Biology 2e",
+      "oer_secondary": "LibreTexts Biology",
+      "topic_blocks": [
+        { "block": "세포 생물학 (심화)", "sessions": 30, "bloom": [2,3,4] },
+        { "block": "분자 생물학",        "sessions": 30, "bloom": [3,4,5] },
+        { "block": "유전학 (심화)",      "sessions": 25, "bloom": [3,4,5] },
+        { "block": "진화·분류학",        "sessions": 20, "bloom": [4,5,6] },
+        { "block": "생태학 (심화)",      "sessions": 25, "bloom": [4,5,6] },
+        { "block": "인체 생리학 (심화)", "sessions": 40, "bloom": [3,4,5] },
+        { "block": "식물 생물학",        "sessions": 20, "bloom": [3,4,5] },
+        { "block": "실험·탐구 (IA/EE)",  "sessions": 20, "bloom": [5,6,6] },
+        { "block": "복습·평가",          "sessions": 30, "bloom": [4,5,6] }
+      ]
+    },
+
+    "physics_S5_SL": {
+      "subject": "Physics SL",
+      "stage": "S5", "type": "SL",
+      "total_hours": 150, "duration_months": 18,
+      "sessions_per_week": 3, "session_minutes": 60,
+      "total_sessions": 150,
+      "oer_primary": "OpenStax College Physics 2e",
+      "topic_blocks": [
+        { "block": "역학",               "sessions": 30, "bloom": [2,3,4] },
+        { "block": "열역학",             "sessions": 15, "bloom": [2,3,4] },
+        { "block": "파동과 소리",        "sessions": 15, "bloom": [2,3,4] },
+        { "block": "전기와 자기",        "sessions": 30, "bloom": [3,4,5] },
+        { "block": "현대물리·양자",      "sessions": 20, "bloom": [3,4,5] },
+        { "block": "실험",               "sessions": 15, "bloom": [4,5,6] },
+        { "block": "복습·평가",          "sessions": 25, "bloom": [3,4,5] }
+      ]
+    },
+
+    "chemistry_S5_SL": {
+      "subject": "Chemistry SL",
+      "stage": "S5", "type": "SL",
+      "total_hours": 150, "duration_months": 18,
+      "sessions_per_week": 3, "session_minutes": 60,
+      "total_sessions": 150,
+      "oer_primary": "OpenStax Chemistry 2e",
+      "topic_blocks": [
+        { "block": "원자 구조·주기율표", "sessions": 20, "bloom": [1,2,3] },
+        { "block": "화학 결합",          "sessions": 20, "bloom": [2,3,4] },
+        { "block": "반응과 화학량론",    "sessions": 25, "bloom": [3,4,5] },
+        { "block": "산·염기",            "sessions": 20, "bloom": [3,4,5] },
+        { "block": "열화학·평형",        "sessions": 20, "bloom": [3,4,5] },
+        { "block": "유기화학 입문",      "sessions": 15, "bloom": [2,3,4] },
+        { "block": "실험",               "sessions": 15, "bloom": [4,5,6] },
+        { "block": "복습·평가",          "sessions": 15, "bloom": [3,4,5] }
+      ]
+    },
+
+    "mathematics_calculus_S5_HL": {
+      "subject": "Mathematics: Analysis and Approaches HL",
+      "stage": "S5", "type": "HL",
+      "total_hours": 240, "duration_months": 24,
+      "sessions_per_week": 3, "session_minutes": 60,
+      "total_sessions": 240,
+      "oer_primary": "OpenStax Calculus Vol 1–3",
+      "oer_secondary": "Khan Academy AP Calculus",
+      "topic_blocks": [
+        { "block": "대수·함수",          "sessions": 30, "bloom": [2,3,4] },
+        { "block": "미분",               "sessions": 40, "bloom": [3,4,5] },
+        { "block": "적분",               "sessions": 40, "bloom": [3,4,5] },
+        { "block": "수열과 급수",        "sessions": 25, "bloom": [3,4,5] },
+        { "block": "복소수·벡터",        "sessions": 25, "bloom": [3,4,6] },
+        { "block": "확률·통계 (심화)",   "sessions": 25, "bloom": [4,5,6] },
+        { "block": "탐구·확장 논문",     "sessions": 20, "bloom": [5,6,6] },
+        { "block": "복습·평가",          "sessions": 35, "bloom": [4,5,6] }
+      ]
+    },
+
+    "history_S5_SL": {
+      "subject": "History SL",
+      "stage": "S5", "type": "SL",
+      "total_hours": 150, "duration_months": 18,
+      "sessions_per_week": 3, "session_minutes": 60,
+      "total_sessions": 150,
+      "oer_primary": "OpenStax World History Vol 2",
+      "topic_blocks": [
+        { "block": "19세기 세계",        "sessions": 20, "bloom": [1,2,3] },
+        { "block": "제국주의·식민지",    "sessions": 20, "bloom": [2,3,4] },
+        { "block": "1·2차 세계대전",     "sessions": 30, "bloom": [3,4,5] },
+        { "block": "냉전",               "sessions": 25, "bloom": [3,4,5] },
+        { "block": "탈식민·현대",        "sessions": 20, "bloom": [4,5,6] },
+        { "block": "사료 분석·논술",     "sessions": 20, "bloom": [5,6,6] },
+        { "block": "복습·평가",          "sessions": 15, "bloom": [4,5,6] }
+      ]
+    },
+
+    "computer_science_S6": {
+      "subject": "Computer Science (undergraduate)",
+      "stage": "S6", "type": "major",
+      "total_hours": 300, "duration_months": 18,
+      "sessions_per_week": 3, "session_minutes": 75,
+      "total_sessions": 240,
+      "oer_primary": "MIT OCW 6.0001 Introduction to CS",
+      "topic_blocks": [
+        { "block": "프로그래밍 기초 (Python)", "sessions": 30, "bloom": [2,3,4] },
+        { "block": "자료구조",                  "sessions": 30, "bloom": [3,4,5] },
+        { "block": "알고리즘",                  "sessions": 35, "bloom": [4,5,6] },
+        { "block": "운영체제",                  "sessions": 25, "bloom": [3,4,5] },
+        { "block": "데이터베이스",              "sessions": 25, "bloom": [3,4,5] },
+        { "block": "네트워크",                  "sessions": 20, "bloom": [3,4,5] },
+        { "block": "소프트웨어 공학",           "sessions": 25, "bloom": [4,5,6] },
+        { "block": "프로젝트",                  "sessions": 30, "bloom": [5,6,6] },
+        { "block": "복습·평가",                 "sessions": 20, "bloom": [4,5,6] }
+      ]
+    },
+
+    "economics_S5_SL": {
+      "subject": "Economics SL",
+      "stage": "S5", "type": "SL",
+      "total_hours": 150, "duration_months": 18,
+      "sessions_per_week": 3, "session_minutes": 60,
+      "total_sessions": 150,
+      "oer_primary": "OpenStax Principles of Economics 3e",
+      "topic_blocks": [
+        { "block": "경제학 입문·수요공급", "sessions": 25, "bloom": [1,2,3] },
+        { "block": "미시경제학",            "sessions": 35, "bloom": [2,3,4] },
+        { "block": "거시경제학",            "sessions": 35, "bloom": [2,3,4] },
+        { "block": "국제경제",              "sessions": 20, "bloom": [3,4,5] },
+        { "block": "개발경제학",            "sessions": 15, "bloom": [4,5,6] },
+        { "block": "논술·평가",             "sessions": 20, "bloom": [4,5,6] }
+      ]
+    },
+
+    "literature_S5_SL": {
+      "subject": "Language A: Literature SL",
+      "stage": "S5", "type": "SL",
+      "total_hours": 150, "duration_months": 18,
+      "sessions_per_week": 3, "session_minutes": 60,
+      "total_sessions": 150,
+      "oer_primary": "Project Gutenberg (selected works)",
+      "topic_blocks": [
+        { "block": "시 읽기·분석",        "sessions": 25, "bloom": [2,3,4] },
+        { "block": "소설·단편 분석",      "sessions": 30, "bloom": [3,4,5] },
+        { "block": "희곡 분석",           "sessions": 20, "bloom": [3,4,5] },
+        { "block": "비교 문학",           "sessions": 25, "bloom": [4,5,6] },
+        { "block": "구술·논술",           "sessions": 25, "bloom": [5,6,6] },
+        { "block": "복습·평가",           "sessions": 25, "bloom": [4,5,6] }
+      ]
+    },
+
+    "science_S3": {
+      "subject": "Science (earth, life, physical) — Upper Primary",
+      "stage": "S3", "type": "core",
+      "total_hours": 90, "duration_months": 12,
+      "sessions_per_week": 3, "session_minutes": 30,
+      "total_sessions": 180,
+      "oer_primary": "CK-12 Earth Science / Life Science",
+      "topic_blocks": [
+        { "block": "지구와 날씨",         "sessions": 30, "bloom": [1,2,3] },
+        { "block": "생물 (식물·동물)",    "sessions": 40, "bloom": [1,2,3] },
+        { "block": "물질과 에너지",       "sessions": 35, "bloom": [2,3,4] },
+        { "block": "탐구 실험",           "sessions": 45, "bloom": [3,4,5] },
+        { "block": "복습",                "sessions": 30, "bloom": [2,3,4] }
+      ]
+    },
+
+    "mathematics_S3": {
+      "subject": "Mathematics (fractions, algebra intro) — Upper Primary",
+      "stage": "S3", "type": "core",
+      "total_hours": 90, "duration_months": 12,
+      "sessions_per_week": 3, "session_minutes": 30,
+      "total_sessions": 180,
+      "oer_primary": "OpenStax Prealgebra 2e",
+      "oer_secondary": "Khan Academy Arithmetic",
+      "topic_blocks": [
+        { "block": "분수와 소수",         "sessions": 35, "bloom": [1,2,3] },
+        { "block": "퍼센트·비율",         "sessions": 25, "bloom": [2,3,4] },
+        { "block": "기초 대수 입문",      "sessions": 30, "bloom": [2,3,4] },
+        { "block": "기하 기초",           "sessions": 25, "bloom": [2,3,4] },
+        { "block": "자료·통계 기초",      "sessions": 20, "bloom": [2,3,4] },
+        { "block": "복습",                "sessions": 45, "bloom": [3,4,5] }
+      ]
+    },
+
+    "nursing_S6": {
+      "subject": "Nursing Fundamentals",
+      "stage": "S6", "type": "major",
+      "total_hours": 300, "duration_months": 18,
+      "sessions_per_week": 3, "session_minutes": 75,
+      "total_sessions": 240,
+      "oer_primary": "Open RN Nursing Fundamentals (CC BY 4.0)",
+      "oer_secondary": "Open RN Clinical Nursing Skills",
+      "topic_blocks": [
+        { "block": "간호학 개론·윤리",    "sessions": 20, "bloom": [1,2,3] },
+        { "block": "해부·생리학 기초",    "sessions": 30, "bloom": [2,3,4] },
+        { "block": "기본 간호 술기",      "sessions": 50, "bloom": [3,4,5] },
+        { "block": "약리학 기초",         "sessions": 30, "bloom": [3,4,5] },
+        { "block": "환자 사정·간호 과정", "sessions": 35, "bloom": [4,5,6] },
+        { "block": "임상 실습 준비",      "sessions": 45, "bloom": [4,5,6] },
+        { "block": "복습·평가",           "sessions": 30, "bloom": [4,5,6] }
+      ]
+    },
+
+    "adult_literacy_S7": {
+      "subject": "Adult Literacy and Numeracy",
+      "stage": "S7", "type": "reskill",
+      "total_hours": 60, "duration_months": 3,
+      "sessions_per_week": 5, "session_minutes": 45,
+      "total_sessions": 80,
+      "oer_primary": "Khan Academy Adult Literacy",
+      "topic_blocks": [
+        { "block": "기초 읽기·쓰기",      "sessions": 20, "bloom": [1,2,3] },
+        { "block": "기초 수리",           "sessions": 20, "bloom": [1,2,3] },
+        { "block": "디지털 리터러시",     "sessions": 20, "bloom": [2,3,4] },
+        { "block": "실용 문서 작성",      "sessions": 12, "bloom": [3,4,5] },
+        { "block": "평가",                "sessions": 8,  "bloom": [3,4,5] }
+      ]
+    }
+  },
+
+  "adaptation_rules": {
+    "_note": "AI 교수가 학생별 커리큘럼을 실시간 조정하는 규칙",
+    "pace_adjustment": {
+      "fast_learner":  "이해도 90% 이상 2회 연속 → 다음 블록으로 조기 진입, 심화(HL) 전환 제안",
+      "average":       "이해도 70–89% → 정상 진행",
+      "struggling":    "이해도 50–69% → 동일 토픽 다른 OER 예시 추가, 세션 분할",
+      "very_slow":     "이해도 50% 미만 → 전 단계(S-1) 선수 과목 점검, 학습 스타일 재파악"
+    },
+    "interest_integration": {
+      "rule": "학생의 취향과 과목 연결 — 매 토픽 도입 시 학생 취향과 연결되는 사례 1개 제시",
+      "examples": [
+        "음악 좋아하는 학생 + 수학: 음파 주파수 → 삼각함수",
+        "스포츠 좋아하는 학생 + 물리: 야구공 궤적 → 포물선 운동",
+        "게임 좋아하는 학생 + 코딩: 게임 로직 → 알고리즘",
+        "요리 좋아하는 학생 + 화학: 베이킹 반응 → 산·염기"
+      ]
+    },
+    "career_alignment": {
+      "rule": "매 블록 시작 시 해당 토픽이 학생의 진로 균형점과 어떻게 연결되는지 1문장으로 언급",
+      "example": "AI 윤리 연구자를 목표로 하는 학생에게 생물학의 CRISPR 윤리 이슈를 연결"
+    },
+    "language_adaptation": {
+      "rule": "학생의 모국어로 설명, 학술 용어는 영어 병기 (S5 이상)",
+      "example": "미토콘드리아(mitochondria)는 세포의 발전소 역할을 합니다"
+    },
+    "review_sessions": {
+      "frequency": "매 5세션마다 1회 복습 세션 삽입",
+      "format": "퀴즈 5문제 + 오답 분석 + 다음 세션 예고"
+    }
+  },
+
+  "session_template": {
+    "_note": "AI 교수가 매 세션을 실행할 때 따르는 표준 구조",
+    "structure": [
+      {
+        "phase": "도입 (10%)",
+        "content": [
+          "이전 세션 핵심 1문장 복기",
+          "오늘 학습 목표 선언 (Bloom 레벨 명시)",
+          "학생 취향/진로와 연결되는 사례 1개 제시"
+        ]
+      },
+      {
+        "phase": "핵심 학습 (70%)",
+        "content": [
+          "OER 교재 해당 챕터/섹션 기반 설명",
+          "개념 → 예시 → 연습문제 순서",
+          "이해도 확인 질문 1–2회 삽입",
+          "Bloom 목표 레벨에 맞는 활동 수행"
+        ]
+      },
+      {
+        "phase": "복습·마무리 (20%)",
+        "content": [
+          "핵심 개념 3가지 요약",
+          "학생 자기 평가 (이해도 0–10점)",
+          "다음 세션 예고",
+          "자기주도 학습 과제 1개 (선택)"
+        ]
+      }
+    ],
+    "assessment_trigger": {
+      "rule": "학생 자기 평가 7점 미만 시 동일 토픽 보충 세션 자동 생성"
+    }
+  }
+}
