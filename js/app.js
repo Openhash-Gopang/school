@@ -415,25 +415,38 @@ function buildSystemWithProfile(basePrompt, profile) {
 }
 
 // AI 교수에게 메시지 전송
+// 엔드포인트: gopang-proxy.tensor-city.workers.dev/deepseek
+// 모델: deepseek-chat (DeepSeek V3) — worker.js DEEPSEEK_API_KEY 사용
 async function sendToAIProfessor(userMessage) {
-  const sysPrompt = await loadSystemPrompt();
+  const sysPrompt  = await loadSystemPrompt();
   const fullSystem = buildSystemWithProfile(sysPrompt, _studentProfile);
 
   _chatHistory.push({ role: 'user', content: userMessage });
 
-  const res = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
+  // DeepSeek은 OpenAI 호환 형식 — system을 messages 첫 번째에 삽입
+  const messages = [
+    { role: 'system', content: fullSystem },
+    ..._chatHistory,
+  ];
+
+  const res = await fetch('https://gopang-proxy.tensor-city.workers.dev/deepseek', {
+    method:  'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      model:      'claude-sonnet-4-20250514',
-      max_tokens: 1000,
-      system:     fullSystem,
-      messages:   _chatHistory,
+      model:       'deepseek-chat',
+      max_tokens:  1024,
+      temperature: 0.7,
+      messages,
     }),
   });
 
-  const data = await res.json();
-  const reply = data.content?.find(b => b.type === 'text')?.text || '(응답 없음)';
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.error || `HTTP ${res.status}`);
+  }
+
+  const data  = await res.json();
+  const reply = data.choices?.[0]?.message?.content || '(응답 없음)';
   _chatHistory.push({ role: 'assistant', content: reply });
   return reply;
 }
