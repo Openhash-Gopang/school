@@ -34,20 +34,37 @@ function renderDashboard() {
   const el = document.getElementById('page-dashboard');
   if (!el) return;
 
-  // KPI
-  document.getElementById('kpi-students').textContent  = '1,247';
-  document.getElementById('kpi-accuracy').textContent  = '98.2%';
+  document.getElementById('kpi-students').textContent     = '1,247';
+  document.getElementById('kpi-accuracy').textContent     = '98.2%';
   document.getElementById('kpi-satisfaction').textContent = '87.2%';
-  document.getElementById('kpi-utility').textContent   = '0.801';
+  document.getElementById('kpi-utility').textContent      = '0.801';
 
-  // 학제 타임라인
   renderTimeline();
-
-  // 7단계 스텝
   renderSevenSteps();
-
-  // AI 교수진
   renderProfGrid('prof-grid-dash', 5);
+  renderStageBars();
+}
+
+function renderStageBars() {
+  const el = document.getElementById('stage-bars');
+  if (!el) return;
+  const data = [
+    ['🌱 유치원',   48,  '#f59e0b', 312],
+    ['📚 초등학교', 312, '#22c55e', 312],
+    ['🔬 중학교',   286, '#3b82f6', 312],
+    ['💡 고등학교', 298, '#8b5cf6', 312],
+    ['🎓 대학교',   247, '#ef4444', 312],
+    ['🏆 대학원',   56,  '#3ecf8e', 312],
+  ];
+  el.innerHTML = data.map(([label, n, color, max]) => `
+    <div style="display:flex;align-items:center;gap:10px">
+      <span style="width:90px;font-size:11px;color:var(--sb-txt3);flex-shrink:0">${label}</span>
+      <div style="flex:1;height:5px;background:var(--sb-surface2);border-radius:3px">
+        <div style="width:${(n/max*100).toFixed(1)}%;height:100%;background:${color};border-radius:3px"></div>
+      </div>
+      <span style="font-size:11px;font-weight:600;color:var(--sb-txt);width:28px;text-align:right">${n}</span>
+    </div>
+  `).join('');
 }
 
 function renderTimeline() {

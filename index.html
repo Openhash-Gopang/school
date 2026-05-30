@@ -6,8 +6,8 @@
 <title>K-School — 고팡 AI 교육 시스템</title>
 <meta name="description" content="7단계 개인-사회 통합 최적화 AI 교육 시스템. 유치원부터 대학원까지 10명의 AI 교수가 1명의 학생을 전담합니다.">
 <link rel="icon" href="data:,">
-<link rel="preconnect" href="https://cdn.jsdelivr.net">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
 <link rel="stylesheet" href="css/school.css">
 </head>
 <body>
@@ -165,25 +165,8 @@
         </div>
         <div class="card-body">
           <div class="timeline" id="school-timeline" style="padding-top:8px"></div>
-          <div style="margin-top:20px" class="section-hd">학제별 학생 수</div>
-          <div style="display:flex;flex-direction:column;gap:8px">
-            ${[
-              ['🌱 유치원',   48, '#ff9800'],
-              ['📚 초등학교', 312, '#4caf50'],
-              ['🔬 중학교',   286, '#2196f3'],
-              ['💡 고등학교', 298, '#9c27b0'],
-              ['🎓 대학교',   247, '#f44336'],
-              ['🏆 대학원',   56,  '#3ecf8e'],
-            ].map(([label, n, color]) => `
-              <div style="display:flex;align-items:center;gap:10px">
-                <span style="width:90px;font-size:11px;color:var(--sb-txt2)">${label}</span>
-                <div style="flex:1;height:5px;background:var(--sb-surface);border-radius:3px">
-                  <div style="width:${n/312*100}%;height:100%;background:${color};border-radius:3px"></div>
-                </div>
-                <span style="font-size:11px;font-weight:700;color:var(--sb-txt);width:28px;text-align:right">${n}</span>
-              </div>
-            `).join('')}
-          </div>
+          <div style="margin-top:16px" class="section-hd">학제별 학생 수</div>
+          <div id="stage-bars" style="display:flex;flex-direction:column;gap:8px"></div>
         </div>
       </div>
 
