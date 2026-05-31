@@ -122,12 +122,12 @@ img{max-width:100%;height:auto}
 .btn-primary{
   padding:14px 28px;border-radius:10px;
   font-size:15px;font-weight:700;
-  background:var(--green);color:#fff;
+  background:#16a34a;color:#fff;
   display:inline-flex;align-items:center;gap:8px;
-  box-shadow:0 4px 14px rgba(62,207,142,.35);
+  box-shadow:0 4px 14px rgba(22,163,74,.3);
   transition:all .2s;
 }
-.btn-primary:hover{background:var(--green-dk);transform:translateY(-1px)}
+.btn-primary:hover{background:#15803d;transform:translateY(-1px)}
 .btn-secondary{
   padding:14px 28px;border-radius:10px;
   font-size:15px;font-weight:600;color:#374151;
@@ -179,7 +179,7 @@ section{padding:80px 24px}
   box-shadow:0 1px 3px rgba(0,0,0,.08);
 }
 .compare-table th{
-  padding:16px 20px;text-align:center;
+  padding:16px 20px;text-align:left;
   font-size:14px;font-weight:700;
 }
 .compare-table th:first-child{text-align:left}
@@ -195,9 +195,9 @@ section{padding:80px 24px}
   font-weight:500;color:#111827;
   background:#fafafa;
 }
-.compare-table td:nth-child(2){text-align:center;color:#94a3b8}
+.compare-table td:nth-child(2){text-align:left;color:#94a3b8}
 .compare-table td:nth-child(3){
-  text-align:center;color:var(--green-dk);
+  text-align:left;color:var(--green-dk);
   font-weight:600;background:var(--green-bg);
 }
 .compare-table tr:hover td{background:rgba(62,207,142,.04)}
@@ -483,6 +483,184 @@ section{padding:80px 24px}
   .report-flow{flex-direction:column;align-items:center}
   .report-arrow{transform:rotate(90deg)}
 }
+
+/* ══ 사이드바 v2 — Lucide 단색 SVG ══ */
+:root {
+  --sw:  48px;
+  --swe: 224px;
+  --th:  56px;
+}
+.sidebar {
+  position:fixed; top:var(--th); left:0; bottom:0;
+  width:var(--sw); background:#fff;
+  border-right:1px solid #e5e7eb; z-index:90;
+  display:flex; flex-direction:column;
+  overflow:hidden; overflow-y:auto;
+  transition:width .18s cubic-bezier(.4,0,.2,1);
+  scrollbar-width:none;
+}
+.sidebar::-webkit-scrollbar{display:none}
+.sidebar:hover{width:var(--swe);box-shadow:2px 0 16px rgba(0,0,0,.07)}
+
+.sb-sec{padding:5px 0}
+.sb-sec+.sb-sec{border-top:1px solid #f3f4f6;margin-top:2px}
+.sb-sec-last{margin-top:auto}
+
+.sb-lbl{
+  height:22px;padding:0 14px;
+  font-size:10px;font-weight:700;letter-spacing:.7px;
+  text-transform:uppercase;color:#9ca3af;
+  display:flex;align-items:center;
+  white-space:nowrap;overflow:hidden;
+  opacity:0;transition:opacity .12s;
+}
+.sidebar:hover .sb-lbl{opacity:1}
+
+.sn{
+  display:flex;align-items:center;gap:10px;
+  height:34px;padding:0 14px;width:100%;
+  border:none;background:none;
+  font-family:'Inter',sans-serif;
+  cursor:pointer;color:#6b7280;
+  white-space:nowrap;overflow:hidden;
+  transition:background .1s,color .1s;
+  text-decoration:none;text-align:left;
+}
+.sn:hover {background:#f9fafb;color:#111827}
+.sn.active{background:#f0fdf4;color:#15803d;font-weight:500}
+
+/* 아이콘 — 16px, stroke 1.5, 단색 */
+.si{
+  width:20px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+}
+.si svg{
+  width:15px;height:15px;
+  stroke:#9ca3af;stroke-width:1.5;
+  fill:none;stroke-linecap:round;stroke-linejoin:round;
+  transition:stroke .1s;display:block;
+}
+.sn:hover  .si svg{stroke:#374151}
+.sn.active .si svg{stroke:#16a34a}
+
+.sl{
+  font-size:12px;color:inherit;
+  opacity:0;transition:opacity .1s .03s;
+  white-space:nowrap;flex:1;
+}
+.sidebar:hover .sl{opacity:1}
+
+.sbadge{
+  font-size:10px;font-weight:600;
+  border-radius:8px;padding:1px 6px;
+  opacity:0;transition:opacity .1s .03s;flex-shrink:0;
+  background:#f3f4f6;color:#6b7280;
+}
+.sidebar:hover .sbadge{opacity:1}
+.sbadge.red  {background:#fee2e2;color:#dc2626}
+.sbadge.amber{background:#fef3c7;color:#d97706}
+.sbadge.blue {background:#dbeafe;color:#1d4ed8}
+.sbadge.green{background:#dcfce7;color:#15803d}
+
+/* 본문 여백 */
+.has-sidebar{
+  margin-left:var(--sw);
+  transition:margin-left .18s cubic-bezier(.4,0,.2,1);
+}
+body:has(.sidebar:hover) .has-sidebar{margin-left:var(--swe)}
+body:has(.sidebar:hover) .panel-overlay{left:var(--swe)}
+
+/* 패널 */
+.panel-overlay{
+  display:none;position:fixed;
+  top:var(--th);left:var(--sw);right:0;bottom:0;
+  background:#f8f9fa;z-index:80;overflow-y:auto;
+  animation:sbIn .18s ease;
+}
+.panel-overlay.open{display:block}
+@keyframes sbIn{from{opacity:0;transform:translateX(-6px)}to{opacity:1;transform:none}}
+.panel-hd{
+  display:flex;align-items:center;gap:10px;
+  padding:16px 24px;background:#fff;
+  border-bottom:1px solid #e5e7eb;
+  position:sticky;top:0;z-index:1;
+}
+.panel-icon{
+  width:30px;height:30px;border-radius:7px;
+  background:#f0fdf4;border:1px solid #bbf7d0;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.panel-icon svg{
+  width:15px;height:15px;
+  stroke:#16a34a;stroke-width:1.5;
+  fill:none;stroke-linecap:round;stroke-linejoin:round;
+}
+.panel-title{font-size:15px;font-weight:700;color:#111}
+.panel-close{
+  margin-left:auto;background:none;border:1px solid #e5e7eb;
+  border-radius:6px;padding:5px 11px;font-size:12px;
+  font-weight:500;color:#6b7280;cursor:pointer;
+}
+.panel-close:hover{background:#f3f4f6}
+.panel-body{padding:20px 24px;max-width:860px}
+
+/* KPI 카드 */
+.pkpi{
+  display:grid;gap:10px;margin-bottom:18px;
+}
+.pkpi.c2{grid-template-columns:1fr 1fr}
+.pkpi.c3{grid-template-columns:1fr 1fr 1fr}
+.pkpi.c4{grid-template-columns:1fr 1fr 1fr 1fr}
+.kpi-card{
+  background:#fff;border-radius:10px;
+  border:1px solid #e5e7eb;padding:14px 16px;
+}
+.kpi-card .kv{font-size:22px;font-weight:800;color:#111;line-height:1}
+.kpi-card .kt{font-size:11px;color:#6b7280;margin-top:4px}
+.kpi-card .kd{font-size:11px;margin-top:3px;font-weight:500}
+.kpi-card.green .kv{color:#16a34a}
+.kpi-card.blue  .kv{color:#2563eb}
+.kpi-card.purple.kv{color:#7c3aed}
+.kpi-card.red   .kv{color:#dc2626}
+
+/* 섹션 박스 */
+.pbox{
+  background:#fff;border-radius:10px;
+  border:1px solid #e5e7eb;padding:16px 18px;
+  margin-bottom:12px;
+}
+.pbox-title{font-size:13px;font-weight:600;color:#111;margin-bottom:10px}
+
+/* 역량 바 */
+.comp-bar{margin-bottom:10px}
+.comp-bar .cb-head{
+  display:flex;justify-content:space-between;
+  font-size:12px;color:#374151;margin-bottom:4px;
+}
+.cb-track{height:5px;background:#f3f4f6;border-radius:3px}
+.cb-fill{height:100%;border-radius:3px;background:#16a34a;transition:width .4s}
+
+/* 알림 항목 */
+.alert-item{
+  display:flex;align-items:flex-start;gap:10px;
+  padding:10px 0;border-bottom:1px solid #f3f4f6;
+}
+.alert-item:last-child{border-bottom:none}
+.alert-dot{
+  width:7px;height:7px;border-radius:50%;
+  background:#dc2626;flex-shrink:0;margin-top:5px;
+}
+.alert-dot.amber{background:#d97706}
+
+.nav{padding-left:calc(var(--sw) + 16px);transition:padding-left .18s}
+body:has(.sidebar:hover) .nav{padding-left:calc(var(--swe) + 16px)}
+
+@media(max-width:768px){
+  .sidebar{display:none}
+  .has-sidebar{margin-left:0!important}
+  .nav{padding-left:16px!important}
+  .panel-overlay{display:none!important}
+}
 </style>
 </head>
 <body>
@@ -493,14 +671,521 @@ section{padding:80px 24px}
     <div class="nav-logo-mark">K</div>
     K-School
   </div>
-  <a href="https://gopang.net" class="nav-back">
-    ← 고팡으로
-  </a>
   <div class="nav-right">
-    <button class="nav-btn-ghost" onclick="openDash()">대시보드</button>
-    <button class="nav-btn" onclick="openChat()">AI 교수와 대화</button>
+    <button class="nav-btn-ghost" id="btn-nav-dash">대시보드</button>
+    <button class="nav-btn" id="btn-nav-chat">AI 교수와 대화</button>
   </div>
 </nav>
+<!-- ══ 사이드바 v2 ══ -->
+<aside class="sidebar" id="sidebar">
+
+  <div class="sb-sec">
+    <button class="sn" id="sn-home"   onclick="closePanelAll()">
+      <span class="si"><svg viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span>
+      <span class="sl">홈</span>
+    </button>
+  </div>
+
+  <div class="sb-sec">
+    <div class="sb-lbl">학습자</div>
+    <button class="sn" id="sn-chat" onclick="openSidePanel('panel-chat')"  >
+      <span class="si"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>
+      <span class="sl">AI 교수와 대화</span>
+    </button>
+    <button class="sn" id="sn-curriculum" onclick="openSidePanel('panel-curriculum')"  >
+      <span class="si"><svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></span>
+      <span class="sl">커리큘럼</span>
+    </button>
+    <button class="sn" id="sn-progress" onclick="openSidePanel('panel-progress')"  >
+      <span class="si"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span>
+      <span class="sl">학습 진도</span>
+    </button>
+    <button class="sn" id="sn-calendar" onclick="openSidePanel('panel-calendar')"  >
+      <span class="si"><svg viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg></span>
+      <span class="sl">학습 캘린더</span>
+    </button>
+    <button class="sn" id="sn-mistakes" onclick="openSidePanel('panel-mistakes')"  >
+      <span class="si"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></span>
+      <span class="sl">오답 노트</span>
+    </button>
+    <button class="sn" id="sn-portfolio" onclick="openSidePanel('panel-portfolio')"  >
+      <span class="si"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg></span>
+      <span class="sl">포트폴리오</span>
+    </button>
+  </div>
+
+  <div class="sb-sec">
+    <div class="sb-lbl">분석</div>
+    <button class="sn" id="sn-aptitude" onclick="openSidePanel('panel-aptitude')"  >
+      <span class="si"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span>
+      <span class="sl">적성 분석</span>
+    </button>
+    <button class="sn" id="sn-career" onclick="openSidePanel('panel-career')"  >
+      <span class="si"><svg viewBox="0 0 24 24"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg></span>
+      <span class="sl">진로 예측</span>
+    </button>
+    <button class="sn" id="sn-stats" onclick="openSidePanel('panel-stats')"  >
+      <span class="si"><svg viewBox="0 0 24 24"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg></span>
+      <span class="sl">성과 통계</span>
+    </button>
+  </div>
+
+  <div class="sb-sec">
+    <div class="sb-lbl">관리자 · 교사</div>
+    <button class="sn" id="sn-students" onclick="openSidePanel('panel-students')"  >
+      <span class="si"><svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+      <span class="sl">학생 현황</span>
+    </button>
+    <button class="sn" id="sn-class" onclick="openSidePanel('panel-class')"  >
+      <span class="si"><svg viewBox="0 0 24 24"><line x1="12" x2="12" y1="20" y2="10"/><line x1="18" x2="18" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="16"/></svg></span>
+      <span class="sl">반별 통계</span>
+    </button>
+    <button class="sn" id="sn-alerts" onclick="openSidePanel('panel-alerts')"  >
+      <span class="si"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></span>
+      <span class="sl">개입 알림</span><span class="sbadge red">2</span>
+    </button>
+    <button class="sn" id="sn-reports" onclick="openSidePanel('panel-reports')"  >
+      <span class="si"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" x2="8" y1="13" y2="13"/><line x1="16" x2="8" y1="17" y2="17"/></svg></span>
+      <span class="sl">보고서 관리</span>
+    </button>
+    <button class="sn" id="sn-approve" onclick="openSidePanel('panel-approve')"  >
+      <span class="si"><svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span>
+      <span class="sl">커리큘럼 승인</span>
+    </button>
+    <button class="sn" id="sn-parents" onclick="openSidePanel('panel-parents')"  >
+      <span class="si"><svg viewBox="0 0 24 24"><line x1="22" x2="11" y1="2" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></span>
+      <span class="sl">학부모 소통</span>
+    </button>
+  </div>
+
+  <div class="sb-sec">
+    <div class="sb-lbl">기관</div>
+    <button class="sn" id="sn-institution" onclick="openSidePanel('panel-institution')"  >
+      <span class="si"><svg viewBox="0 0 24 24"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg></span>
+      <span class="sl">전체 통계</span>
+    </button>
+    <button class="sn" id="sn-bias" onclick="openSidePanel('panel-bias')"  >
+      <span class="si"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
+      <span class="sl">AI 편향 감사</span>
+    </button>
+    <button class="sn" id="sn-openhash" onclick="openSidePanel('panel-openhash')"  >
+      <span class="si"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.657 4.03 3 9 3s9-1.343 9-3V5"/><path d="M3 12c0 1.657 4.03 3 9 3s9-1.343 9-3"/></svg></span>
+      <span class="sl">OpenHash 감사</span>
+    </button>
+  </div>
+
+  <div class="sb-sec sb-sec-last">
+    <button class="sn" id="sn-settings" onclick="openSidePanel('panel-settings')"  >
+      <span class="si"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span>
+      <span class="sl">설정</span>
+    </button>
+    <a class="sn"   href="https://gopang.net" style="color:#16a34a;font-weight:500">
+      <span class="si"><svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg></span>
+      <span class="sl">고팡으로</span>
+    </a>
+  </div>
+</aside>
+
+<div class="panel-overlay" id="panel-chat">
+  <div class="panel-hd">
+    <div class="panel-icon"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+    <div class="panel-title">AI 교수와 대화</div>
+    <button class="panel-close" onclick="closePanelAll()">닫기</button>
+  </div>
+  <div class="panel-body">
+<div id="panel-chat-messages" style="min-height:300px;max-height:460px;overflow-y:auto;
+  display:flex;flex-direction:column;gap:10px;padding-bottom:14px;"></div>
+<div style="display:flex;gap:8px;margin-top:8px">
+  <input id="panel-chat-input" style="flex:1;padding:9px 13px;border:1px solid #e5e7eb;
+    border-radius:8px;font-size:13px;outline:none;font-family:'Inter',sans-serif;
+    transition:border-color .15s" onfocus="this.style.borderColor='#16a34a'"
+    onblur="this.style.borderColor='#e5e7eb'"
+    placeholder="질문을 입력하세요…"
+    onkeydown="if(event.key==='Enter')panelChatSend()">
+  <button onclick="panelChatSend()" style="padding:9px 16px;background:#16a34a;color:#fff;
+    border:none;border-radius:8px;font-weight:600;cursor:pointer;font-size:13px">전송</button>
+</div></div>
+</div>
+<div class="panel-overlay" id="panel-curriculum">
+  <div class="panel-hd">
+    <div class="panel-icon"><svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div>
+    <div class="panel-title">커리큘럼</div>
+    <button class="panel-close" onclick="closePanelAll()">닫기</button>
+  </div>
+  <div class="panel-body">
+<div class="pkpi c2">
+  <div class="kpi-card green"><div class="kv">—</div><div class="kt">수강 중 과목</div></div>
+  <div class="kpi-card blue"><div class="kv">166</div><div class="kt">선택 가능 교과목</div></div>
+</div>
+<div class="pbox">
+  <div class="pbox-title">현재 커리큘럼</div>
+  <div style="font-size:13px;color:#6b7280;padding:16px 0;text-align:center">
+    AI 교수와 대화를 시작하면 나의 수준과 목표에 맞는<br>커리큘럼이 실시간으로 설계됩니다.
+  </div>
+</div>
+<div class="pbox" style="background:#f0fdf4;border-color:#bbf7d0">
+  <div style="font-size:12px;color:#15803d;line-height:1.7">
+    UNESCO ISCED-F 2013 기준 · IB DP/MYP/PYP 연동 · 275개 OER 교재 · Bloom 6단계 목표 설정
+  </div>
+</div></div>
+</div>
+<div class="panel-overlay" id="panel-progress">
+  <div class="panel-hd">
+    <div class="panel-icon"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+    <div class="panel-title">학습 진도</div>
+    <button class="panel-close" onclick="closePanelAll()">닫기</button>
+  </div>
+  <div class="panel-body">
+<div class="pkpi c3">
+  <div class="kpi-card green"><div class="kv">—</div><div class="kt">총 세션</div></div>
+  <div class="kpi-card blue"><div class="kv">—h</div><div class="kt">학습 시간</div></div>
+  <div class="kpi-card"><div class="kv">—%</div><div class="kt">평균 이해도</div></div>
+</div>
+<div class="pbox">
+  <div class="pbox-title">과목별 진도</div>
+  <div style="font-size:13px;color:#9ca3af;padding:14px 0;text-align:center">학습을 시작하면 진도가 표시됩니다</div>
+</div></div>
+</div>
+<div class="panel-overlay" id="panel-calendar">
+  <div class="panel-hd">
+    <div class="panel-icon"><svg viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg></div>
+    <div class="panel-title">학습 캘린더</div>
+    <button class="panel-close" onclick="closePanelAll()">닫기</button>
+  </div>
+  <div class="panel-body">
+<div class="pbox">
+  <div class="pbox-title">이번 주 학습 계획</div>
+  <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:8px">
+    <div style="text-align:center;padding:8px 4px;border-radius:8px;background:#f9fafb;border:1px solid #e5e7eb"><div style="font-size:10px;color:#9ca3af;margin-bottom:3px">월</div><div style="font-size:9px;color:#6b7280">수학</div></div>
+    <div style="text-align:center;padding:8px 4px;border-radius:8px;background:#f9fafb;border:1px solid #e5e7eb"><div style="font-size:10px;color:#9ca3af;margin-bottom:3px">화</div><div style="font-size:9px;color:#6b7280">영어</div></div>
+    <div style="text-align:center;padding:8px 4px;border-radius:8px;background:#f0fdf4;border:1px solid #bbf7d0"><div style="font-size:10px;color:#15803d;margin-bottom:3px;font-weight:600">수</div><div style="font-size:9px;color:#15803d">오늘</div></div>
+    <div style="text-align:center;padding:8px 4px;border-radius:8px;background:#f9fafb;border:1px solid #e5e7eb"><div style="font-size:10px;color:#9ca3af;margin-bottom:3px">목</div><div style="font-size:9px;color:#6b7280">과학</div></div>
+    <div style="text-align:center;padding:8px 4px;border-radius:8px;background:#f9fafb;border:1px solid #e5e7eb"><div style="font-size:10px;color:#9ca3af;margin-bottom:3px">금</div><div style="font-size:9px;color:#6b7280">역사</div></div>
+    <div style="text-align:center;padding:8px 4px;border-radius:8px;background:#f9fafb;border:1px solid #e5e7eb"><div style="font-size:10px;color:#9ca3af;margin-bottom:3px">토</div></div>
+    <div style="text-align:center;padding:8px 4px;border-radius:8px;background:#f9fafb;border:1px solid #e5e7eb"><div style="font-size:10px;color:#9ca3af;margin-bottom:3px">일</div></div>
+  </div>
+</div>
+<div class="pbox" style="background:#f0fdf4;border-color:#bbf7d0">
+  <div style="font-size:12px;color:#15803d">AI 교수가 학습 목표에 맞춰 주간 계획을 자동 수립합니다.</div>
+</div></div>
+</div>
+<div class="panel-overlay" id="panel-mistakes">
+  <div class="panel-hd">
+    <div class="panel-icon"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></div>
+    <div class="panel-title">오답 노트</div>
+    <button class="panel-close" onclick="closePanelAll()">닫기</button>
+  </div>
+  <div class="panel-body">
+<div class="pkpi c2">
+  <div class="kpi-card red"><div class="kv">—</div><div class="kt">오답 항목</div></div>
+  <div class="kpi-card amber" style="--kv-c:#d97706"><div class="kv" style="color:#d97706">—</div><div class="kt">보완 필요 토픽</div></div>
+</div>
+<div class="pbox">
+  <div class="pbox-title">AI 오답 분석</div>
+  <div style="font-size:13px;color:#9ca3af;padding:14px 0;text-align:center">퀴즈를 풀면 AI 교수가 오답 패턴을 분석합니다</div>
+</div></div>
+</div>
+<div class="panel-overlay" id="panel-portfolio">
+  <div class="panel-hd">
+    <div class="panel-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg></div>
+    <div class="panel-title">포트폴리오</div>
+    <button class="panel-close" onclick="closePanelAll()">닫기</button>
+  </div>
+  <div class="panel-body">
+<div class="pkpi c2">
+  <div class="kpi-card green"><div class="kv">—</div><div class="kt">완료 과목</div></div>
+  <div class="kpi-card blue"><div class="kv">—</div><div class="kt">학습 산출물</div></div>
+</div>
+<div class="pbox">
+  <div class="pbox-title">학습 성과물</div>
+  <div style="font-size:13px;color:#9ca3af;padding:14px 0;text-align:center">
+    학습을 완료한 과목과 작성한 에세이, 프로젝트가 여기에 누적됩니다.<br>
+    OpenHash로 위변조 불가 보관됩니다.
+  </div>
+</div></div>
+</div>
+<div class="panel-overlay" id="panel-aptitude">
+  <div class="panel-hd">
+    <div class="panel-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div>
+    <div class="panel-title">적성 분석</div>
+    <button class="panel-close" onclick="closePanelAll()">닫기</button>
+  </div>
+  <div class="panel-body">
+<div class="pbox">
+  <div class="pbox-title">5차원 역량 분석</div>
+  <div class="comp-bar"><div class="cb-head"><span>인지(C) — 데이터처리·패턴인식</span><span style="color:#16a34a">50</span></div><div class="cb-track"><div class="cb-fill" style="width:50%"></div></div></div>
+  <div class="comp-bar"><div class="cb-head"><span>육체(P) — 정밀작업·감각활용</span><span style="color:#16a34a">50</span></div><div class="cb-track"><div class="cb-fill" style="width:50%"></div></div></div>
+  <div class="comp-bar"><div class="cb-head"><span>창의(Cr) — 아이디어·혁신해결</span><span style="color:#16a34a">50</span></div><div class="cb-track"><div class="cb-fill" style="width:50%"></div></div></div>
+  <div class="comp-bar"><div class="cb-head"><span>사회(S) — 대인관계·리더십</span><span style="color:#16a34a">50</span></div><div class="cb-track"><div class="cb-fill" style="width:50%"></div></div></div>
+  <div class="comp-bar"><div class="cb-head"><span>전문판단(J) — 윤리·안전결정</span><span style="color:#16a34a">50</span></div><div class="cb-track"><div class="cb-fill" style="width:50%"></div></div></div>
+</div>
+<div class="pkpi c2" style="margin-top:12px">
+  <div class="kpi-card"><div class="kv" style="color:#374151">50%</div><div class="kt">AI 대체 가능성</div><div class="kd" style="color:#16a34a">↓ 낮을수록 인간 고유 역할</div></div>
+  <div class="kpi-card"><div class="kv" style="color:#2563eb">—</div><div class="kt">행복도 예측</div><div class="kd" style="color:#9ca3af">대화 후 갱신</div></div>
+</div></div>
+</div>
+<div class="panel-overlay" id="panel-career">
+  <div class="panel-hd">
+    <div class="panel-icon"><svg viewBox="0 0 24 24"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg></div>
+    <div class="panel-title">진로 예측</div>
+    <button class="panel-close" onclick="closePanelAll()">닫기</button>
+  </div>
+  <div class="panel-body">
+<div class="pkpi c2">
+  <div class="kpi-card green"><div class="kv">—</div><div class="kt">진로 균형점</div></div>
+  <div class="kpi-card blue"><div class="kv">—</div><div class="kt">사회 효용 기여</div></div>
+</div>
+<div class="pbox">
+  <div class="pbox-title">50년 장기 예측</div>
+  <div style="font-size:13px;color:#9ca3af;padding:14px 0;text-align:center">
+    AI 교수와 대화하면 나의 적성·관심·역량을 분석해<br>50년 뒤에도 유망한 직업을 예측합니다.
+  </div>
+</div>
+<div class="pbox" style="background:#fff7ed;border-color:#fed7aa">
+  <div style="font-size:12px;color:#c2410c;line-height:1.7">
+    단기(1~5년) 85% · 중기(6~15년) 70% · 장기(16~50년) 50% 신뢰도로 예측
+  </div>
+</div></div>
+</div>
+<div class="panel-overlay" id="panel-stats">
+  <div class="panel-hd">
+    <div class="panel-icon"><svg viewBox="0 0 24 24"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg></div>
+    <div class="panel-title">성과 통계</div>
+    <button class="panel-close" onclick="closePanelAll()">닫기</button>
+  </div>
+  <div class="panel-body">
+<div class="pkpi c4">
+  <div class="kpi-card green"><div class="kv">—</div><div class="kt">총 세션</div></div>
+  <div class="kpi-card blue"><div class="kv">—h</div><div class="kt">학습 시간</div></div>
+  <div class="kpi-card"><div class="kv">—%</div><div class="kt">평균 이해도</div></div>
+  <div class="kpi-card"><div class="kv">—</div><div class="kt">완료 과목</div></div>
+</div>
+<div class="pbox">
+  <div class="pbox-title">Bloom 달성 분포</div>
+  <div style="display:flex;gap:6px;margin-top:8px">
+    <div style="flex:1;text-align:center;padding:10px 6px;background:#f9fafb;border-radius:8px;font-size:11px">기억<br><b>—</b></div>
+    <div style="flex:1;text-align:center;padding:10px 6px;background:#f9fafb;border-radius:8px;font-size:11px">이해<br><b>—</b></div>
+    <div style="flex:1;text-align:center;padding:10px 6px;background:#f9fafb;border-radius:8px;font-size:11px">적용<br><b>—</b></div>
+    <div style="flex:1;text-align:center;padding:10px 6px;background:#f9fafb;border-radius:8px;font-size:11px">분석<br><b>—</b></div>
+    <div style="flex:1;text-align:center;padding:10px 6px;background:#f9fafb;border-radius:8px;font-size:11px">평가<br><b>—</b></div>
+    <div style="flex:1;text-align:center;padding:10px 6px;background:#f9fafb;border-radius:8px;font-size:11px">창조<br><b>—</b></div>
+  </div>
+</div></div>
+</div>
+<div class="panel-overlay" id="panel-students">
+  <div class="panel-hd">
+    <div class="panel-icon"><svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+    <div class="panel-title">학생 현황</div>
+    <button class="panel-close" onclick="closePanelAll()">닫기</button>
+  </div>
+  <div class="panel-body">
+<div class="pkpi c4">
+  <div class="kpi-card green"><div class="kv">1,247</div><div class="kt">총 학생</div></div>
+  <div class="kpi-card blue"><div class="kv">94.2%</div><div class="kt">활성 학생</div></div>
+  <div class="kpi-card"><div class="kv">87.3%</div><div class="kt">평균 이해도</div></div>
+  <div class="kpi-card red"><div class="kv">12</div><div class="kt">개입 필요</div></div>
+</div>
+<div class="pbox">
+  <div class="pbox-title">학제별 분포</div>
+  <div class="comp-bar"><div class="cb-head"><span>유치원 (S1)</span><span>87명</span></div><div class="cb-track"><div class="cb-fill" style="width:7%"></div></div></div>
+  <div class="comp-bar"><div class="cb-head"><span>초등학교 (S2–S3)</span><span>312명</span></div><div class="cb-track"><div class="cb-fill" style="width:25%"></div></div></div>
+  <div class="comp-bar"><div class="cb-head"><span>중학교 (S4)</span><span>284명</span></div><div class="cb-track"><div class="cb-fill" style="width:23%"></div></div></div>
+  <div class="comp-bar"><div class="cb-head"><span>고등학교 (S5)</span><span>318명</span></div><div class="cb-track"><div class="cb-fill" style="width:25%"></div></div></div>
+  <div class="comp-bar"><div class="cb-head"><span>대학교 (S6)</span><span>196명</span></div><div class="cb-track"><div class="cb-fill" style="width:16%"></div></div></div>
+  <div class="comp-bar"><div class="cb-head"><span>대학원·평생 (S7)</span><span>50명</span></div><div class="cb-track"><div class="cb-fill" style="width:4%"></div></div></div>
+</div></div>
+</div>
+<div class="panel-overlay" id="panel-class">
+  <div class="panel-hd">
+    <div class="panel-icon"><svg viewBox="0 0 24 24"><line x1="12" x2="12" y1="20" y2="10"/><line x1="18" x2="18" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="16"/></svg></div>
+    <div class="panel-title">반별 통계</div>
+    <button class="panel-close" onclick="closePanelAll()">닫기</button>
+  </div>
+  <div class="panel-body">
+<div class="pkpi c3">
+  <div class="kpi-card green"><div class="kv">92.1%</div><div class="kt">전체 이해도</div></div>
+  <div class="kpi-card blue"><div class="kv">4.2h</div><div class="kt">주당 평균</div></div>
+  <div class="kpi-card"><div class="kv">98.7%</div><div class="kt">7단계 완료율</div></div>
+</div>
+<div class="pbox">
+  <div class="pbox-title">과목별 이해도 현황</div>
+  <div class="comp-bar"><div class="cb-head"><span>수학</span><span>88%</span></div><div class="cb-track"><div class="cb-fill" style="width:88%"></div></div></div>
+  <div class="comp-bar"><div class="cb-head"><span>과학</span><span>91%</span></div><div class="cb-track"><div class="cb-fill" style="width:91%"></div></div></div>
+  <div class="comp-bar"><div class="cb-head"><span>언어</span><span>94%</span></div><div class="cb-track"><div class="cb-fill" style="width:94%"></div></div></div>
+  <div class="comp-bar"><div class="cb-head"><span>사회</span><span>87%</span></div><div class="cb-track"><div class="cb-fill" style="width:87%"></div></div></div>
+</div></div>
+</div>
+<div class="panel-overlay" id="panel-alerts">
+  <div class="panel-hd">
+    <div class="panel-icon"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>
+    <div class="panel-title">개입 알림</div>
+    <button class="panel-close" onclick="closePanelAll()">닫기</button>
+  </div>
+  <div class="panel-body">
+<div class="pbox">
+  <div class="pbox-title">즉시 개입 필요 <span style="background:#fee2e2;color:#dc2626;border-radius:8px;padding:1px 7px;font-size:11px;margin-left:6px">2명</span></div>
+  <div class="alert-item">
+    <div class="alert-dot"></div>
+    <div>
+      <div style="font-size:13px;font-weight:600;color:#111">김○○ (고2)</div>
+      <div style="font-size:12px;color:#6b7280;margin-top:1px">이해도 34% — 3회 연속 하락 · 7일 미접속</div>
+    </div>
+  </div>
+  <div class="alert-item">
+    <div class="alert-dot"></div>
+    <div>
+      <div style="font-size:13px;font-weight:600;color:#111">이○○ (중3)</div>
+      <div style="font-size:12px;color:#6b7280;margin-top:1px">수학 오답률 82% — 보충 세션 미완료</div>
+    </div>
+  </div>
+</div>
+<div class="pbox">
+  <div class="pbox-title">관찰 필요 <span style="background:#fef3c7;color:#d97706;border-radius:8px;padding:1px 7px;font-size:11px;margin-left:6px">10명</span></div>
+  <div class="alert-item">
+    <div class="alert-dot amber"></div>
+    <div><div style="font-size:13px;font-weight:600;color:#111">박○○ (초5)</div><div style="font-size:12px;color:#6b7280;margin-top:1px">학습 속도 very_slow — 선수 과목 점검 권장</div></div>
+  </div>
+  <div class="alert-item">
+    <div class="alert-dot amber"></div>
+    <div><div style="font-size:13px;font-weight:600;color:#111">최○○ (고1)</div><div style="font-size:12px;color:#6b7280;margin-top:1px">자기평가 지속 5점 미만 — 학습 동기 점검 필요</div></div>
+  </div>
+</div></div>
+</div>
+<div class="panel-overlay" id="panel-reports">
+  <div class="panel-hd">
+    <div class="panel-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" x2="8" y1="13" y2="13"/><line x1="16" x2="8" y1="17" y2="17"/></svg></div>
+    <div class="panel-title">보고서 관리</div>
+    <button class="panel-close" onclick="closePanelAll()">닫기</button>
+  </div>
+  <div class="panel-body">
+<div class="pkpi c2">
+  <div class="kpi-card"><div class="kv">0</div><div class="kt">주간 보고서</div></div>
+  <div class="kpi-card"><div class="kv">0</div><div class="kt">월간 보고서</div></div>
+</div>
+<div class="pbox">
+  <div class="pbox-title">보고서 발송 현황</div>
+  <div style="font-size:13px;color:#9ca3af;padding:14px 0;text-align:center">
+    학습이 시작되면 주간·월간 보고서가 자동 생성됩니다.<br>
+    보호자 · 담당 교사 · 고팡 PDV에 자동 전송됩니다.
+  </div>
+</div>
+<div class="pbox" style="background:#f0fdf4;border-color:#bbf7d0">
+  <div style="font-size:12px;color:#15803d;line-height:1.7">
+    PDV 6하원칙 기록 · SHA-256 무결성 보장 · 학습자 동의 후 전송
+  </div>
+</div></div>
+</div>
+<div class="panel-overlay" id="panel-approve">
+  <div class="panel-hd">
+    <div class="panel-icon"><svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
+    <div class="panel-title">커리큘럼 승인</div>
+    <button class="panel-close" onclick="closePanelAll()">닫기</button>
+  </div>
+  <div class="panel-body">
+<div class="pbox">
+  <div class="pbox-title">승인 대기 커리큘럼</div>
+  <div style="font-size:13px;color:#9ca3af;padding:14px 0;text-align:center">
+    AI 교수가 제안한 커리큘럼 변경 사항을 검토합니다.<br>현재 대기 항목이 없습니다.
+  </div>
+</div>
+<div class="pbox" style="background:#eff6ff;border-color:#bfdbfe">
+  <div style="font-size:12px;color:#1d4ed8;line-height:1.7">
+    AI 교수가 학생 진도·이해도를 반영해 커리큘럼 조정을 제안하면 교사가 검토 후 승인합니다.
+  </div>
+</div></div>
+</div>
+<div class="panel-overlay" id="panel-parents">
+  <div class="panel-hd">
+    <div class="panel-icon"><svg viewBox="0 0 24 24"><line x1="22" x2="11" y1="2" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></div>
+    <div class="panel-title">학부모 소통</div>
+    <button class="panel-close" onclick="closePanelAll()">닫기</button>
+  </div>
+  <div class="panel-body">
+<div class="pbox">
+  <div class="pbox-title">보고서 수신자 관리</div>
+  <div style="font-size:13px;color:#9ca3af;padding:14px 0;text-align:center">
+    학습자 동의 후 보호자 이메일·고팡 계정으로 보고서를 전송합니다.
+  </div>
+</div></div>
+</div>
+<div class="panel-overlay" id="panel-institution">
+  <div class="panel-hd">
+    <div class="panel-icon"><svg viewBox="0 0 24 24"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg></div>
+    <div class="panel-title">전체 통계</div>
+    <button class="panel-close" onclick="closePanelAll()">닫기</button>
+  </div>
+  <div class="panel-body">
+<div class="pkpi c4">
+  <div class="kpi-card green"><div class="kv">1,247</div><div class="kt">전체 학습자</div></div>
+  <div class="kpi-card blue"><div class="kv">89.4%</div><div class="kt">평균 이해도</div></div>
+  <div class="kpi-card"><div class="kv">4.8h</div><div class="kt">주당 평균</div></div>
+  <div class="kpi-card"><div class="kv">0.801</div><div class="kt">통합 효용</div></div>
+</div>
+<div class="pbox">
+  <div class="pbox-title">코호트 분석</div>
+  <div class="comp-bar"><div class="cb-head"><span>동아시아권</span><span>92%</span></div><div class="cb-track"><div class="cb-fill" style="width:92%"></div></div></div>
+  <div class="comp-bar"><div class="cb-head"><span>서구권</span><span>88%</span></div><div class="cb-track"><div class="cb-fill" style="width:88%"></div></div></div>
+  <div class="comp-bar"><div class="cb-head"><span>라틴아메리카</span><span>85%</span></div><div class="cb-track"><div class="cb-fill" style="width:85%"></div></div></div>
+  <div class="comp-bar"><div class="cb-head"><span>아프리카</span><span>81%</span></div><div class="cb-track"><div class="cb-fill" style="width:81%"></div></div></div>
+</div></div>
+</div>
+<div class="panel-overlay" id="panel-bias">
+  <div class="panel-hd">
+    <div class="panel-icon"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+    <div class="panel-title">AI 편향 감사</div>
+    <button class="panel-close" onclick="closePanelAll()">닫기</button>
+  </div>
+  <div class="panel-body">
+<div class="pbox">
+  <div class="pbox-title">편향 보정 감사 — 실시간</div>
+  <div class="comp-bar"><div class="cb-head"><span>성별 편향</span><span style="color:#16a34a">3.2% ✓ (허용 5.5%)</span></div><div class="cb-track"><div class="cb-fill" style="width:58%"></div></div></div>
+  <div class="comp-bar"><div class="cb-head"><span>인종·국적 편향</span><span style="color:#16a34a">4.1% ✓ (허용 9.8%)</span></div><div class="cb-track"><div class="cb-fill" style="width:42%"></div></div></div>
+  <div class="comp-bar"><div class="cb-head"><span>연령 편향</span><span style="color:#16a34a">2.8% ✓ (허용 9.7%)</span></div><div class="cb-track"><div class="cb-fill" style="width:29%"></div></div></div>
+  <div class="comp-bar"><div class="cb-head"><span>소득 편향</span><span style="color:#16a34a">3.5% ✓ (허용 8.7%)</span></div><div class="cb-track"><div class="cb-fill" style="width:40%"></div></div></div>
+</div>
+<div class="pbox" style="background:#f0fdf4;border-color:#bbf7d0">
+  <div style="font-size:12px;color:#15803d">모든 지표 허용 범위 이내 — 편향 없이 공정하게 운영 중</div>
+</div></div>
+</div>
+<div class="panel-overlay" id="panel-openhash">
+  <div class="panel-hd">
+    <div class="panel-icon"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.657 4.03 3 9 3s9-1.343 9-3V5"/><path d="M3 12c0 1.657 4.03 3 9 3s9-1.343 9-3"/></svg></div>
+    <div class="panel-title">OpenHash 감사</div>
+    <button class="panel-close" onclick="closePanelAll()">닫기</button>
+  </div>
+  <div class="panel-body">
+<div class="pkpi c2">
+  <div class="kpi-card green"><div class="kv">100%</div><div class="kt">무결성 검증</div></div>
+  <div class="kpi-card blue"><div class="kv">0건</div><div class="kt">위변조 감지</div></div>
+</div>
+<div class="pbox">
+  <div class="pbox-title">OpenHash PDV 감사 로그</div>
+  <div style="font-size:13px;color:#9ca3af;padding:14px 0;text-align:center">
+    모든 학습 기록은 OpenHash 분산 원장에 SHA-256으로 기록됩니다.<br>
+    재식별 공격 저항률 100% · 위변조 수학적 불가
+  </div>
+</div></div>
+</div>
+<div class="panel-overlay" id="panel-settings">
+  <div class="panel-hd">
+    <div class="panel-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div>
+    <div class="panel-title">설정</div>
+    <button class="panel-close" onclick="closePanelAll()">닫기</button>
+  </div>
+  <div class="panel-body">
+<div style="display:flex;flex-direction:column;gap:8px">
+  <div class="pbox" style="display:flex;justify-content:space-between;align-items:center">
+    <div><div style="font-size:13px;font-weight:600">고팡 인증</div>
+    <div style="font-size:12px;color:#6b7280" id="settings-auth-status">확인 중…</div></div>
+    <a href="https://gopang.net" style="padding:6px 14px;background:#16a34a;color:#fff;border-radius:7px;font-size:12px;font-weight:600;text-decoration:none">고팡 앱</a>
+  </div>
+  <div class="pbox"><div style="font-size:13px;font-weight:600;margin-bottom:4px">보고서 수신자</div><div style="font-size:12px;color:#6b7280">보호자 · 교사 · 고팡 PDV (자동 전송)</div></div>
+  <div class="pbox"><div style="font-size:13px;font-weight:600;margin-bottom:4px">학습 언어</div><div style="font-size:12px;color:#6b7280">한국어 (26개 언어 지원)</div></div>
+  <div class="pbox"><div style="font-size:13px;font-weight:600;margin-bottom:4px">데이터 보안</div><div style="font-size:12px;color:#6b7280">OpenHash 암호화 · GDPR 준수 · 본인만 접근</div></div>
+</div></div>
+</div>
+
+<div class="has-sidebar" id="main-content">
 
 <!-- ══ 히어로 ══ -->
 <section class="hero">
@@ -514,10 +1199,10 @@ section{padding:80px 24px}
     완전 맞춤형 교육 시스템
   </p>
   <div class="hero-cta">
-    <button class="btn-primary" onclick="openChat()">
-      ✦ AI 교수와 무료로 시작하기
+    <button class="btn-primary" id="btn-hero-chat">
+      AI 교수와 무료로 시작하기 →
     </button>
-    <button class="btn-secondary" onclick="scrollToSection('compare')">
+    <button class="btn-secondary" id="btn-hero-compare">
       기존 학교와 비교하기
     </button>
   </div>
@@ -926,7 +1611,7 @@ section{padding:80px 24px}
     <h2>지금 바로 시작하세요</h2>
     <p>고팡 계정이 있으면 바로 AI 교수와 대화할 수 있습니다.<br>가입도, 설치도 필요 없습니다.</p>
     <div class="hero-cta">
-      <button class="btn-primary" onclick="openChat()" style="font-size:16px;padding:16px 32px">
+      <button class="btn-primary" id="btn-cta-chat" style="font-size:16px;padding:16px 32px">
         ✦ AI 교수와 대화 시작
       </button>
       <a href="https://gopang.net" class="btn-secondary" style="font-size:16px;padding:16px 32px;background:rgba(255,255,255,.1);color:#fff;border-color:rgba(255,255,255,.2)">
@@ -946,6 +1631,7 @@ section{padding:80px 24px}
     · <a href="https://gopang.net" style="color:var(--green)">gopang.net</a>
   </div>
 </footer>
+</div><!-- /has-sidebar -->
 
 <!-- ══ 모바일 하단 네비 ══ -->
 <nav class="bottom-nav">
@@ -954,11 +1640,11 @@ section{padding:80px 24px}
       <svg viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
       홈
     </button>
-    <button class="bn-item" onclick="openChat()">
+    <button class="bn-item" id="btn-bn-chat">
       <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
       AI 교수
     </button>
-    <button class="bn-item" onclick="openDash()">
+    <button class="bn-item" id="btn-bn-dash">
       <svg viewBox="0 0 24 24"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
       대시보드
     </button>
@@ -1063,15 +1749,15 @@ let _chatHistory = [];
 let _systemPromptText = null;
 
 function openChat() {
-  document.getElementById('chat-overlay').classList.add('open');
-  document.getElementById('chat-input').focus();
-  // 인증 배지 갱신
-  if (_user?.level) {
-    document.getElementById('chat-auth-badge').textContent = _user.level + ' 인증';
-  }
+  // desktop: 사이드바 panel-chat 패널 열기
+  openSidePanel('panel-chat');
+  setTimeout(() => {
+    const inp = document.getElementById('panel-chat-input');
+    if (inp) inp.focus();
+  }, 200);
 }
 function closeChat() {
-  document.getElementById('chat-overlay').classList.remove('open');
+  closePanelAll();
 }
 
 async function loadSystemPrompt() {
@@ -1174,6 +1860,7 @@ function initGwpContext() {
 })();
 
 // 채팅 열 때 인증 확인
+// openChat 인증 래퍼 — desktop은 panel-chat 패널 사용
 const _origOpenChat = openChat;
 window.openChat = async function() {
   if (!_user) {
@@ -1184,6 +1871,117 @@ window.openChat = async function() {
   }
   _origOpenChat();
 };
+
+
+// ── 사이드바 패널 v2 ──────────────────────────────────────
+const _panelMenuMap = {
+  'panel-chat':        'sn-chat',
+  'panel-curriculum':  'sn-curriculum',
+  'panel-progress':    'sn-progress',
+  'panel-calendar':    'sn-calendar',
+  'panel-mistakes':    'sn-mistakes',
+  'panel-portfolio':   'sn-portfolio',
+  'panel-aptitude':    'sn-aptitude',
+  'panel-career':      'sn-career',
+  'panel-stats':       'sn-stats',
+  'panel-students':    'sn-students',
+  'panel-class':       'sn-class',
+  'panel-alerts':      'sn-alerts',
+  'panel-reports':     'sn-reports',
+  'panel-approve':     'sn-approve',
+  'panel-parents':     'sn-parents',
+  'panel-institution': 'sn-institution',
+  'panel-bias':        'sn-bias',
+  'panel-openhash':    'sn-openhash',
+  'panel-settings':    'sn-settings',
+};
+function openSidePanel(id) {
+  closePanelAll();
+  const el = document.getElementById(id);
+  if (el) el.classList.add('open');
+  document.querySelectorAll('.sn').forEach(n => n.classList.remove('active'));
+  const sid = _panelMenuMap[id];
+  if (sid) document.getElementById(sid)?.classList.add('active');
+}
+function closePanelAll() {
+  document.querySelectorAll('.panel-overlay').forEach(el => el.classList.remove('open'));
+  document.querySelectorAll('.sn').forEach(n => n.classList.remove('active'));
+  document.getElementById('sn-home')?.classList.add('active');
+}
+
+// 패널 채팅 (사이드바 전용 간단 버전)
+let _panelHistory = [];
+async function panelChatSend() {
+  const inp  = document.getElementById('panel-chat-input');
+  const msgs = document.getElementById('panel-chat-messages');
+  const text = inp.value.trim();
+  if (!text) return;
+  inp.value = '';
+
+  // 사용자 버블
+  const userEl = document.createElement('div');
+  userEl.style.cssText = 'align-self:flex-end;max-width:80%;background:#16a34a;color:#fff;border-radius:12px 12px 3px 12px;padding:9px 13px;font-size:13px;line-height:1.5';
+  userEl.textContent = text;
+  msgs.appendChild(userEl);
+  msgs.scrollTop = msgs.scrollHeight;
+
+  _panelHistory.push({ role: 'user', content: text });
+
+  // 로딩
+  const loadEl = document.createElement('div');
+  loadEl.style.cssText = 'align-self:flex-start;background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:9px 13px;font-size:13px;color:#9ca3af';
+  loadEl.textContent = 'AI 교수 답변 중…';
+  msgs.appendChild(loadEl);
+  msgs.scrollTop = msgs.scrollHeight;
+
+  try {
+    const res = await fetch('https://gopang-proxy.tensor-city.workers.dev/deepseek', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'deepseek-chat', max_tokens: 600, temperature: 0.7,
+        messages: [
+          { role: 'system', content: 'You are K-School AI Professor. Answer concisely in Korean.' },
+          ..._panelHistory,
+        ],
+      }),
+    });
+    const data  = await res.json();
+    const reply = data.choices?.[0]?.message?.content || '(응답 없음)';
+    _panelHistory.push({ role: 'assistant', content: reply });
+    loadEl.style.color = '#111';
+    loadEl.innerHTML = reply.replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<b>$1</b>');
+  } catch(e) {
+    loadEl.textContent = '오류: ' + e.message;
+  }
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+// 설정 패널 인증 상태 갱신
+function updateSettingsAuth() {
+  const el = document.getElementById('settings-auth-status');
+  if (el && typeof _user !== 'undefined' && _user) {
+    el.textContent = `${_user.level} 인증 완료 · ${(_user.ipv6||'').slice(0,20)}…`;
+  }
+}
+
+// ── 버튼 이벤트 바인딩 (DOMContentLoaded 이후) ──────────
+document.addEventListener('DOMContentLoaded', () => {
+  const bind = (id, fn) => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('click', fn);
+  };
+  bind('btn-hero-chat',    () => openChat());
+  bind('btn-nav-dash',     () => { openSidePanel('panel-progress'); });
+  // 설정 패널 오픈 시 인증 상태 갱신
+  document.getElementById('sn-home')?.classList.add('active');
+  bind('btn-hero-compare', () => scrollToSection('compare'));
+  bind('btn-nav-dash',     () => openDash());
+  bind('btn-nav-chat',     () => openChat());
+  bind('btn-cta-chat',     () => openChat());
+  bind('btn-bn-chat',      () => openChat());
+  bind('btn-bn-dash',      () => openDash());
+});
 </script>
 </body>
 </html>
