@@ -24,6 +24,7 @@ function navigate(page) {
     career:      renderCareer,
     analytics:   renderAnalytics,
     privacy:     renderPrivacy,
+    reports:     () => {},   // index.html의 renderReportsPage()가 처리
   };
   if (renders[page]) renders[page]();
 }

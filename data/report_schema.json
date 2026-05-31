@@ -1,0 +1,228 @@
+{
+  "_meta": {
+    "title": "K-School Report Schema",
+    "version": "1.0.0",
+    "released": "2026-05-31",
+    "description": "AI 교수가 생성하는 학습 보고서의 표준 데이터 구조. 주간·월간 두 종류. 수취자: 부모/보호자, 사람 교사, 관리자, gopang PDV.",
+    "pdv_endpoint": "https://gopang-proxy.tensor-city.workers.dev/pdv/report",
+    "svc_id": "school"
+  },
+
+  "report_types": {
+    "weekly": {
+      "id": "school_weekly_progress",
+      "label": "주간 학습 보고서",
+      "trigger": "매주 일요일 23:59 자동 생성",
+      "period_days": 7,
+      "recipients": ["parent", "guardian", "teacher", "gopang_pdv"],
+      "delivery": ["email", "gopang_notification", "pdv_record"]
+    },
+    "monthly": {
+      "id": "school_monthly_analysis",
+      "label": "월간 성장 분석 보고서",
+      "trigger": "매월 말일 자동 생성",
+      "period_days": 30,
+      "recipients": ["parent", "guardian", "teacher", "admin", "gopang_pdv"],
+      "delivery": ["email", "gopang_notification", "pdv_record", "dashboard"]
+    }
+  },
+
+  "weekly_report_schema": {
+    "report_id":       "string (UUID)",
+    "report_type":     "school_weekly_progress",
+    "svc":             "school",
+    "version":         "1.0",
+
+    "period": {
+      "start":         "date (ISO 8601)",
+      "end":           "date (ISO 8601)",
+      "week_no":       "integer (연간 주차)"
+    },
+
+    "student": {
+      "user_guid":     "string (IPv6 기반 식별자)",
+      "display_name":  "string",
+      "stage":         "S1–S7",
+      "age":           "integer"
+    },
+
+    "summary": {
+      "headline":      "string (1문장 요약, AI 교수 작성)",
+      "total_sessions":"integer (이번 주 세션 수)",
+      "total_minutes": "integer (총 학습 시간, 분)",
+      "subjects_active":"integer (활성 과목 수)",
+      "overall_comprehension": "number 0–100 (평균 이해도 %)",
+      "self_rating_avg":"number 0–10 (평균 자기평가)"
+    },
+
+    "subjects": [
+      {
+        "subject_id":      "string",
+        "subject_name_ko": "string",
+        "sessions_done":   "integer",
+        "topics_covered":  ["string"],
+        "comprehension":   "number 0–100",
+        "bloom_level":     "integer 1–6",
+        "progress_pct":    "number 0–100",
+        "pace":            "fast | normal | slow | very_slow",
+        "ai_comment":      "string (AI 교수 과목별 코멘트, 2–3문장)"
+      }
+    ],
+
+    "competency_snapshot": {
+      "_note": "5차원 역량 이번 주 변화",
+      "c_score":  { "current": "number", "delta": "number" },
+      "p_score":  { "current": "number", "delta": "number" },
+      "cr_score": { "current": "number", "delta": "number" },
+      "s_score":  { "current": "number", "delta": "number" },
+      "j_score":  { "current": "number", "delta": "number" },
+      "ai_replaceability": { "current": "number", "delta": "number" }
+    },
+
+    "strengths":     ["string (잘한 점 2–3가지)"],
+    "improvements":  ["string (개선 필요 2–3가지)"],
+    "next_week_plan":"string (다음 주 학습 계획, AI 교수 작성)",
+
+    "ai_professor_note": "string (AI 교수의 종합 소견, 3–5문장)",
+
+    "pdv_6w": {
+      "_note": "고팡 PDV 6하원칙 매핑",
+      "who":   "학생 user_guid",
+      "when":  "보고서 생성 시각 (ISO 8601)",
+      "where": "school.gopang.net",
+      "what":  "주간 학습 진도 요약",
+      "how":   "AI 교수 튜터링 + OER 교재 + 세션 기반 학습",
+      "why":   "개인 역량 발달 + 진로 균형점 달성 + 사회 효용 기여"
+    },
+
+    "metadata": {
+      "generated_at":  "timestamptz",
+      "generated_by":  "K-School AI Professor v2.0",
+      "pdv_entry_id":  "string (gopang PDV ACK ID)",
+      "sent_to":       ["parent", "teacher", "gopang_pdv"],
+      "report_hash":   "string (SHA-256, 중복 방지)"
+    }
+  },
+
+  "monthly_report_schema": {
+    "report_id":    "string (UUID)",
+    "report_type":  "school_monthly_analysis",
+    "svc":          "school",
+    "version":      "1.0",
+
+    "period": {
+      "year":       "integer",
+      "month":      "integer",
+      "start":      "date",
+      "end":        "date"
+    },
+
+    "student": {
+      "user_guid":      "string",
+      "display_name":   "string",
+      "stage":          "S1–S7",
+      "age":            "integer",
+      "cultural_region":"string",
+      "native_language":"string"
+    },
+
+    "executive_summary": {
+      "headline":         "string (1문장 핵심 요약)",
+      "total_sessions":   "integer",
+      "total_hours":      "number (소수점 1자리)",
+      "subjects_active":  "integer",
+      "subjects_completed":"integer",
+      "overall_progress": "number 0–100 (전 과목 평균 진도 %)",
+      "monthly_growth":   "number (전월 대비 역량 성장 %)"
+    },
+
+    "subject_details": [
+      {
+        "subject_id":       "string",
+        "subject_name_ko":  "string",
+        "subject_type":     "HL | SL | core | ...",
+        "oer_primary":      "string",
+        "sessions_done":    "integer",
+        "total_hours":      "number",
+        "progress_pct":     "number 0–100",
+        "current_block":    "string (현재 토픽 블록)",
+        "avg_comprehension":"number 0–100",
+        "avg_self_rating":  "number 0–10",
+        "bloom_achieved":   "integer 1–6",
+        "assessments": [
+          {
+            "type":   "string",
+            "score":  "number",
+            "date":   "date",
+            "wrong_topics": ["string"]
+          }
+        ],
+        "ai_comment": "string (과목별 월간 평가, 3–5문장)"
+      }
+    ],
+
+    "competency_analysis": {
+      "_note": "5차원 역량 월간 분석 (특허 §실시예 6)",
+      "c_score":  { "start": "number", "end": "number", "delta": "number", "trend": "up|stable|down" },
+      "p_score":  { "start": "number", "end": "number", "delta": "number", "trend": "up|stable|down" },
+      "cr_score": { "start": "number", "end": "number", "delta": "number", "trend": "up|stable|down" },
+      "s_score":  { "start": "number", "end": "number", "delta": "number", "trend": "up|stable|down" },
+      "j_score":  { "start": "number", "end": "number", "delta": "number", "trend": "up|stable|down" },
+      "ai_replaceability": {
+        "start": "number", "end": "number", "delta": "number",
+        "interpretation": "string (AI 교수 해석)"
+      }
+    },
+
+    "happiness_analysis": {
+      "_note": "행복도 예측 공식 (특허 §실시예 3)",
+      "happiness_score":    "number 0–1",
+      "aptitude_match":     "number 0–1 (적성일치도)",
+      "interest_level":     "number 0–1 (관심도)",
+      "growth_potential":   "number 0–1 (성장가능성)",
+      "social_recognition": "number 0–1 (사회인정도)",
+      "interpretation":     "string"
+    },
+
+    "career_alignment": {
+      "current_balance":    "string (현재 진로 균형점)",
+      "utility_score":      "number 0–1",
+      "ai_replaceability":  "number",
+      "50yr_prediction":    "string (50년 장기 예측 요약)",
+      "social_impact_pct":  "number (사회 효용 기여도 %)",
+      "recommendation":     "string (AI 교수 진로 조언)"
+    },
+
+    "growth_highlights":  ["string (이달의 성장 포인트 3–5가지)"],
+    "areas_to_improve":   ["string (집중 보완 영역 2–3가지)"],
+    "next_month_goals":   ["string (다음 달 목표 3가지)"],
+
+    "ai_professor_letter": "string (AI 교수의 학부모·보호자 편지, 5–8문장)",
+
+    "bias_check": {
+      "_note": "편향 보정 감사 로그 (특허 §실시예 9)",
+      "gender_bias_pct":   "number",
+      "race_bias_pct":     "number",
+      "age_bias_pct":      "number",
+      "income_bias_pct":   "number",
+      "all_within_limit":  "boolean"
+    },
+
+    "pdv_6w": {
+      "who":   "학생 user_guid",
+      "when":  "보고서 생성 시각",
+      "where": "school.gopang.net",
+      "what":  "월간 학습 성장 분석",
+      "how":   "AI 교수 튜터링 + 5차원 역량 평가 + Bloom 성취도 분석",
+      "why":   "개인 성장 추적 + 진로 균형점 최적화 + 사회 효용 기여 + 부모·교사 소통"
+    },
+
+    "metadata": {
+      "generated_at":  "timestamptz",
+      "generated_by":  "K-School AI Professor v2.0",
+      "pdv_entry_id":  "string",
+      "sent_to":       ["parent", "guardian", "teacher", "admin", "gopang_pdv"],
+      "report_hash":   "string"
+    }
+  }
+}

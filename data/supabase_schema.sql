@@ -434,3 +434,45 @@ GROUP BY sp.user_guid, sp.display_name, sp.stage, sp.age,
          sp.utility_score, sp.happiness_score;
 
 COMMENT ON VIEW public.school_student_dashboard IS 'K-School 학생 현황 종합 뷰 — AI 교수용';
+
+
+-- ───────────────────────────────────────────────────────────────
+-- 7. school_reports
+--    생성된 보고서 원본 저장 (주간·월간)
+--    report_data: JSON 전체 보고서
+-- ───────────────────────────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS public.school_reports (
+  id              bigserial       PRIMARY KEY,
+
+  user_guid       text            NOT NULL REFERENCES public.users(guid) ON DELETE CASCADE,
+  report_type     text            NOT NULL
+                  CHECK (report_type IN ('school_weekly_progress','school_monthly_analysis')),
+
+  -- 기간
+  period_start    date            NOT NULL,
+  period_end      date            NOT NULL,
+
+  -- 보고서 원본 (JSON 전체)
+  report_data     jsonb           NOT NULL,
+
+  -- 전송 정보
+  pdv_entry_id    text,           -- gopang PDV ACK ID
+  report_hash     text,           -- SHA-256 (중복 방지)
+  sent_to         text[],         -- ['parent','teacher','gopang_pdv']
+
+  generated_at    timestamptz     NOT NULL DEFAULT now(),
+
+  -- 동일 기간 중복 방지
+  UNIQUE (user_guid, report_type, period_start)
+);
+
+CREATE INDEX idx_school_reports_user    ON public.school_reports (user_guid);
+CREATE INDEX idx_school_reports_created ON public.school_reports (generated_at DESC);
+
+ALTER TABLE public.school_reports ENABLE ROW LEVEL SECURITY;
+CREATE POLICY school_reports_self ON public.school_reports
+  USING (true) WITH CHECK (true);
+
+COMMENT ON TABLE  public.school_reports IS 'K-School 주간·월간 보고서 원본 저장';
+COMMENT ON COLUMN public.school_reports.pdv_entry_id IS 'gopang PDV ACK ID — 전송 확인용';
+COMMENT ON COLUMN public.school_reports.report_hash  IS 'SHA-256 해시 — 중복 전송 방지';

@@ -129,6 +129,14 @@ document.addEventListener('DOMContentLoaded', () => {
     </div>
   </div>
 
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">보고서</div>
+    <div class="sb-nav-item" data-page="reports" onclick="navigate('reports')">
+      <div class="sb-nav-icon" data-icon="list"></div>
+      <div class="sb-nav-label">학습 보고서</div>
+    </div>
+  </div>
+
   <div class="sidebar-section" style="margin-top:auto">
     <div class="sb-nav-item" onclick="showAuthPanel()">
       <div class="sb-nav-icon" data-icon="key"></div>
@@ -452,6 +460,68 @@ document.addEventListener('DOMContentLoaded', () => {
     <div id="privacy-panel"></div>
   </div>
 
+  <!-- ── 보고서 ── -->
+  <div id="page-reports" class="page">
+    <div class="page-header">
+      <div>
+        <div class="page-title page-title-wrap">
+          <span data-icon="list" data-icon-class="icon-lg"></span> 학습 보고서
+        </div>
+        <div class="page-sub">주간·월간 AI 교수 보고서 · 부모·교사·gopang PDV 자동 전송</div>
+      </div>
+      <div class="page-actions">
+        <button class="btn btn-primary" onclick="triggerWeeklyReport()">
+          <span data-icon="zap" data-icon-class="icon-sm"></span> 주간 보고서 생성
+        </button>
+        <button class="btn" onclick="triggerMonthlyReport()">월간 보고서 생성</button>
+      </div>
+    </div>
+
+    <!-- 보고서 현황 카드 -->
+    <div class="grid grid-3" style="gap:12px;margin-bottom:16px">
+      <div class="kpi">
+        <div class="kpi-label">이번 주 학습</div>
+        <div class="kpi-value" id="rpt-sessions">—</div>
+        <div class="kpi-unit">세션</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">이번 달 학습</div>
+        <div class="kpi-value" id="rpt-hours">—</div>
+        <div class="kpi-unit">시간</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">gopang PDV 전송</div>
+        <div class="kpi-value" id="rpt-pdv">—</div>
+        <div class="kpi-unit">건</div>
+      </div>
+    </div>
+
+    <!-- 보고서 목록 -->
+    <div class="sb-table-wrap">
+      <div class="sb-table-toolbar">
+        <div class="sb-table-search">
+          <span data-icon="list" data-icon-class="icon-sm"></span>
+          <span style="color:var(--sb-txt4)">보고서 목록</span>
+        </div>
+        <select class="sb-select" id="rpt-filter">
+          <option value="">전체</option>
+          <option value="school_weekly_progress">주간</option>
+          <option value="school_monthly_analysis">월간</option>
+        </select>
+      </div>
+      <table class="sb-table">
+        <thead>
+          <tr><th>종류</th><th>기간</th><th>세션</th><th>이해도</th><th>PDV</th><th>생성일</th></tr>
+        </thead>
+        <tbody id="rpt-table-body">
+          <tr><td colspan="6" style="text-align:center;padding:32px;color:var(--sb-txt4)">
+            보고서를 생성하면 여기에 표시됩니다
+          </td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
 </main>
 
 <!-- ══ 모달 ══ -->
@@ -516,22 +586,66 @@ document.addEventListener('DOMContentLoaded', () => {
 <script src="js/config.js"></script>
 <script src="js/auth.js"></script>
 <script src="js/app.js"></script>
+<script src="js/report.js"></script>
 <script>
 const PAGE_LABELS = {
   dashboard:'대시보드', students:'학생 목록', curriculum:'커리큘럼',
   professor:'AI 교수', professors:'학생 관리', optimizer:'7단계 최적화',
   career:'진로 예측', analytics:'성과 분석', privacy:'프라이버시',
+  reports:'학습 보고서',
 };
 const _origNavigate = navigate;
 window.navigate = function(page) {
   _origNavigate(page);
   const lbl = document.getElementById('current-page-label');
   if (lbl) lbl.textContent = PAGE_LABELS[page] || page;
-  // 페이지 전환 후 data-icon 재처리
-  document.querySelectorAll('[data-icon]').forEach(el => {
-    if (!el.innerHTML.trim()) el.innerHTML = ic(el.dataset.icon, el.dataset.iconClass || '');
+  document.querySelectorAll('[data-icon]').forEach(e => {
+    if (!e.innerHTML.trim()) e.innerHTML = ic(e.dataset.icon, e.dataset.iconClass || '');
   });
+  if (page === 'reports') renderReportsPage();
 };
+
+function renderReportsPage() {
+  // KPI 표시 (임시)
+  const el1 = document.getElementById('rpt-sessions');
+  const el2 = document.getElementById('rpt-hours');
+  const el3 = document.getElementById('rpt-pdv');
+  if (el1) el1.textContent = '—';
+  if (el2) el2.textContent = '—';
+  if (el3) el3.textContent = '0';
+}
+
+async function triggerWeeklyReport() {
+  if (!_user?.ipv6) { alert('먼저 로그인하세요'); return; }
+  const btn = event.target;
+  btn.disabled = true; btn.textContent = '생성 중…';
+  try {
+    const report = await generateWeeklyReport(_user.ipv6, ['gopang_pdv']);
+    alert(`주간 보고서 생성 완료!\nPDV 전송: ${report.metadata.pdv_entry_id || '대기 중'}`);
+    renderReportsPage();
+  } catch(e) {
+    alert('보고서 생성 실패: ' + e.message);
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = ic('zap','icon-sm') + ' 주간 보고서 생성';
+  }
+}
+
+async function triggerMonthlyReport() {
+  if (!_user?.ipv6) { alert('먼저 로그인하세요'); return; }
+  const btn = event.target;
+  btn.disabled = true; btn.textContent = '생성 중…';
+  try {
+    const report = await generateMonthlyReport(_user.ipv6, ['parent','teacher','gopang_pdv']);
+    alert(`월간 보고서 생성 완료!\nPDV 전송: ${report.metadata.pdv_entry_id || '대기 중'}`);
+    renderReportsPage();
+  } catch(e) {
+    alert('보고서 생성 실패: ' + e.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '월간 보고서 생성';
+  }
+}
 function openNewStudentModal() { alert('학생 등록 — gopang.net 연동 필요 (L1 인증)'); }
 function runOptimizer() { alert('7단계 최적화 재실행 — 평균 2.3분 소요'); }
 
