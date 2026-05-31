@@ -428,19 +428,28 @@ async function sendToPDV(report) {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        svc:          SVC_ID,
-        type:         report.report_type,
-        ipv6:         report.student.user_guid,
-        report_hash:  report.metadata.report_hash,   // 중복 방지 키
-        who:          report.pdv_6w.who,
-        when:         report.pdv_6w.when,
-        where:        report.pdv_6w.where,
-        what: {
-          summary:  report.pdv_6w.what,
-          details:  report,                          // 보고서 전체 첨부
+        report: {
+          svc:          SVC_ID,
+          type:         report.report_type,
+          id:           report.report_id,
+          content_hash: report.metadata.report_hash,
+          who: {
+            ipv6:       report.student.user_guid,
+            role:       'student',
+            recipients: report.pdv_6w.who,
+          },
+          when: report.pdv_6w.when,
+          where: {
+            svc_url: 'https://school.gopang.net',
+            ...report.pdv_6w.where,
+          },
+          what: {
+            summary: report.pdv_6w.what,
+            details: report,
+          },
+          how:  { method: report.pdv_6w.how },
+          why:  { goal: report.pdv_6w.why, triggered: report.report_type },
         },
-        how:  { method: report.pdv_6w.how },
-        why:  { goal: report.pdv_6w.why, triggered: report.report_type },
       }),
     });
 
