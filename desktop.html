@@ -91,7 +91,7 @@ img{max-width:100%;height:auto}
   display:inline-flex;align-items:center;gap:6px;
   background:var(--green-bg);border:1px solid #bbf7d0;
   color:var(--green-dk);border-radius:20px;
-  padding:5px 14px;font-size:12px;font-weight:600;
+  padding:5px 14px;font-size:15px;font-weight:600;
   margin-bottom:24px;
 }
 .hero-badge .dot{
@@ -148,7 +148,7 @@ img{max-width:100%;height:auto}
   color:#0f172a;letter-spacing:-1px;display:block;
 }
 .stat-num .unit{font-size:.55em;color:var(--green);font-weight:700}
-.stat-label{font-size:12px;color:#4b5563;margin-top:2px;display:block}
+.stat-label{font-size:15px;color:#4b5563;margin-top:2px;display:block}
 
 /* ══ 섹션 공통 ══ */
 section{padding:80px 24px}
@@ -157,7 +157,7 @@ section{padding:80px 24px}
   display:inline-block;
   background:var(--green-bg);color:var(--green-dk);
   border-radius:20px;padding:4px 12px;
-  font-size:12px;font-weight:700;
+  font-size:15px;font-weight:700;
   margin-bottom:14px;letter-spacing:.3px;
   text-transform:uppercase;
 }
@@ -168,7 +168,7 @@ section{padding:80px 24px}
 }
 .section-sub{
   font-size:16px;color:#374151;
-  max-width:560px;line-height:1.7;
+  max-width:800px;line-height:2.0;
 }
 
 /* ══ 비교표 ══ */
@@ -234,11 +234,11 @@ section{padding:80px 24px}
   font-size:17px;font-weight:700;color:#111827;
   margin-bottom:10px;
 }
-.feature-card p{font-size:14px;color:#374151;line-height:1.7}
+.feature-card p{font-size:15px;color:#374151;line-height:1.7}
 .feature-source{
-  margin-top:14px;padding:8px 12px;
+  margin-top:14px;padding:10px 14px;
   background:#f8f9fa;border-radius:8px;
-  font-size:11px;color:#4b5563;
+  font-size:15px;color:#374151;
   border-left:2px solid var(--green);
 }
 
@@ -264,12 +264,12 @@ section{padding:80px 24px}
   font-size:16px;font-weight:700;color:#111827;
   margin-bottom:6px;
 }
-.step-body p{font-size:14px;color:#4b5563;line-height:1.6}
+.step-body p{font-size:15px;color:#4b5563;line-height:1.6}
 .step-badge{
   margin-top:8px;display:inline-block;
-  background:rgba(62,207,142,.15);color:var(--green);
-  border:1px solid rgba(62,207,142,.3);
-  border-radius:12px;padding:3px 10px;font-size:11px;font-weight:600;
+  background:#f3f4f6;color:#111827;
+  border:1px solid #d1d5db;
+  border-radius:12px;padding:6px 12px;font-size:15px;font-weight:600;
 }
 
 /* ══ 진로 균형점 인포그래픽 ══ */
@@ -316,7 +316,7 @@ section{padding:80px 24px}
 .security-card h4{
   font-size:14px;font-weight:700;color:#f1f5f9;margin-bottom:8px;
 }
-.security-card p{font-size:13px;color:#4b5563;line-height:1.6}
+.security-card p{font-size:15px;color:#4b5563;line-height:1.6}
 .security-card .si{margin-bottom:12px;display:flex;align-items:center}
 
 /* ══ 보고 체계 ══ */
@@ -328,7 +328,7 @@ section{padding:80px 24px}
 .report-node{
   background:#fff;border:1.5px solid var(--border);
   border-radius:12px;padding:16px 20px;
-  text-align:center;font-size:13px;font-weight:600;
+  text-align:center;font-size:15px;font-weight:600;
   min-width:100px;
 }
 .report-node .icon{display:flex;justify-content:center;margin-bottom:6px}
@@ -346,14 +346,14 @@ section{padding:80px 24px}
   border-radius:12px;padding:20px;
 }
 .cite-source{
-  font-size:11px;font-weight:700;color:var(--green-dk);
+  font-size:15px;font-weight:700;color:var(--green-dk);
   text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;
 }
 .cite-text{
   font-size:14px;color:#1f2937;line-height:1.7;
   font-style:italic;margin-bottom:12px;
 }
-.cite-ref{font-size:11px;color:var(--txt3)}
+.cite-ref{font-size:15px;color:var(--txt3)}
 
 /* ══ CTA ══ */
 .cta-section{
@@ -390,25 +390,81 @@ section{padding:80px 24px}
 /* ══ 대시보드 오버레이 (기술 패널) ══ */
 .dash-overlay{
   display:none;position:fixed;inset:0;
-  background:#f8f9fa;z-index:200;
+  background:#f0f2f5;z-index:200;
   overflow-y:auto;
-  animation:slideUp .25s ease;
 }
-@keyframes slideUp{from{transform:translateY(100%)}to{transform:none}}
 .dash-overlay.open{display:block}
+.dtab{padding:7px 18px;font-size:13px;font-weight:600;border:none;border-radius:3px;cursor:pointer;color:rgba(255,255,255,.65);background:rgba(255,255,255,.1);transition:all .15s}
+.dtab.active{background:#fff;color:#003087}
+.dtab:hover:not(.active){color:#fff;background:rgba(255,255,255,.2)}
+.dinfo-row{display:flex;align-items:flex-start;gap:10px}
+.dinfo-label{font-size:11px;color:#9ca3af;margin-bottom:2px}
+.dinfo-val{font-size:13px;font-weight:600;color:#111}
+.dcard{background:#fff;border:1px solid #e2e5ea;border-radius:4px;padding:22px 24px}
+.dcard-label{font-size:11px;font-weight:700;color:#6b7280;letter-spacing:.6px;text-transform:uppercase;margin-bottom:10px}
+.dcard-kpi{font-size:32px;font-weight:800;color:#003087;line-height:1;margin-bottom:4px}
+.dcard-sub{font-size:12px;color:#9ca3af}
+.dcomp-row{margin-bottom:16px}
+.dcomp-head{display:flex;align-items:baseline;gap:8px;font-size:13px;font-weight:700;color:#111;margin-bottom:7px}
+.dcomp-desc{font-size:12px;font-weight:400;color:#9ca3af;flex:1}
+.dcomp-val{font-size:13px;font-weight:800;color:#003087;margin-left:auto}
+.dcomp-track{background:#e2e5ea;height:5px;border-radius:2px}
+.dcomp-fill{height:100%;background:#003087;border-radius:2px;transition:width .8s ease}
 .dash-topbar{
-  position:sticky;top:0;
-  background:#fff;border-bottom:1px solid var(--border);
-  display:flex;align-items:center;gap:12px;
-  padding:0 16px;height:52px;z-index:10;
+  position:sticky;top:0;z-index:10;
+  background:#003087;
+  display:flex;align-items:center;gap:16px;
+  padding:0 32px;height:56px;
+  box-shadow:0 2px 8px rgba(0,0,0,.18);
 }
 .dash-close{
-  background:#f3f4f6;border:none;border-radius:8px;
-  padding:6px 10px;font-size:13px;font-weight:600;
-  color:#374151;cursor:pointer;
-  display:flex;align-items:center;gap:4px;
+  background:none;border:none;
+  padding:6px 0;font-size:14px;font-weight:600;
+  color:rgba(255,255,255,.85);cursor:pointer;
+  display:flex;align-items:center;gap:6px;
+  letter-spacing:-.2px;transition:color .15s;
 }
-.dash-title{font-size:15px;font-weight:700;color:#111}
+.dash-close:hover{color:#fff}
+.dash-title{font-size:16px;font-weight:700;color:#fff;letter-spacing:-.3px}
+/* 대시보드 카드 */
+.db-card{
+  background:#fff;border-radius:4px;
+  border:1px solid #dde1e7;
+  padding:24px 28px;
+}
+.db-label{
+  font-size:11px;font-weight:700;color:#6b7280;
+  letter-spacing:.8px;text-transform:uppercase;
+  margin-bottom:18px;padding-bottom:10px;
+  border-bottom:2px solid #003087;
+  display:inline-block;
+}
+.db-kpi{font-size:36px;font-weight:800;color:#003087;line-height:1}
+.db-kpi-sub{font-size:13px;color:#6b7280;margin-top:6px}
+.db-bar-track{background:#e5e7eb;border-radius:2px;height:6px;overflow:hidden;margin-top:8px}
+.db-bar-fill{height:100%;background:#003087;border-radius:2px;transition:width .8s ease}
+.db-tag{
+  display:inline-block;padding:3px 10px;
+  background:#f0f2f5;border:1px solid #dde1e7;
+  border-radius:2px;font-size:12px;color:#374151;font-weight:500;
+  margin:3px 3px 3px 0;
+}
+.db-tab{
+  padding:7px 16px;font-size:13px;font-weight:600;
+  border:1px solid #dde1e7;border-radius:2px;
+  background:#fff;color:#6b7280;cursor:pointer;
+  transition:all .15s;
+}
+.db-tab.active{background:#003087;color:#fff;border-color:#003087}
+.db-row-item{
+  display:flex;align-items:flex-start;gap:12px;
+  padding:12px 0;border-bottom:1px solid #f0f2f5;
+}
+.db-row-item:last-child{border-bottom:none}
+.db-dot{
+  width:8px;height:8px;border-radius:50%;
+  background:#003087;flex-shrink:0;margin-top:5px;
+}
 
 /* AI 교수 채팅 패널 */
 .chat-overlay{
@@ -468,7 +524,7 @@ section{padding:80px 24px}
 /* ══ 반응형 ══ */
 @media(max-width:768px){
   .nav-btn-ghost{display:none}
-  .compare-table{font-size:13px}
+  .compare-table{font-size:15px}
   .compare-table th,.compare-table td{padding:10px 12px}
   .balance-diagram{grid-template-columns:1fr;grid-template-rows:auto auto auto}
   .balance-center{flex-direction:row}
@@ -1193,17 +1249,16 @@ body:has(.sidebar:hover) .nav{padding-left:calc(var(--swe) + 16px)}
     <span class="dot"></span>
     193개국 동시 서비스 · 고팡 AI 생태계
   </div>
-  <h1>세상의 모든 지식을 가진<br><span class="hl">나만의 AI 교수</span></h1>
+  <h1>세상의 모든 지식을 가진<br><span style="display:block;margin-top:12px" class="hl">나만의 AI 교수</span></h1>
   <p class="hero-sub">
-    유치원부터 대학원까지, 24시간 지치지 않고 오직 나 한 명만을 위해 복무하는
-    완전 맞춤형 교육 시스템
+    유치원부터 대학원까지, 완벽한 맞춤형 교육
   </p>
   <div class="hero-cta">
     <button class="btn-primary" id="btn-hero-chat">
-      AI 교수와 무료로 시작하기 →
+      K-School 웹앱 열기 →
     </button>
     <button class="btn-secondary" id="btn-hero-compare">
-      기존 학교와 비교하기
+      대시보드 열기
     </button>
   </div>
   <div class="hero-stats">
@@ -1212,7 +1267,7 @@ body:has(.sidebar:hover) .nav{padding-left:calc(var(--swe) + 16px)}
       <span class="stat-label">365일 쉬지 않고</span>
     </div>
     <div class="stat">
-      <span class="stat-num">1<span class="unit">:1</span></span>
+      <span class="stat-num" style="color:#111827">1:1</span>
       <span class="stat-label">완전 전담 맞춤 교육</span>
     </div>
     <div class="stat">
@@ -1229,10 +1284,9 @@ body:has(.sidebar:hover) .nav{padding-left:calc(var(--swe) + 16px)}
 <!-- ══ 비교표 ══ -->
 <section class="compare-section" id="compare">
   <div class="section-inner">
-    <div class="section-badge">기존 학교 vs K-School</div>
+    <div class="section-badge">기존 학교 <span style="font-size:.75em;font-weight:500">vs.</span> K-School</div>
     <h2 class="section-title">무엇이 다른가요?</h2>
-    <p class="section-sub">수십 명을 동시에 가르치는 기존 방식과,
-    오직 나 한 명에게 집중하는 K-School을 비교해 보세요.</p>
+    <p class="section-sub">인간은 한 사람이 유치원부터 대학까지 전 과목을 가르칠 수 없습니다. 따라서, 학습자는 평생 수백 명의 교사와 교수를 거쳐야 하지만, K-School은 단 한 명의 AI 교수가 평생 함께 합니다.</p>
 
     <table class="compare-table">
       <thead>
@@ -1344,7 +1398,7 @@ body:has(.sidebar:hover) .nav{padding-left:calc(var(--swe) + 16px)}
 
       <div class="feature-card">
         <div class="feature-icon" style="background:#eff6ff;border:1px solid #bfdbfe"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg></div>
-        <h3>50년 미래 진로 예측</h3>
+        <h3>진로 및 커리큘럼 추천</h3>
         <p>AI가 대체할 수 없는 직업을 분석해, 나의 적성과 사회적 수요가 겹치는 최적의 진로를 제안합니다.
         기술 변화와 산업 구조 변화를 반영해 진로를 지속적으로 업데이트합니다.</p>
         <div class="feature-source">
@@ -1476,8 +1530,8 @@ body:has(.sidebar:hover) .nav{padding-left:calc(var(--swe) + 16px)}
     </div>
 
     <div style="margin-top:32px;background:#f0fdf4;border-radius:12px;padding:20px 24px;border:1px solid #bbf7d0">
-      <div style="font-size:13px;font-weight:700;color:#15803d;margin-bottom:6px">이런 점도 투명하게 알려드립니다</div>
-      <div style="font-size:13px;color:#374151;line-height:1.7">
+      <div style="font-size:15px;font-weight:700;color:#15803d;margin-bottom:6px">이런 점도 투명하게 알려드립니다</div>
+      <div style="font-size:15px;color:#374151;line-height:1.7">
         진로를 변경하고 싶다면 언제든 요청하세요. 다만 사회 효용이 <b>10% 이상</b> 저하되는 경우에는
         대안 직종 3가지를 함께 제시합니다. 최종 결정은 항상 <b>학습자 본인</b>이 합니다.
       </div>
@@ -1527,7 +1581,7 @@ body:has(.sidebar:hover) .nav{padding-left:calc(var(--swe) + 16px)}
       <div style="background:#fff;border-radius:10px;padding:16px;border:1px solid var(--border)">
         <div style="margin-bottom:8px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" x2="12" y1="20" y2="10"/><line x1="18" x2="18" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="16"/></svg></div>
         <div style="font-size:13px;font-weight:700;margin-bottom:4px">월간 분석</div>
-        <div style="font-size:12px;color:#6b7280">5차원 역량 성장·행복도·진로 균형점</div>
+        <div style="font-size:15px;color:#374151">5차원 역량 성장·행복도·진로 균형점</div>
       </div>
       <div style="background:#fff;border-radius:10px;padding:16px;border:1px solid var(--border)">
         <div style="margin-bottom:8px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#475569" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" x2="22" y1="12" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div>
@@ -1637,57 +1691,399 @@ body:has(.sidebar:hover) .nav{padding-left:calc(var(--swe) + 16px)}
       홈
     </button>
     <button class="bn-item" id="btn-bn-chat">
-      <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-      AI 교수
-    </button>
-    <button class="bn-item" id="btn-bn-dash">
-      <svg viewBox="0 0 24 24"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
-      대시보드
-    </button>
-    <a href="https://gopang.net" class="bn-item">
-      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" x2="22" y1="12" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-      고팡
-    </a>
-  </div>
-</nav>
+<div class="dash-overlay" id="dash-overlay">
 
-<!-- ══ AI 교수 채팅 오버레이 ══ -->
-<div class="chat-overlay" id="chat-overlay">
-  <div class="chat-topbar">
-    <button class="dash-close" onclick="closeChat()">← 닫기</button>
-    <span class="dash-title">AI 교수</span>
-    <span id="chat-auth-badge" style="margin-left:auto;font-size:11px;color:#6b7280"></span>
-  </div>
-  <div class="chat-body" id="chat-body">
-    <div class="chat-bubble-ai">
-      안녕하세요! 저는 K-School AI 교수입니다.<br><br>
-      세상의 모든 지식을 갖추고 있으며, 오직 여러분 한 분만을 위해 복무합니다.
-      무엇이든 물어보세요 — 수학, 과학, 역사, 철학, 진로 고민, 무엇이든 괜찮습니다.
-    </div>
-  </div>
-  <div class="chat-input-area">
-    <textarea class="chat-input" id="chat-input" rows="1"
-      placeholder="무엇이든 물어보세요…"
-      oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,120)+'px'"
-      onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();chatSend()}"></textarea>
-    <button class="chat-send" id="chat-send-btn" onclick="chatSend()">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="m22 2-7 20-4-9-9-4 20-7z"/></svg>
+  <!-- 상단 헤더 -->
+  <div style="position:sticky;top:0;z-index:100;background:#003087;height:56px;
+    display:flex;align-items:center;padding:0 32px;gap:20px;
+    box-shadow:0 1px 4px rgba(0,48,135,.3)">
+    <button onclick="closeDash()" style="background:none;border:none;cursor:pointer;
+      color:rgba(255,255,255,.75);font-size:14px;font-weight:600;
+      display:flex;align-items:center;gap:6px;padding:0;transition:color .15s"
+      onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,.75)'">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+      홈
     </button>
+    <div style="width:1px;height:20px;background:rgba(255,255,255,.2)"></div>
+    <span style="font-size:15px;font-weight:700;color:#fff;letter-spacing:-.3px">학습자 대시보드</span>
+    <!-- 탭 네비 -->
+    <div style="margin-left:auto;display:flex;gap:4px">
+      <button class="dtab active" id="dtab-0" onclick="switchDTab(0)">학습 현황</button>
+      <button class="dtab" id="dtab-1" onclick="switchDTab(1)">역량 · 적성</button>
+      <button class="dtab" id="dtab-2" onclick="switchDTab(2)">진로 계획</button>
+    </div>
+    <span id="dash-updated" style="font-size:12px;color:rgba(255,255,255,.5);margin-left:16px"></span>
   </div>
+
+  <div style="display:flex;height:calc(100vh - 56px)">
+
+    <!-- 좌측 프로파일 사이드바 -->
+    <div style="width:260px;flex-shrink:0;background:#fff;border-right:1px solid #e2e5ea;
+      overflow-y:auto;padding:28px 20px;display:flex;flex-direction:column;gap:20px">
+
+      <!-- 아바타 + 이름 -->
+      <div style="text-align:center;padding-bottom:20px;border-bottom:1px solid #e2e5ea">
+        <div id="dash-avatar" style="width:64px;height:64px;border-radius:50%;
+          background:#003087;display:flex;align-items:center;justify-content:center;
+          font-size:26px;font-weight:800;color:#fff;margin:0 auto 12px">?</div>
+        <div id="dash-name" style="font-size:18px;font-weight:700;color:#111;margin-bottom:4px">—</div>
+        <div id="dash-stage-age" style="font-size:13px;color:#6b7280">— · —세</div>
+      </div>
+
+      <!-- 기본 정보 -->
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div class="dinfo-row">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#003087" stroke-width="2" stroke-linecap="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+          <div>
+            <div class="dinfo-label">학제</div>
+            <div class="dinfo-val" id="dash-stage">—</div>
+          </div>
+        </div>
+        <div class="dinfo-row">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#003087" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="2" x2="22" y1="12" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          <div>
+            <div class="dinfo-label">학습 언어</div>
+            <div class="dinfo-val" id="dash-lang">—</div>
+          </div>
+        </div>
+        <div class="dinfo-row">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#003087" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          <div>
+            <div class="dinfo-label">총 학습 시간</div>
+            <div class="dinfo-val" id="dash-total-min" style="color:#003087;font-weight:700">—h</div>
+          </div>
+        </div>
+        <div class="dinfo-row">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#003087" stroke-width="2" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          <div>
+            <div class="dinfo-label">평균 이해도</div>
+            <div class="dinfo-val" id="dash-comprehension" style="color:#003087;font-weight:700">—%</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 진로 균형점 -->
+      <div style="background:#f5f7fa;border:1px solid #e2e5ea;border-radius:4px;padding:14px">
+        <div style="font-size:11px;font-weight:700;color:#003087;letter-spacing:.6px;
+          text-transform:uppercase;margin-bottom:8px">진로 균형점</div>
+        <div id="dash-career-balance" style="font-size:14px;font-weight:600;color:#111;line-height:1.4">—</div>
+      </div>
+
+      <!-- AI 대체 가능성 -->
+      <div style="border:1px solid #e2e5ea;border-radius:4px;padding:14px">
+        <div style="font-size:11px;font-weight:700;color:#6b7280;letter-spacing:.6px;
+          text-transform:uppercase;margin-bottom:12px">AI 대체 가능성</div>
+        <div style="display:flex;align-items:baseline;gap:6px;margin-bottom:8px">
+          <span id="dash-ai-rep" style="font-size:28px;font-weight:800;color:#111">—</span>
+          <span style="font-size:13px;color:#6b7280">/ 100</span>
+        </div>
+        <div style="background:#e2e5ea;height:4px;border-radius:2px;overflow:hidden;margin-bottom:8px">
+          <div id="dash-ai-rep-bar" style="height:100%;width:50%;background:#003087;
+            border-radius:2px;transition:width .8s ease"></div>
+        </div>
+        <div id="dash-ai-rep-label" style="font-size:12px;color:#6b7280">분석 중…</div>
+      </div>
+
+      <!-- 성격·취향 -->
+      <div>
+        <div style="font-size:11px;font-weight:700;color:#6b7280;letter-spacing:.6px;
+          text-transform:uppercase;margin-bottom:10px">성격 · 취향</div>
+        <div id="dash-personality" style="display:flex;flex-wrap:wrap;gap:5px">
+          <span style="font-size:12px;color:#9ca3af">대화 후 분석됩니다</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 우측 콘텐츠 영역 -->
+    <div style="flex:1;overflow-y:auto;padding:28px 32px;background:#f5f7fa">
+
+      <!-- ── 탭 0: 학습 현황 ── -->
+      <div id="dpanel-0">
+        <!-- KPI 행 -->
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px">
+          <div class="dcard">
+            <div class="dcard-label">총 세션</div>
+            <div class="dcard-kpi" id="dp-sessions">—</div>
+            <div class="dcard-sub">누적 학습 횟수</div>
+          </div>
+          <div class="dcard">
+            <div class="dcard-label">학습 시간</div>
+            <div class="dcard-kpi" id="dp-hours">—h</div>
+            <div class="dcard-sub">총 이수 시간</div>
+          </div>
+          <div class="dcard">
+            <div class="dcard-label">이수 중 과목</div>
+            <div class="dcard-kpi" id="dp-active-count">—</div>
+            <div class="dcard-sub">현재 진행 중</div>
+          </div>
+          <div class="dcard">
+            <div class="dcard-label">이해도</div>
+            <div class="dcard-kpi" id="dp-comp">—%</div>
+            <div class="dcard-sub">세션 평균</div>
+          </div>
+        </div>
+
+        <!-- 과목 현황 -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px">
+
+          <!-- 이수 중 -->
+          <div class="dcard">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#003087" stroke-width="2" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+              <span style="font-size:12px;font-weight:700;color:#003087;letter-spacing:.5px;text-transform:uppercase">이수 중</span>
+            </div>
+            <div id="dp-active-list">
+              <div style="font-size:13px;color:#9ca3af;padding:12px 0;text-align:center">
+                이수 중인 과목이 없습니다
+              </div>
+            </div>
+          </div>
+
+          <!-- 이수 완료 -->
+          <div class="dcard">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#003087" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+              <span style="font-size:12px;font-weight:700;color:#003087;letter-spacing:.5px;text-transform:uppercase">이수 완료</span>
+            </div>
+            <div id="dp-completed-list">
+              <div style="font-size:13px;color:#9ca3af;padding:12px 0;text-align:center">
+                이수 완료한 과목이 없습니다
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- AI 추천 과목 -->
+        <div class="dcard" style="margin-bottom:24px">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#003087" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+            <span style="font-size:12px;font-weight:700;color:#003087;letter-spacing:.5px;text-transform:uppercase">AI 추천 — 이수 예정 과목</span>
+          </div>
+          <div id="dp-recommended-list" style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
+            <div style="font-size:13px;color:#9ca3af;grid-column:span 3;padding:12px 0;text-align:center">
+              AI 교수와 대화하면 진로 기반 과목이 추천됩니다
+            </div>
+          </div>
+        </div>
+
+        <!-- 최근 보고서 -->
+        <div class="dcard">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+            <div style="display:flex;align-items:center;gap:8px">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#003087" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" x2="8" y1="13" y2="13"/><line x1="16" x2="8" y1="17" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+              <span style="font-size:12px;font-weight:700;color:#003087;letter-spacing:.5px;text-transform:uppercase">최근 보고서</span>
+            </div>
+            <button onclick="if(typeof generateWeeklyReport==='function')generateWeeklyReport(window._dashGuid,['gopang_pdv'])"
+              style="font-size:12px;font-weight:600;color:#003087;background:#f5f7fa;
+              border:1px solid #d1d5db;border-radius:3px;padding:5px 14px;cursor:pointer">
+              주간 보고서 생성
+            </button>
+          </div>
+          <div id="dp-reports-list">
+            <div style="font-size:13px;color:#9ca3af;padding:12px 0;text-align:center">
+              생성된 보고서가 없습니다
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── 탭 1: 역량·적성 ── -->
+      <div id="dpanel-1" style="display:none">
+        <!-- 5차원 역량 -->
+        <div class="dcard" style="margin-bottom:20px">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:20px">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#003087" stroke-width="2" stroke-linecap="round"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>
+            <span style="font-size:12px;font-weight:700;color:#003087;letter-spacing:.5px;text-transform:uppercase">5차원 역량 분석</span>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
+            <div>
+              <div class="dcomp-row" id="comp-C">
+                <div class="dcomp-head"><span>인지(C)</span><span class="dcomp-desc">데이터 처리·패턴 인식·논리</span><span class="dcomp-val" id="cv-C">50</span></div>
+                <div class="dcomp-track"><div class="dcomp-fill" id="cb-C" style="width:50%"></div></div>
+              </div>
+              <div class="dcomp-row">
+                <div class="dcomp-head"><span>육체(P)</span><span class="dcomp-desc">정밀 작업·감각 활용</span><span class="dcomp-val" id="cv-P">50</span></div>
+                <div class="dcomp-track"><div class="dcomp-fill" id="cb-P" style="width:50%"></div></div>
+              </div>
+              <div class="dcomp-row">
+                <div class="dcomp-head"><span>창의(Cr)</span><span class="dcomp-desc">아이디어 생성·혁신 문제 해결</span><span class="dcomp-val" id="cv-Cr">50</span></div>
+                <div class="dcomp-track"><div class="dcomp-fill" id="cb-Cr" style="width:50%"></div></div>
+              </div>
+              <div class="dcomp-row">
+                <div class="dcomp-head"><span>사회(S)</span><span class="dcomp-desc">대인 관계·리더십</span><span class="dcomp-val" id="cv-S">50</span></div>
+                <div class="dcomp-track"><div class="dcomp-fill" id="cb-S" style="width:50%"></div></div>
+              </div>
+              <div class="dcomp-row">
+                <div class="dcomp-head"><span>전문판단(J)</span><span class="dcomp-desc">윤리·안전 결정</span><span class="dcomp-val" id="cv-J">50</span></div>
+                <div class="dcomp-track"><div class="dcomp-fill" id="cb-J" style="width:50%"></div></div>
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:16px">
+              <div style="background:#f5f7fa;border-radius:4px;padding:18px;text-align:center">
+                <div style="font-size:11px;font-weight:700;color:#6b7280;letter-spacing:.5px;
+                  text-transform:uppercase;margin-bottom:8px">AI 대체 가능성</div>
+                <div id="da-ai-rep2" style="font-size:40px;font-weight:900;color:#003087">—</div>
+                <div id="da-ai-label2" style="font-size:12px;color:#6b7280;margin-top:6px">분석 중</div>
+              </div>
+              <div style="background:#f5f7fa;border-radius:4px;padding:18px;text-align:center">
+                <div style="font-size:11px;font-weight:700;color:#6b7280;letter-spacing:.5px;
+                  text-transform:uppercase;margin-bottom:8px">행복도 예측</div>
+                <div id="da-happy" style="font-size:40px;font-weight:900;color:#003087">—%</div>
+                <div style="font-size:12px;color:#6b7280;margin-top:6px">적성·관심·성장·인정 기반</div>
+              </div>
+              <div style="background:#f5f7fa;border-radius:4px;padding:18px;text-align:center">
+                <div style="font-size:11px;font-weight:700;color:#6b7280;letter-spacing:.5px;
+                  text-transform:uppercase;margin-bottom:8px">사회 효용 기여</div>
+                <div id="da-utility" style="font-size:40px;font-weight:900;color:#003087">—%</div>
+                <div style="font-size:12px;color:#6b7280;margin-top:6px">사회 전체 효용 기준</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 과목별 학습 능력 -->
+        <div class="dcard">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:20px">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#003087" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
+            <span style="font-size:12px;font-weight:700;color:#003087;letter-spacing:.5px;text-transform:uppercase">과목별 학습 능력</span>
+          </div>
+          <div id="da-subject-list">
+            <div style="font-size:13px;color:#9ca3af;padding:12px 0;text-align:center">
+              학습 데이터 누적 후 표시됩니다
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── 탭 2: 진로 계획 ── -->
+      <div id="dpanel-2" style="display:none">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px">
+
+          <!-- 희망·추천 직업 -->
+          <div class="dcard">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#003087" stroke-width="2" stroke-linecap="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+              <span style="font-size:12px;font-weight:700;color:#003087;letter-spacing:.5px;text-transform:uppercase">직업 분석</span>
+            </div>
+            <div style="margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid #e2e5ea">
+              <div style="font-size:11px;color:#6b7280;font-weight:600;margin-bottom:6px">본인 희망 직업</div>
+              <div id="dc-wish" style="font-size:18px;font-weight:700;color:#111">—</div>
+            </div>
+            <div>
+              <div style="font-size:11px;color:#6b7280;font-weight:600;margin-bottom:10px">AI 추천 직업군</div>
+              <div id="dc-ai-jobs">
+                <div style="font-size:13px;color:#9ca3af">역량 분석 후 추천됩니다</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 예상 사회 진출 -->
+          <div class="dcard">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#003087" stroke-width="2" stroke-linecap="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+              <span style="font-size:12px;font-weight:700;color:#003087;letter-spacing:.5px;text-transform:uppercase">예상 사회 진출</span>
+            </div>
+            <table style="width:100%;border-collapse:collapse">
+              <thead>
+                <tr style="background:#f5f7fa">
+                  <th style="padding:9px 12px;font-size:11px;font-weight:700;color:#6b7280;
+                    text-align:left;border-bottom:1px solid #e2e5ea">구분</th>
+                  <th style="padding:9px 12px;font-size:11px;font-weight:700;color:#6b7280;
+                    text-align:center;border-bottom:1px solid #e2e5ea">시기</th>
+                  <th style="padding:9px 12px;font-size:11px;font-weight:700;color:#6b7280;
+                    text-align:center;border-bottom:1px solid #e2e5ea">신뢰도</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style="border-bottom:1px solid #f0f2f5">
+                  <td style="padding:10px 12px;font-size:13px;color:#374151">단기 목표</td>
+                  <td id="dc-short" style="padding:10px 12px;font-size:13px;font-weight:700;
+                    color:#003087;text-align:center">—년</td>
+                  <td style="padding:10px 12px;font-size:12px;color:#6b7280;text-align:center">85%</td>
+                </tr>
+                <tr style="border-bottom:1px solid #f0f2f5">
+                  <td style="padding:10px 12px;font-size:13px;color:#374151">중기 목표</td>
+                  <td id="dc-mid" style="padding:10px 12px;font-size:13px;font-weight:700;
+                    color:#003087;text-align:center">—년</td>
+                  <td style="padding:10px 12px;font-size:12px;color:#6b7280;text-align:center">70%</td>
+                </tr>
+                <tr>
+                  <td style="padding:10px 12px;font-size:13px;color:#374151">장기 목표</td>
+                  <td id="dc-long" style="padding:10px 12px;font-size:13px;font-weight:700;
+                    color:#003087;text-align:center">—년</td>
+                  <td style="padding:10px 12px;font-size:12px;color:#6b7280;text-align:center">50%</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 취업 추천 기업군 + 학위·자격증 -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+          <div class="dcard">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#003087" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+              <span style="font-size:12px;font-weight:700;color:#003087;letter-spacing:.5px;text-transform:uppercase">취업 추천 기업군</span>
+            </div>
+            <div id="dc-employers">
+              <div style="font-size:13px;color:#9ca3af;padding:12px 0;text-align:center">진로 분석 후 추천됩니다</div>
+            </div>
+          </div>
+          <div class="dcard">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#003087" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg>
+              <span style="font-size:12px;font-weight:700;color:#003087;letter-spacing:.5px;text-transform:uppercase">권장 학위 · 자격증</span>
+            </div>
+            <div id="dc-credentials">
+              <div style="font-size:13px;color:#9ca3af;padding:12px 0;text-align:center">진로 분석 후 표시됩니다</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /콘텐츠 -->
+  </div><!-- /flex -->
 </div>
 
-<!-- ══ 기술 대시보드 오버레이 ══ -->
-<div class="dash-overlay" id="dash-overlay">
-  <div class="dash-topbar">
-    <button class="dash-close" onclick="closeDash()">← 닫기</button>
-    <span class="dash-title">기술 대시보드</span>
-  </div>
-  <iframe
-    id="dash-iframe"
-    src=""
-    style="width:100%;height:calc(100vh - 52px);border:none"
-    allow="camera; microphone">
-  </iframe>
+              <div style="font-size:14px;font-weight:700;color:#7c3aed" id="dash-career-long">—년</div>
+              <div style="font-size:10px;color:#6b7280;margin-top:2px">50% 신뢰도</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 취업 추천 기업군 -->
+        <div style="margin-bottom:14px">
+          <div style="font-size:13px;font-weight:700;color:#111;margin-bottom:10px">🏢 취업 추천 기업군</div>
+          <div id="dash-employer-list">
+            <div style="font-size:13px;color:#9ca3af;text-align:center;padding:10px 0">진로 분석 후 추천됩니다</div>
+          </div>
+        </div>
+
+        <!-- 필요 학위·자격증 -->
+        <div>
+          <div style="font-size:13px;font-weight:700;color:#111;margin-bottom:10px">📜 권장 학위 · 자격증</div>
+          <div id="dash-credential-list">
+            <div style="font-size:13px;color:#9ca3af;text-align:center;padding:10px 0">진로 분석 후 표시됩니다</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── 4행: 주간 보고서 ── -->
+    <div style="background:#fff;border-radius:14px;padding:20px;border:1px solid #e5e7eb;margin-bottom:20px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+        <div style="font-size:12px;font-weight:700;color:#6b7280;letter-spacing:.6px;text-transform:uppercase">최근 보고서</div>
+        <button onclick="generateWeeklyReport && generateWeeklyReport(window._dashGuid, ['gopang_pdv'])"
+          style="font-size:13px;font-weight:600;color:#16a34a;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:6px 14px;cursor:pointer">
+          주간 보고서 생성
+        </button>
+      </div>
+      <div id="dash-reports-list">
+        <div style="font-size:13px;color:#9ca3af;text-align:center;padding:20px 0">생성된 보고서가 없습니다. 위 버튼으로 첫 보고서를 생성하세요.</div>
+      </div>
+    </div>
+
+  </div><!-- /dash-body -->
 </div>
 
 <!-- ══ 인증 로딩 ══ -->
@@ -1725,13 +2121,169 @@ function closeModal(id) {
   if (el) el.style.display = 'none';
 }
 
-// ── 대시보드 버튼 ────────────────────────────────────────
+// ── 대시보드 ─────────────────────────────────────────────
+window._dashGuid = null;
+
 function openDash() {
-  // desktop: 학습 진도 패널 열기
-  openSidePanel('panel-progress');
+  document.getElementById('dash-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  loadDashData();
 }
 function closeDash() {
-  closePanelAll();
+  document.getElementById('dash-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function switchDTab(n) {
+  [0,1,2].forEach(i => {
+    const panel = document.getElementById('dpanel-' + i);
+    const tab   = document.getElementById('dtab-' + i);
+    if (panel) panel.style.display = (i === n) ? 'block' : 'none';
+    if (tab) {
+      tab.classList.toggle('active', i === n);
+    }
+  });
+}
+
+async function loadDashData() {
+  if (typeof SUPA_URL === 'undefined') return;
+  const guid = (typeof _currentUser !== 'undefined' && _currentUser?.ipv6) || window._dashGuid;
+  if (!guid) { document.getElementById('dash-name').textContent = '로그인 필요'; return; }
+  window._dashGuid = guid;
+  try {
+    // 프로파일
+    const pRes = await fetch(
+      `${SUPA_URL}/rest/v1/school_student_profiles?user_guid=eq.${encodeURIComponent(guid)}&limit=1`,
+      { headers: { apikey: SUPA_ANON, Authorization: 'Bearer ' + SUPA_ANON, Accept: 'application/json' } }
+    );
+    const prof = (await pRes.json())?.[0];
+    if (prof) {
+      document.getElementById('dash-avatar').textContent = (prof.display_name||'?').slice(0,1).toUpperCase();
+      document.getElementById('dash-name').textContent = prof.display_name || '—';
+      document.getElementById('dash-stage-age').textContent = `${prof.stage||'—'} · ${prof.age||'—'}세`;
+      document.getElementById('dash-stage').textContent = prof.stage || '—';
+      document.getElementById('dash-lang').textContent = prof.native_language || '—';
+      document.getElementById('dash-career-balance').textContent = prof.career_balance || '—';
+      document.getElementById('dc-wish').textContent = prof.career_personal || prof.career_primary || '—';
+
+      const rep = parseFloat(prof.ai_replaceability) || 50;
+      ['dash-ai-rep','da-ai-rep2'].forEach(id => { const el=document.getElementById(id); if(el) el.textContent=rep.toFixed(1); });
+      document.getElementById('dash-ai-rep-bar').style.width = rep + '%';
+      const repLabel = rep < 40 ? '인간 고유 역량이 강합니다' : rep < 70 ? 'AI 협업이 권장됩니다' : 'AI 대체 위험 구간';
+      ['dash-ai-rep-label','da-ai-label2'].forEach(id => { const el=document.getElementById(id); if(el) el.textContent=repLabel; });
+
+      const happy = Math.round((parseFloat(prof.happiness_score)||0.5)*100);
+      const util  = Math.round((parseFloat(prof.utility_score)||0.5)*100);
+      document.getElementById('da-happy').textContent = happy + '%';
+      document.getElementById('da-utility').textContent = util + '%';
+
+      const dims = {C:prof.c_score, P:prof.p_score, Cr:prof.cr_score, S:prof.s_score, J:prof.j_score};
+      Object.entries(dims).forEach(([k,v]) => {
+        const val = parseFloat(v)||50;
+        const el=document.getElementById('cv-'+k); if(el) el.textContent=val.toFixed(0);
+        const bar=document.getElementById('cb-'+k); if(bar) bar.style.width=val+'%';
+      });
+
+      const tags = [...(prof.personality||[]),...(prof.interests||[])];
+      if (tags.length) document.getElementById('dash-personality').innerHTML = tags.map(t =>
+        `<span style="background:#f5f7fa;border:1px solid #e2e5ea;border-radius:2px;padding:3px 9px;font-size:12px;color:#374151">${t}</span>`
+      ).join('');
+    }
+
+    // 집계 뷰
+    const dRes = await fetch(
+      `${SUPA_URL}/rest/v1/school_student_dashboard?user_guid=eq.${encodeURIComponent(guid)}&limit=1`,
+      { headers: { apikey: SUPA_ANON, Authorization: 'Bearer ' + SUPA_ANON, Accept: 'application/json' } }
+    );
+    const dash = (await dRes.json())?.[0];
+    if (dash) {
+      const mins = parseInt(dash.total_study_minutes)||0;
+      const hrs  = (mins/60).toFixed(1);
+      document.getElementById('dash-total-min').textContent = hrs + 'h';
+      document.getElementById('dp-hours').textContent = hrs + 'h';
+      document.getElementById('dp-sessions').textContent = dash.total_sessions_done || '—';
+      const comp = parseFloat(dash.overall_comprehension)||0;
+      document.getElementById('dash-comprehension').textContent = comp.toFixed(1)+'%';
+      document.getElementById('dp-comp').textContent = comp.toFixed(1)+'%';
+      document.getElementById('dp-active-count').textContent = dash.active_subjects || '—';
+    }
+
+    // 과목 현황
+    const sRes = await fetch(
+      `${SUPA_URL}/rest/v1/school_subjects?user_guid=eq.${encodeURIComponent(guid)}&select=*,school_progress(progress_pct,completed_sessions,total_sessions)`,
+      { headers: { apikey: SUPA_ANON, Authorization: 'Bearer ' + SUPA_ANON, Accept: 'application/json' } }
+    );
+    const subjects = await sRes.json();
+    if (Array.isArray(subjects) && subjects.length) {
+      const active    = subjects.filter(s => { const p=parseFloat(s.school_progress?.[0]?.progress_pct)||0; return p>0&&p<100; });
+      const completed = subjects.filter(s => (parseFloat(s.school_progress?.[0]?.progress_pct)||0)>=100);
+
+      if (active.length) {
+        document.getElementById('dp-active-list').innerHTML = active.map(s => {
+          const pct = parseFloat(s.school_progress?.[0]?.progress_pct)||0;
+          return `<div style="margin-bottom:14px">
+            <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:600;margin-bottom:6px">
+              <span style="color:#111">${s.subject_name_ko||s.subject_name_en}</span>
+              <span style="color:#003087">${pct.toFixed(0)}%</span>
+            </div>
+            <div style="background:#e2e5ea;height:4px;border-radius:2px">
+              <div style="width:${pct}%;height:100%;background:#003087;border-radius:2px"></div>
+            </div>
+            <div style="font-size:11px;color:#9ca3af;margin-top:4px">${s.field_code||''} · ${s.stage||''}</div>
+          </div>`;
+        }).join('');
+      }
+
+      if (completed.length) {
+        document.getElementById('dp-completed-list').innerHTML = completed.map(s =>
+          `<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #f0f2f5">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#003087" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+            <div>
+              <div style="font-size:13px;font-weight:600;color:#111">${s.subject_name_ko||s.subject_name_en}</div>
+              <div style="font-size:11px;color:#9ca3af">${s.stage||''}</div>
+            </div>
+          </div>`
+        ).join('');
+      }
+
+      // 과목별 학습 능력 (탭 1)
+      if (active.length || completed.length) {
+        document.getElementById('da-subject-list').innerHTML = [...active,...completed].map(s => {
+          const pct = parseFloat(s.school_progress?.[0]?.progress_pct)||0;
+          return `<div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #f0f2f5">
+            <span style="font-size:13px;color:#111;font-weight:500;width:160px;flex-shrink:0">${s.subject_name_ko||s.subject_name_en}</span>
+            <div style="flex:1;background:#e2e5ea;height:4px;border-radius:2px">
+              <div style="width:${pct}%;height:100%;background:#003087;border-radius:2px"></div>
+            </div>
+            <span style="font-size:13px;font-weight:700;color:#003087;width:36px;text-align:right">${pct.toFixed(0)}%</span>
+          </div>`;
+        }).join('');
+      }
+    }
+
+    // 보고서
+    const rRes = await fetch(
+      `${SUPA_URL}/rest/v1/school_reports?user_guid=eq.${encodeURIComponent(guid)}&order=generated_at.desc&limit=3`,
+      { headers: { apikey: SUPA_ANON, Authorization: 'Bearer ' + SUPA_ANON, Accept: 'application/json' } }
+    );
+    const reports = await rRes.json();
+    if (Array.isArray(reports) && reports.length) {
+      document.getElementById('dp-reports-list').innerHTML = reports.map(r => {
+        const note = (r.report_data?.ai_professor_note||'').slice(0,200);
+        const period = r.period_start&&r.period_end ? `${r.period_start} ~ ${r.period_end}` : '—';
+        const label = r.report_type==='school_weekly_progress' ? '주간 보고서' : '월간 보고서';
+        return `<div style="padding:14px;border:1px solid #e2e5ea;border-radius:3px;margin-bottom:10px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+            <span style="font-size:13px;font-weight:700;color:#003087">${label}</span>
+            <span style="font-size:12px;color:#9ca3af">${period}</span>
+          </div>
+          <div style="font-size:13px;color:#374151;line-height:1.7">${note}${note.length>=200?'…':''}</div>
+        </div>`;
+      }).join('');
+    }
+
+    document.getElementById('dash-updated').textContent = new Date().toLocaleTimeString('ko');
+  } catch(e) { console.warn('[Dash]', e.message); }
 }
 
 // ── AI 교수 채팅 변수 (app.js와 공유) ────────────────────
