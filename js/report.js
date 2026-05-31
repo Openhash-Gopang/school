@@ -436,12 +436,19 @@ async function sendToPDV(report) {
           who: {
             ipv6:       report.student.user_guid,
             role:       'student',
-            recipients: report.pdv_6w.who,
+            recipients: typeof report.pdv_6w.who === 'string'
+              ? [report.pdv_6w.who] : (report.pdv_6w.who || []),
           },
-          when: report.pdv_6w.when,
+          when: typeof report.pdv_6w.when === 'object' && report.pdv_6w.when !== null
+            ? report.pdv_6w.when
+            : { generated_at: report.pdv_6w.when,
+                period_start:  report.period?.start,
+                period_end:    report.period?.end },
           where: {
             svc_url: 'https://school.gopang.net',
-            ...report.pdv_6w.where,
+            ...(typeof report.pdv_6w.where === 'object' && report.pdv_6w.where !== null
+              ? report.pdv_6w.where
+              : { label: report.pdv_6w.where }),
           },
           what: {
             summary:  report.pdv_6w.what,
