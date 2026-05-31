@@ -444,8 +444,13 @@ async function sendToPDV(report) {
             ...report.pdv_6w.where,
           },
           what: {
-            summary: report.pdv_6w.what,
-            details: report,
+            summary:  report.pdv_6w.what,
+            subjects: (report.subjects || []).map(s => ({
+              subject_id:   s.subject_id,
+              subject_name: s.subject_name_ko,
+              progress_pct: s.progress_pct,
+              sessions:     s.sessions_this_period,
+            })),
           },
           how:  { method: report.pdv_6w.how },
           why:  { goal: report.pdv_6w.why, triggered: report.report_type },
