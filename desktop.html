@@ -2446,7 +2446,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (el) el.addEventListener('click', fn);
   };
   bind('btn-hero-chat',    () => openChat());
-  bind('btn-nav-dash',     () => { openSidePanel('panel-progress'); });
   // 설정 패널 오픈 시 인증 상태 갱신
   document.getElementById('sn-home')?.classList.add('active');
   bind('btn-hero-compare', () => scrollToSection('compare'));
