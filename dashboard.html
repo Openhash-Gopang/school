@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>학습자 대시보드 — K-School</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',system-ui,sans-serif;font-size:14px;background:#f5f7fa;color:#111;display:flex;flex-direction:column;height:100vh;overflow:hidden}
+
+/* 헤더 */
+.hdr{flex-shrink:0;background:#003087;height:56px;display:flex;align-items:center;padding:0 28px;gap:16px;box-shadow:0 2px 6px rgba(0,48,135,.25)}
+.hdr-back{display:flex;align-items:center;gap:6px;color:rgba(255,255,255,.8);font-size:14px;font-weight:600;text-decoration:none;transition:color .15s}
+.hdr-back:hover{color:#fff}
+.hdr-div{width:1px;height:20px;background:rgba(255,255,255,.2)}
+.hdr-title{font-size:15px;font-weight:700;color:#fff}
+.hdr-tabs{margin-left:auto;display:flex;gap:4px}
+.tab{padding:6px 16px;font-size:13px;font-weight:600;border:none;border-radius:3px;cursor:pointer;color:rgba(255,255,255,.6);background:rgba(255,255,255,.1);transition:all .15s}
+.tab.on{background:#fff;color:#003087}
+.tab:hover:not(.on){color:#fff;background:rgba(255,255,255,.18)}
+.hdr-ts{font-size:11px;color:rgba(255,255,255,.4);margin-left:12px}
+
+/* 본문 */
+.body{flex:1;display:flex;overflow:hidden}
+
+/* 사이드바 */
+.sidebar{width:240px;flex-shrink:0;background:#fff;border-right:1px solid #e2e5ea;overflow-y:auto;padding:22px 18px;display:flex;flex-direction:column;gap:16px}
+.s-avatar{width:54px;height:54px;border-radius:50%;background:#003087;display:flex;align-items:center;justify-content:center;font-size:21px;font-weight:800;color:#fff;margin:0 auto 10px}
+.s-name{font-size:17px;font-weight:700;color:#111;text-align:center}
+.s-sub{font-size:12px;color:#9ca3af;text-align:center;margin-top:2px}
+.s-divider{height:1px;background:#e2e5ea;margin:2px 0}
+.s-row{display:flex;gap:8px;align-items:flex-start}
+.s-lbl{font-size:11px;color:#9ca3af}
+.s-val{font-size:13px;font-weight:600;color:#111}
+.s-val.blue{color:#003087;font-weight:700}
+.s-box{background:#f5f7fa;border:1px solid #e2e5ea;border-radius:4px;padding:12px}
+.s-box-lbl{font-size:10px;font-weight:700;color:#003087;letter-spacing:.6px;text-transform:uppercase;margin-bottom:6px}
+.s-box-val{font-size:13px;font-weight:600;color:#111;line-height:1.4}
+.bar-track{background:#e2e5ea;height:4px;border-radius:2px;overflow:hidden;margin:6px 0 4px}
+.bar-fill{height:100%;background:#003087;border-radius:2px;transition:width .8s}
+.tag{display:inline-block;padding:3px 9px;background:#f5f7fa;border:1px solid #e2e5ea;border-radius:2px;font-size:11px;color:#374151;margin:2px}
+
+/* 콘텐츠 */
+.content{flex:1;overflow-y:auto;padding:22px 26px;background:#f5f7fa}
+.panel{display:none}
+.panel.on{display:block}
+
+/* 카드 */
+.card{background:#fff;border:1px solid #e2e5ea;border-radius:4px;padding:20px 22px;margin-bottom:16px}
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+.kpi{background:#fff;border:1px solid #e2e5ea;border-radius:4px;padding:16px 18px}
+.kpi-lbl{font-size:10px;font-weight:700;color:#6b7280;letter-spacing:.6px;text-transform:uppercase;margin-bottom:6px}
+.kpi-val{font-size:28px;font-weight:800;color:#003087;line-height:1;margin-bottom:3px}
+.kpi-sub{font-size:11px;color:#9ca3af}
+.sec-title{display:flex;align-items:center;gap:7px;font-size:11px;font-weight:700;color:#003087;letter-spacing:.5px;text-transform:uppercase;margin-bottom:12px}
+.empty{font-size:13px;color:#9ca3af;text-align:center;padding:16px 0}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.prog-row{margin-bottom:14px}
+.prog-hd{display:flex;justify-content:space-between;font-size:13px;font-weight:600;margin-bottom:5px}
+.prog-track{background:#e2e5ea;height:4px;border-radius:2px}
+.prog-fill{height:100%;background:#003087;border-radius:2px}
+.prog-meta{font-size:11px;color:#9ca3af;margin-top:3px}
+.done-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid #f0f2f5}
+.done-row:last-child{border:none}
+.comp-row{margin-bottom:13px}
+.comp-hd{display:flex;align-items:baseline;gap:6px;font-size:13px;font-weight:700;margin-bottom:5px}
+.comp-desc{font-size:11px;color:#9ca3af;flex:1;font-weight:400}
+.comp-val{font-size:13px;font-weight:800;color:#003087;margin-left:auto}
+.comp-track{background:#e2e5ea;height:4px;border-radius:2px}
+.comp-fill{height:100%;background:#003087;border-radius:2px;transition:width .8s}
+.stat-box{background:#f5f7fa;border-radius:4px;padding:16px;text-align:center}
+.stat-lbl{font-size:10px;font-weight:700;color:#6b7280;letter-spacing:.6px;text-transform:uppercase;margin-bottom:6px}
+.stat-val{font-size:34px;font-weight:900;color:#003087}
+.stat-sub{font-size:11px;color:#9ca3af;margin-top:4px}
+.subj-row{display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid #f0f2f5}
+.subj-row:last-child{border:none}
+.subj-name{font-size:13px;font-weight:500;color:#111;width:150px;flex-shrink:0}
+.subj-track{flex:1;background:#e2e5ea;height:4px;border-radius:2px}
+.subj-fill{height:100%;background:#003087;border-radius:2px}
+.subj-pct{font-size:13px;font-weight:700;color:#003087;width:36px;text-align:right}
+.tbl{width:100%;border-collapse:collapse;font-size:13px}
+.tbl th{padding:8px 10px;font-size:11px;font-weight:700;color:#6b7280;text-align:left;background:#f5f7fa;border-bottom:1px solid #e2e5ea}
+.tbl td{padding:9px 10px;border-bottom:1px solid #f0f2f5;color:#374151}
+.tbl td.blue{font-weight:700;color:#003087;text-align:center}
+.tbl td.gray{color:#9ca3af;text-align:center}
+.report-card{border:1px solid #e2e5ea;border-radius:3px;padding:14px;margin-bottom:10px}
+.report-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.report-type{font-size:13px;font-weight:700;color:#003087}
+.report-date{font-size:11px;color:#9ca3af}
+.report-body{font-size:13px;color:#374151;line-height:1.7;background:#f8fafc;border-radius:3px;padding:10px}
+.gen-btn{font-size:12px;font-weight:600;color:#003087;background:#f5f7fa;border:1px solid #d1d5db;border-radius:3px;padding:5px 12px;cursor:pointer}
+
+svg{vertical-align:middle;flex-shrink:0}
+</style>
+</head>
+<body>
+
+<!-- 헤더 -->
+<div class="hdr">
+  <a href="/desktop.html" class="hdr-back">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+    홈
+  </a>
+  <div class="hdr-div"></div>
+  <span class="hdr-title">학습자 대시보드</span>
+  <div class="hdr-tabs">
+    <button class="tab on" onclick="switchTab(0)">학습 현황</button>
+    <button class="tab" onclick="switchTab(1)">역량 · 적성</button>
+    <button class="tab" onclick="switchTab(2)">진로 계획</button>
+  </div>
+  <span class="hdr-ts" id="ts"></span>
+</div>
+
+<!-- 본문 -->
+<div class="body">
+
+  <!-- 사이드바 -->
+  <div class="sidebar">
+    <div>
+      <div class="s-avatar" id="s-avatar">?</div>
+      <div class="s-name" id="s-name">—</div>
+      <div class="s-sub" id="s-sub">— · —세</div>
+    </div>
+    <div class="s-divider"></div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div class="s-row">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#003087" stroke-width="2" stroke-linecap="round" style="margin-top:2px"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+        <div><div class="s-lbl">학제</div><div class="s-val" id="s-stage">—</div></div>
+      </div>
+      <div class="s-row">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#003087" stroke-width="2" stroke-linecap="round" style="margin-top:2px"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <div><div class="s-lbl">총 학습 시간</div><div class="s-val blue" id="s-hours">—h</div></div>
+      </div>
+      <div class="s-row">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#003087" stroke-width="2" stroke-linecap="round" style="margin-top:2px"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        <div><div class="s-lbl">평균 이해도</div><div class="s-val blue" id="s-comp">—%</div></div>
+      </div>
+    </div>
+    <div class="s-box">
+      <div class="s-box-lbl">진로 균형점</div>
+      <div class="s-box-val" id="s-career">—</div>
+    </div>
+    <div class="s-box">
+      <div class="s-box-lbl">AI 대체 가능성</div>
+      <div style="display:flex;align-items:baseline;gap:4px;margin-bottom:4px">
+        <span id="s-airep" style="font-size:24px;font-weight:900;color:#111">—</span>
+        <span style="font-size:12px;color:#9ca3af">/ 100</span>
+      </div>
+      <div class="bar-track"><div class="bar-fill" id="s-airep-bar" style="width:50%"></div></div>
+      <div id="s-airep-lbl" style="font-size:11px;color:#9ca3af">분석 중…</div>
+    </div>
+    <div>
+      <div style="font-size:10px;font-weight:700;color:#6b7280;letter-spacing:.6px;text-transform:uppercase;margin-bottom:8px">성격 · 취향</div>
+      <div id="s-tags"><span style="font-size:12px;color:#9ca3af">대화 후 분석됩니다</span></div>
+    </div>
+  </div>
+
+  <!-- 콘텐츠 -->
+  <div class="content">
+
+    <!-- 탭 0: 학습 현황 -->
+    <div class="panel on" id="panel-0">
+      <div class="kpi-grid">
+        <div class="kpi"><div class="kpi-lbl">총 세션</div><div class="kpi-val" id="k-sessions">—</div><div class="kpi-sub">누적 학습 횟수</div></div>
+        <div class="kpi"><div class="kpi-lbl">학습 시간</div><div class="kpi-val" id="k-hours">—h</div><div class="kpi-sub">총 이수 시간</div></div>
+        <div class="kpi"><div class="kpi-lbl">이수 중 과목</div><div class="kpi-val" id="k-active">—</div><div class="kpi-sub">현재 진행 중</div></div>
+        <div class="kpi"><div class="kpi-lbl">이해도</div><div class="kpi-val" id="k-comp">—%</div><div class="kpi-sub">세션 평균</div></div>
+      </div>
+      <div class="two-col">
+        <div class="card">
+          <div class="sec-title"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#003087" stroke-width="2" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>이수 중</div>
+          <div id="list-active"><div class="empty">이수 중인 과목이 없습니다</div></div>
+        </div>
+        <div class="card">
+          <div class="sec-title"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#003087" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>이수 완료</div>
+          <div id="list-done"><div class="empty">이수 완료한 과목이 없습니다</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="sec-title"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#003087" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>AI 추천 — 이수 예정 과목</div>
+        <div id="list-rec"><div class="empty">AI 교수와 대화하면 진로 기반 과목이 추천됩니다</div></div>
+      </div>
+      <div class="card">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+          <div class="sec-title" style="margin-bottom:0"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#003087" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" x2="8" y1="13" y2="13"/><line x1="16" x2="8" y1="17" y2="17"/></svg>최근 보고서</div>
+          <button class="gen-btn" id="gen-report-btn">주간 보고서 생성</button>
+        </div>
+        <div id="list-reports"><div class="empty">생성된 보고서가 없습니다</div></div>
+      </div>
+    </div>
+
+    <!-- 탭 1: 역량·적성 -->
+    <div class="panel" id="panel-1">
+      <div class="card" style="margin-bottom:16px">
+        <div class="sec-title" style="margin-bottom:18px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#003087" stroke-width="2" stroke-linecap="round"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>5차원 역량 분석</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
+          <div>
+            <div class="comp-row"><div class="comp-hd"><span>인지(C)</span><span class="comp-desc">데이터·패턴·논리</span><span class="comp-val" id="c-C">50</span></div><div class="comp-track"><div class="comp-fill" id="b-C" style="width:50%"></div></div></div>
+            <div class="comp-row"><div class="comp-hd"><span>육체(P)</span><span class="comp-desc">정밀작업·감각</span><span class="comp-val" id="c-P">50</span></div><div class="comp-track"><div class="comp-fill" id="b-P" style="width:50%"></div></div></div>
+            <div class="comp-row"><div class="comp-hd"><span>창의(Cr)</span><span class="comp-desc">아이디어·혁신</span><span class="comp-val" id="c-Cr">50</span></div><div class="comp-track"><div class="comp-fill" id="b-Cr" style="width:50%"></div></div></div>
+            <div class="comp-row"><div class="comp-hd"><span>사회(S)</span><span class="comp-desc">대인관계·리더십</span><span class="comp-val" id="c-S">50</span></div><div class="comp-track"><div class="comp-fill" id="b-S" style="width:50%"></div></div></div>
+            <div class="comp-row"><div class="comp-hd"><span>전문판단(J)</span><span class="comp-desc">윤리·안전결정</span><span class="comp-val" id="c-J">50</span></div><div class="comp-track"><div class="comp-fill" id="b-J" style="width:50%"></div></div></div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div class="stat-box"><div class="stat-lbl">AI 대체 가능성</div><div class="stat-val" id="st-airep">—</div><div class="stat-sub" id="st-airep-lbl">분석 중</div></div>
+            <div class="stat-box"><div class="stat-lbl">행복도 예측</div><div class="stat-val" id="st-happy">—%</div></div>
+            <div class="stat-box"><div class="stat-lbl">사회 효용 기여</div><div class="stat-val" id="st-utility">—%</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="sec-title" style="margin-bottom:14px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#003087" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>과목별 학습 능력</div>
+        <div id="list-subj"><div class="empty">학습 데이터 누적 후 표시됩니다</div></div>
+      </div>
+    </div>
+
+    <!-- 탭 2: 진로 계획 -->
+    <div class="panel" id="panel-2">
+      <div class="two-col">
+        <div class="card">
+          <div class="sec-title" style="margin-bottom:14px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#003087" stroke-width="2" stroke-linecap="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>직업 분석</div>
+          <div style="padding-bottom:12px;margin-bottom:12px;border-bottom:1px solid #e2e5ea">
+            <div style="font-size:10px;color:#9ca3af;font-weight:600;margin-bottom:4px">본인 희망 직업</div>
+            <div id="career-wish" style="font-size:17px;font-weight:700;color:#111">—</div>
+          </div>
+          <div style="font-size:10px;color:#9ca3af;font-weight:600;margin-bottom:8px">AI 추천 직업군</div>
+          <div id="career-ai"><div class="empty">역량 분석 후 추천됩니다</div></div>
+        </div>
+        <div class="card">
+          <div class="sec-title" style="margin-bottom:14px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#003087" stroke-width="2" stroke-linecap="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>예상 사회 진출</div>
+          <table class="tbl">
+            <thead><tr><th>구분</th><th style="text-align:center">시기</th><th style="text-align:center">신뢰도</th></tr></thead>
+            <tbody>
+              <tr><td>단기 목표</td><td class="blue" id="t-short">—년</td><td class="gray">85%</td></tr>
+              <tr><td>중기 목표</td><td class="blue" id="t-mid">—년</td><td class="gray">70%</td></tr>
+              <tr><td>장기 목표</td><td class="blue" id="t-long">—년</td><td class="gray">50%</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="two-col">
+        <div class="card">
+          <div class="sec-title" style="margin-bottom:14px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#003087" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>취업 추천 기업군</div>
+          <div id="career-employers"><div class="empty">진로 분석 후 추천됩니다</div></div>
+        </div>
+        <div class="card">
+          <div class="sec-title" style="margin-bottom:14px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#003087" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg>권장 학위 · 자격증</div>
+          <div id="career-creds"><div class="empty">진로 분석 후 표시됩니다</div></div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /body -->
+
+<script src="js/config.js"></script>
+<script>
+// ── 탭 전환 ──────────────────────────────────────────────
+function switchTab(n) {
+  document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('on', i===n));
+  document.querySelectorAll('.panel').forEach((p,i) => p.classList.toggle('on', i===n));
+}
+
+// ── 데이터 로딩 ──────────────────────────────────────────
+async function load() {
+  if (typeof SUPA_URL === 'undefined') return;
+
+  // 고팡 세션에서 guid 추출
+  let guid = null;
+  try {
+    const raw = sessionStorage.getItem('gopang_user') || localStorage.getItem('gopang_user_v3');
+    if (raw) guid = JSON.parse(raw)?.ipv6;
+  } catch(e) {}
+  // URL 파라미터로도 받을 수 있음
+  const params = new URLSearchParams(location.search);
+  if (params.get('guid')) guid = params.get('guid');
+
+  if (!guid) {
+    document.getElementById('s-name').textContent = '로그인 필요';
+    return;
+  }
+
+  const H = { apikey: SUPA_ANON, Authorization: 'Bearer ' + SUPA_ANON, Accept: 'application/json' };
+  const get = url => fetch(url, { headers: H }).then(r => r.json()).catch(() => []);
+
+  // 1. 프로파일
+  const [prof] = await get(`${SUPA_URL}/rest/v1/school_student_profiles?user_guid=eq.${encodeURIComponent(guid)}&limit=1`);
+  if (prof) {
+    const init = (prof.display_name||'?').slice(0,1).toUpperCase();
+    set('s-avatar', init);
+    set('s-name', prof.display_name||'—');
+    set('s-sub', `${prof.stage||'—'} · ${prof.age||'—'}세`);
+    set('s-stage', prof.stage||'—');
+    set('s-career', prof.career_balance||'—');
+    set('career-wish', prof.career_personal||prof.career_primary||'—');
+
+    const rep = parseFloat(prof.ai_replaceability)||50;
+    ['s-airep','st-airep'].forEach(id => set(id, rep.toFixed(1)));
+    bar('s-airep-bar', rep);
+    const rl = rep<40?'인간 고유 역량이 강합니다':rep<70?'AI 협업이 권장됩니다':'AI 대체 위험 구간';
+    ['s-airep-lbl','st-airep-lbl'].forEach(id => set(id, rl));
+
+    const happy = Math.round((parseFloat(prof.happiness_score)||.5)*100);
+    const util  = Math.round((parseFloat(prof.utility_score)||.5)*100);
+    set('st-happy', happy+'%');
+    set('st-utility', util+'%');
+
+    const dims = {C:prof.c_score,P:prof.p_score,Cr:prof.cr_score,S:prof.s_score,J:prof.j_score};
+    Object.entries(dims).forEach(([k,v]) => { const val=parseFloat(v)||50; set('c-'+k,val.toFixed(0)); bar('b-'+k,val); });
+
+    const tags = [...(prof.personality||[]),...(prof.interests||[])];
+    if (tags.length) document.getElementById('s-tags').innerHTML = tags.map(t=>`<span class="tag">${t}</span>`).join('');
+  }
+
+  // 2. 집계 뷰
+  const [dash] = await get(`${SUPA_URL}/rest/v1/school_student_dashboard?user_guid=eq.${encodeURIComponent(guid)}&limit=1`);
+  if (dash) {
+    const hrs = ((parseInt(dash.total_study_minutes)||0)/60).toFixed(1);
+    ['s-hours','k-hours'].forEach(id => set(id, hrs+'h'));
+    set('s-comp', (parseFloat(dash.overall_comprehension)||0).toFixed(1)+'%');
+    set('k-comp', (parseFloat(dash.overall_comprehension)||0).toFixed(1)+'%');
+    set('k-sessions', dash.total_sessions_done||'—');
+    set('k-active', dash.active_subjects||'—');
+  }
+
+  // 3. 과목
+  const subjects = await get(`${SUPA_URL}/rest/v1/school_subjects?user_guid=eq.${encodeURIComponent(guid)}&select=*,school_progress(progress_pct,completed_sessions,total_sessions)`);
+  if (subjects.length) {
+    const active    = subjects.filter(s => { const p=pct(s); return p>0&&p<100; });
+    const completed = subjects.filter(s => pct(s)>=100);
+
+    if (active.length) {
+      document.getElementById('list-active').innerHTML = active.map(s =>
+        `<div class="prog-row">
+          <div class="prog-hd"><span>${s.subject_name_ko||s.subject_name_en}</span><span style="color:#003087">${pct(s).toFixed(0)}%</span></div>
+          <div class="prog-track"><div class="prog-fill" style="width:${pct(s)}%"></div></div>
+          <div class="prog-meta">${s.field_code||''} · ${s.stage||''}</div>
+        </div>`
+      ).join('');
+    }
+
+    if (completed.length) {
+      document.getElementById('list-done').innerHTML = completed.map(s =>
+        `<div class="done-row">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#003087" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+          <div><div style="font-size:13px;font-weight:600;color:#111">${s.subject_name_ko||s.subject_name_en}</div><div style="font-size:11px;color:#9ca3af">${s.stage||''}</div></div>
+        </div>`
+      ).join('');
+    }
+
+    const all = [...active,...completed];
+    if (all.length) {
+      document.getElementById('list-subj').innerHTML = all.map(s =>
+        `<div class="subj-row">
+          <span class="subj-name">${s.subject_name_ko||s.subject_name_en}</span>
+          <div class="subj-track"><div class="subj-fill" style="width:${pct(s)}%"></div></div>
+          <span class="subj-pct">${pct(s).toFixed(0)}%</span>
+        </div>`
+      ).join('');
+    }
+  }
+
+  // 4. 보고서
+  const reports = await get(`${SUPA_URL}/rest/v1/school_reports?user_guid=eq.${encodeURIComponent(guid)}&order=generated_at.desc&limit=3`);
+  if (reports.length) {
+    document.getElementById('list-reports').innerHTML = reports.map(r => {
+      const note = (r.report_data?.ai_professor_note||'').slice(0,250);
+      const period = r.period_start&&r.period_end ? `${r.period_start} ~ ${r.period_end}` : '—';
+      return `<div class="report-card">
+        <div class="report-hd">
+          <span class="report-type">${r.report_type==='school_weekly_progress'?'주간 보고서':'월간 보고서'}</span>
+          <span class="report-date">${period}</span>
+        </div>
+        <div class="report-body">${note}${note.length>=250?'…':''}</div>
+      </div>`;
+    }).join('');
+  }
+
+  // 보고서 생성 버튼
+  document.getElementById('gen-report-btn').onclick = async () => {
+    if (typeof generateWeeklyReport === 'function') {
+      await generateWeeklyReport(guid, ['gopang_pdv']);
+      location.reload();
+    }
+  };
+
+  document.getElementById('ts').textContent = new Date().toLocaleTimeString('ko');
+}
+
+function set(id, val) { const el=document.getElementById(id); if(el) el.textContent=val; }
+function bar(id, val) { const el=document.getElementById(id); if(el) el.style.width=val+'%'; }
+function pct(s) { return parseFloat(s.school_progress?.[0]?.progress_pct)||0; }
+
+load();
+</script>
+</body>
+</html>
