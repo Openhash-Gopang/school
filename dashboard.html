@@ -254,6 +254,7 @@ svg{vertical-align:middle;flex-shrink:0}
 </div><!-- /body -->
 
 <script src="js/config.js"></script>
+<script type="module" src="https://gopang.net/auth/subsystem-auth.js"></script>
 <script>
 // ── 탭 전환 ──────────────────────────────────────────────
 function switchTab(n) {
@@ -262,18 +263,17 @@ function switchTab(n) {
 }
 
 // ── 데이터 로딩 ──────────────────────────────────────────
-async function load() {
-  if (typeof SUPA_URL === 'undefined') return;
-
-  // 고팡 세션에서 guid 추출
-  let guid = null;
-  try {
-    const raw = sessionStorage.getItem('gopang_user') || localStorage.getItem('gopang_user_v3');
-    if (raw) guid = JSON.parse(raw)?.ipv6;
-  } catch(e) {}
-  // URL 파라미터로도 받을 수 있음
+// ── 인증 콜백 (subsystem-auth.js) ────────────────────────
+window._onGopangAuth = async function(user) {
+  if (!user) return;
+  // URL 파라미터 guid 우선, 없으면 인증 user.ipv6 사용
   const params = new URLSearchParams(location.search);
-  if (params.get('guid')) guid = params.get('guid');
+  const guid = params.get('guid') || user.ipv6;
+  load(guid);
+};
+
+async function load(guid) {
+  if (typeof SUPA_URL === 'undefined') return;
 
   if (!guid) {
     document.getElementById('s-name').textContent = '로그인 필요';
@@ -391,7 +391,7 @@ function set(id, val) { const el=document.getElementById(id); if(el) el.textCont
 function bar(id, val) { const el=document.getElementById(id); if(el) el.style.width=val+'%'; }
 function pct(s) { return parseFloat(s.school_progress?.[0]?.progress_pct)||0; }
 
-load();
+// load() 는 _onGopangAuth 콜백에서 호출됨
 </script>
 </body>
 </html>

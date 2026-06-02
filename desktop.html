@@ -1931,7 +1931,7 @@ body:has(.sidebar:hover) .nav{padding-left:calc(var(--swe) + 16px)}
 
 <!-- ══ 스크립트 ══ -->
 <script src="js/config.js"></script>
-<script src="js/auth.js"></script>
+<script type="module" src="https://gopang.net/auth/subsystem-auth.js"></script>
 <script src="js/app.js"></script>
 <script src="js/report.js"></script>
 
@@ -2134,20 +2134,28 @@ function initGwpContext() {
   try { return decodeURIComponent(ctx); } catch { return null; }
 }
 
-// ── 인증 + 초기화 ────────────────────────────────────────
-(async () => {
-  // GWP 호출이면 인증 로딩 표시
+// ── 인증 + 초기화 (subsystem-auth.js) ────────────────────
+let _user = null;
+
+window._onGopangAuth = async function(user) {
+  if (!user) return;
+  _user = user;
+  document.getElementById('auth-loading').style.display = 'none';
+
+  const badge = document.getElementById('auth-badge');
+  if (badge) {
+    const colors = { L0:'#6b7280', L1:'#00bcd4', L2:'#3ecf8e', L3:'#ff9800' };
+    badge.style.color = colors[user.level] || colors.L0;
+    badge.textContent = user.level;
+    badge.title = user.ipv6 || '';
+  }
+
   const params = new URLSearchParams(location.search);
   const isGwp  = params.get('gwp') === '1';
   const ctx    = initGwpContext();
 
   if (isGwp || ctx) {
-    // GWP 호출: 인증 후 panel-chat 열기
-    document.getElementById('auth-loading').style.display = 'flex';
-    const user = await initAuth();
-    document.getElementById('auth-loading').style.display = 'none';
-    if (!user) return;
-    openChat();  // openSidePanel('panel-chat')
+    openChat();
     if (ctx) {
       setTimeout(() => {
         const inp = document.getElementById('panel-chat-input');
@@ -2155,21 +2163,20 @@ function initGwpContext() {
       }, 400);
     }
   }
-  // 일반 접속: 인증 없이 랜딩 표시, 버튼 클릭 시 인증
-})();
+};
 
-// 채팅 열 때 인증 확인
+// _user 미완료 시 채팅 버튼 클릭 → subsystem-auth.js가 자동 처리
 // openChat 인증 래퍼 — desktop은 panel-chat 패널 사용
 const _origOpenChat = openChat;
-window.openChat = async function() {
+window.openChat = function() {
   if (!_user) {
     document.getElementById('auth-loading').style.display = 'flex';
-    const user = await initAuth();
-    document.getElementById('auth-loading').style.display = 'none';
-    if (!user) return;
+    return;
   }
   _origOpenChat();
 };
+
+
 
 
 // ── 사이드바 패널 v2 ──────────────────────────────────────

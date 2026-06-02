@@ -449,7 +449,7 @@ html, body {
 
 <!-- 스크립트 -->
 <script src="js/config.js"></script>
-<script src="js/auth.js"></script>
+<script type="module" src="https://gopang.net/auth/subsystem-auth.js"></script>
 <script>
 
 // ── 상태 변수 ─────────────────────────────────────────────
@@ -680,25 +680,25 @@ async function sendPDVReport() {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        svc:   'school',
-        type:  'school_session_complete',
-        ipv6:  _user.ipv6,
-        // 6하원칙
-        who:   _user.ipv6,
-        when:  new Date().toISOString(),
-        where: 'school.gopang.net',
-        what: {
-          summary,
-          session_minutes: mins,
-          message_count:   _sessionMsgCnt,
-          topics,
-          chat_history_length: _chatHistory.length,
-        },
-        how:  { method: 'AI 교수 채팅 (DeepSeek V3)', device: 'mobile' },
-        why:  {
-          goal:      '개인 맞춤형 학습 + 진로 균형점 달성',
-          triggered: _gwpContext ? 'gopang_gwp' : 'direct',
-          gwp_ctx:   _gwpContext || null,
+        report: {
+          svc:   'school',
+          type:  'school_session_complete',
+          who:   { ipv6: _user.ipv6, role: 'user' },
+          when:  { period_start: new Date().toISOString(), period_end: new Date().toISOString() },
+          where: { svc_url: 'school.gopang.net' },
+          what:  {
+            summary,
+            session_minutes: mins,
+            message_count:   _sessionMsgCnt,
+            topics,
+            chat_history_length: _chatHistory.length,
+          },
+          how:  { method: 'AI 교수 채팅 (DeepSeek V3)', device: 'mobile', auth_level: _user.level },
+          why:  {
+            goal:      '개인 맞춤형 학습 + 진로 균형점 달성',
+            triggered: _gwpContext ? 'gopang_gwp' : 'direct',
+            gwp_ctx:   _gwpContext || null,
+          },
         },
       }),
     });
@@ -815,39 +815,34 @@ function showWelcome() {
   appendAI(intro);
 }
 
-// ── 앱 초기화 ─────────────────────────────────────────────
-(async () => {
-  // 인증
-  const user = await initAuth();
-  if (!user) return; // 리다이렉트 중
-
+// ── 앱 초기화 (subsystem-auth.js 콜백) ───────────────────
+window._onGopangAuth = async function(user) {
+  if (!user) return;
+  _user = user;
   document.getElementById('auth-loading').style.display = 'none';
   document.getElementById('app').style.display = 'flex';
 
   renderAuthBadge();
 
-  // 상단 서브타이틀 갱신
   if (user.level && user.level !== 'L0') {
     document.getElementById('topbar-sub').textContent =
       `K-School · ${user.level} 인증 완료`;
   }
 
-  // 환영 메시지
   showWelcome();
 
-  // GWP ctx 자동 전송
   if (_gwpContext) {
     setTimeout(() => sendMessage(_gwpContext), 600);
   }
 
-  // URL 정리 (히스토리에서 토큰 제거)
+  // URL 정리
   const clean = new URL(location.href);
   clean.searchParams.delete('gwp');
   clean.searchParams.delete('gwp_token');
   clean.searchParams.delete('ctx');
   clean.searchParams.delete('origin');
   history.replaceState({}, '', clean.toString());
-})();
+};
 </script>
 </body>
 </html>
