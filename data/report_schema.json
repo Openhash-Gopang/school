@@ -89,7 +89,7 @@
       "_note": "고팡 PDV 6하원칙 매핑",
       "who":   "학생 user_guid",
       "when":  "보고서 생성 시각 (ISO 8601)",
-      "where": "school.gopang.net",
+      "where": "school.hondi.net",
       "what":  "주간 학습 진도 요약",
       "how":   "AI 교수 튜터링 + OER 교재 + 세션 기반 학습",
       "why":   "개인 역량 발달 + 진로 균형점 달성 + 사회 효용 기여"
@@ -211,7 +211,7 @@
     "pdv_6w": {
       "who":   "학생 user_guid",
       "when":  "보고서 생성 시각",
-      "where": "school.gopang.net",
+      "where": "school.hondi.net",
       "what":  "월간 학습 성장 분석",
       "how":   "AI 교수 튜터링 + 5차원 역량 평가 + Bloom 성취도 분석",
       "why":   "개인 성장 추적 + 진로 균형점 최적화 + 사회 효용 기여 + 부모·교사 소통"

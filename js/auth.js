@@ -8,7 +8,7 @@ let _user = null;
 async function _loadSSO() {
   if (gopangAuth) return;
   try {
-    const mod = await import('https://gopang.net/auth/gopang-sso.js');
+    const mod = await import('https://hondi.net/auth/gopang-sso.js');
     gopangAuth = mod.gopangAuth;
   } catch(e) {
     console.warn('[Auth] gopang-sso.js 로드 실패, 로컬 폴백:', e.message);
@@ -59,11 +59,11 @@ function showAuthPanel() {
     </div>
     <div class="modal-body">
       <div style="font-size:12px;color:var(--sb-txt2);line-height:1.8;margin-bottom:16px">
-        K-School은 고팡(gopang.net) 인증을 사용합니다.<br>
+        K-School은 고팡(hondi.net) 인증을 사용합니다.<br>
         현재 레벨: <strong style="color:var(--sb-green)">${_user?.level || 'L0'}</strong>
         &nbsp;|&nbsp; IPv6: <code style="font-size:10px;color:var(--sb-txt3)">${(_user?.ipv6||'').slice(0,24)}…</code>
       </div>
-      <a href="https://gopang.net" target="_blank" class="btn btn-primary" style="width:100%;justify-content:center;display:flex">고팡 앱 열기</a>
+      <a href="https://hondi.net" target="_blank" class="btn btn-primary" style="width:100%;justify-content:center;display:flex">고팡 앱 열기</a>
     </div>
     <div class="modal-ft">
       <button class="btn" onclick="closeModal('auth-modal')">닫기</button>
@@ -115,9 +115,9 @@ function _showLoginPrompt(level) {
     <div class="modal-body">
       <div class="alert alert-yellow" style="margin-bottom:16px">
         <span>⚠️</span>
-        <span>K-School은 고팡(gopang.net) 인증을 사용합니다.${level?' '+level+' 인증이 필요합니다.':''}</span>
+        <span>K-School은 고팡(hondi.net) 인증을 사용합니다.${level?' '+level+' 인증이 필요합니다.':''}</span>
       </div>
-      <a href="https://gopang.net" target="_blank" class="btn btn-primary" style="width:100%;justify-content:center;display:flex;margin-bottom:8px">gopang.net 열기</a>
+      <a href="https://hondi.net" target="_blank" class="btn btn-primary" style="width:100%;justify-content:center;display:flex;margin-bottom:8px">hondi.net 열기</a>
       <button class="btn" style="width:100%;justify-content:center;display:flex" onclick="location.reload()">인증 후 새로고침</button>
     </div>
     <div class="modal-ft">

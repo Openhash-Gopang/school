@@ -11,7 +11,7 @@
 // 고팡 PDV 6하원칙 매핑:
 //   누가  — student.user_guid
 //   언제  — 보고서 생성 시각
-//   어디서 — school.gopang.net
+//   어디서 — school.hondi.net
 //   무엇을 — 학습 진도·역량 분석
 //   어떻게 — AI 교수 튜터링 + OER + Bloom 평가
 //   왜    — 진로 균형점 달성 + 사회 효용 기여
@@ -229,7 +229,7 @@ async function buildWeeklyReport(userGuid) {
     pdv_6w: {
       who:   profile.user_guid,
       when:  new Date().toISOString(),
-      where: 'school.gopang.net',
+      where: 'school.hondi.net',
       what:  `주간 학습: ${sessions.length}세션 / ${totalMinutes}분 / 이해도 ${avgComp.toFixed(1)}%`,
       how:   'AI 교수 튜터링 + OER 교재 + Bloom 기반 세션 학습',
       why:   `진로 균형점(${profile.career_balance || '탐색 중'}) 달성 + 사회 효용 기여`,
@@ -401,7 +401,7 @@ ${sub.subject_name_ko} 과목의 이번 달 학습을 3문장으로 평가하세
     pdv_6w: {
       who:   profile.user_guid,
       when:  new Date().toISOString(),
-      where: 'school.gopang.net',
+      where: 'school.hondi.net',
       what:  `월간 학습 분석: ${sessions.length}세션 / ${Math.round(totalHours*10)/10}h / 5차원 역량 갱신`,
       how:   'AI 교수 튜터링 + OER 교재 + Bloom 성취도 평가 + 5차원 역량 분석',
       why:   `진로 균형점(${profile.career_balance || '탐색 중'}) 최적화 + 사회 효용 기여 + 부모·교사 소통`,
@@ -445,7 +445,7 @@ async function sendToPDV(report) {
                 period_start:  report.period?.start,
                 period_end:    report.period?.end },
           where: {
-            svc_url: 'https://school.gopang.net',
+            svc_url: 'https://school.hondi.net',
             ...(typeof report.pdv_6w.where === 'object' && report.pdv_6w.where !== null
               ? report.pdv_6w.where
               : { label: report.pdv_6w.where }),

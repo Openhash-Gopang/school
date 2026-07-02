@@ -282,7 +282,7 @@ Happiness_Score = 적성일치도×0.4 + 관심도×0.3 + 성장가능성×0.2 +
   │  1. gopang PDV                              │
   │     POST /pdv/report                        │
   │     → ACK { pdv_entry_id }                  │
-  │     → gopang.net 사용자 PDV에 6하원칙 기록   │
+  │     → hondi.net 사용자 PDV에 6하원칙 기록   │
   │                                             │
   │  2. 부모·보호자                              │
   │     POST /notify (email / 고팡 알림)         │
