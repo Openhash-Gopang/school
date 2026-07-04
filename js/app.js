@@ -374,13 +374,20 @@ let _chatHistory   = [];
 let _studentProfile = null;
 
 // 시스템 프롬프트 로드
+const UNIVERSAL_INTEGRITY_URL = 'https://raw.githubusercontent.com/Openhash-Gopang/gopang/main/prompts/UNIVERSAL-INTEGRITY_v1_0.md';
 async function loadSystemPrompt() {
   if (_systemPrompt) return _systemPrompt;
+  let universalIntegrity = '';
+  try {
+    const u = await fetch(UNIVERSAL_INTEGRITY_URL);
+    if (u.ok) universalIntegrity = await u.text();
+  } catch (e) { console.warn('[K-School] UNIVERSAL-INTEGRITY 로드 실패:', e.message); }
   try {
     const r = await fetch(SYSTEM_PROMPT_URL);
-    _systemPrompt = await r.text();
+    const own = await r.text();
+    _systemPrompt = universalIntegrity ? `${universalIntegrity}\n\n---\n\n${own}` : own;
   } catch(e) {
-    _systemPrompt = 'You are K-School AI Professor. Adapt to the student profile provided.';
+    _systemPrompt = universalIntegrity || 'You are K-School AI Professor. Adapt to the student profile provided.';
   }
   return _systemPrompt;
 }
@@ -414,7 +421,7 @@ function buildSystemWithProfile(basePrompt, profile) {
 }
 
 // AI 교수에게 메시지 전송
-// 엔드포인트: gopang-proxy.tensor-city.workers.dev/deepseek
+// 엔드포인트: hondi-proxy.tensor-city.workers.dev/deepseek
 // 모델: deepseek-chat (DeepSeek V3) — worker.js DEEPSEEK_API_KEY 사용
 async function sendToAIProfessor(userMessage) {
   const sysPrompt  = await loadSystemPrompt();
@@ -428,7 +435,7 @@ async function sendToAIProfessor(userMessage) {
     ..._chatHistory,
   ];
 
-  const res = await fetch('https://gopang-proxy.tensor-city.workers.dev/deepseek', {
+  const res = await fetch('https://hondi-proxy.tensor-city.workers.dev/deepseek', {
     method:  'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
