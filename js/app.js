@@ -487,21 +487,40 @@ async function sendToAIProfessor(userMessage) {
 }
 
 // 2026-07-04: consent.html에서 돌아온 직후인지 확인 — PDV_HISTORY_REQUEST 파일럿.
-// (K-Tax 통합과 동일 패턴. UI 콜백은 앱의 실제 채팅 렌더러에 맞춰 교체 필요 —
-// 여기서는 자리표시자로 console.info만 남긴다.)
-document.addEventListener('DOMContentLoaded', () => {
+// (K-Tax 통합과 동일 패턴. 화면 표시는 chatSendMessage()의 AI 버블 마크업을
+// 그대로 재사용한다 — "AI 교수" 탭이 아직 렌더링되지 않아 #chat-messages가
+// 없는 상태로 리다이렉트에서 돌아왔을 수도 있으므로 그 경우엔 renderAIProfessor()
+// 로 탭을 먼저 그린 뒤 붙인다.)
+document.addEventListener('DOMContentLoaded', async () => {
   if (!window.PdvHistoryClient) return;
   const back = window.PdvHistoryClient.checkPdvConsentReturn();
   if (!back) return;
+
+  if (!document.getElementById('chat-messages')) {
+    renderAIProfessor();
+  }
+  const container = document.getElementById('chat-messages');
+  if (!container) return; // 탭 렌더링 대상 요소 자체가 없는 화면 — 표시 불가
+
   if (back.denied) {
-    console.info('[K-School PDV] 사용자가 이전 기록 조회에 동의하지 않음');
+    container.innerHTML += `<div style="color:var(--sb-red-txt);font-size:12px;padding:8px">이전 기록 조회에 동의하지 않으셨네요. 처음부터 다시 도와드릴게요.</div>`;
+    container.scrollTop = container.scrollHeight;
     return;
   }
   if (back.granted && back.resumeContext?.userMessage) {
-    console.info('[K-School PDV] 동의 완료 — 이어서 진행:', back.resumeContext.userMessage);
-    // TODO: 실제 채팅 UI 렌더 함수(예: renderChatBubble)를 호출해 결과를
-    // 화면에 표시하도록 연결할 것 — 이 저장소의 실제 렌더링 함수명을
-    // 확인 후 sendToAIProfessor(back.resumeContext.userMessage)의 결과를 붙인다.
+    container.innerHTML += `<div style="color:var(--sb-txt2);font-size:12px;padding:6px 8px">동의 확인했습니다. 이전 학습 기록을 반영해서 이어가겠습니다…</div>`;
+    container.scrollTop = container.scrollHeight;
+    try {
+      const reply = await sendToAIProfessor(back.resumeContext.userMessage);
+      container.innerHTML += `
+        <div style="display:flex;justify-content:flex-start;gap:8px">
+          <div style="width:28px;height:28px;border-radius:6px;background:var(--sb-green-bg);border:1px solid var(--sb-green-bd);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:11px;font-weight:700;color:var(--sb-green-txt)">AI</div>
+          <div style="max-width:75%;background:var(--sb-surface);border:1px solid var(--sb-border);border-radius:var(--r2) var(--r2) var(--r2) 0;padding:9px 13px;font-size:13px;line-height:1.6;color:var(--sb-txt)">${reply.replace(/\n/g,'<br>')}</div>
+        </div>`;
+    } catch (e) {
+      container.innerHTML += `<div style="color:var(--sb-red-txt);font-size:12px;padding:8px">이어서 진행하는 중 오류가 발생했습니다: ${e.message}</div>`;
+    }
+    container.scrollTop = container.scrollHeight;
   }
 });
 
