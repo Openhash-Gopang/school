@@ -420,10 +420,7 @@ function buildSystemWithProfile(basePrompt, profile) {
   return block + '\n' + basePrompt;
 }
 
-// AI 교수에게 메시지 전송
-// 엔드포인트: hondi-proxy.tensor-city.workers.dev/deepseek
-// 모델: deepseek-chat (DeepSeek V3) — worker.js DEEPSEEK_API_KEY 사용
-async function sendToAIProfessor(userMessage) {
+async function _sendToAIProfessorRaw(userMessage) {
   const sysPrompt  = await loadSystemPrompt();
   const fullSystem = buildSystemWithProfile(sysPrompt, _studentProfile);
 
@@ -456,6 +453,57 @@ async function sendToAIProfessor(userMessage) {
   _chatHistory.push({ role: 'assistant', content: reply });
   return reply;
 }
+
+// 2026-07-04: PDV_HISTORY_REQUEST(SP-09_kschool v2.3) 가로채기.
+// K-School은 K-Public_common을 상속하지 않으므로(GLOBAL-LOCAL-COMPLIANCE
+// 참조) 이 태그는 SP 자체 규칙 — worker.js VALID_PDV_SCOPES의 'kschool'을
+// 그대로 사용한다.
+async function sendToAIProfessor(userMessage) {
+  const raw = await _sendToAIProfessorRaw(userMessage);
+  if (!window.PdvHistoryClient || !/\[PDV(?:_HISTORY)?_REQUEST:/.test(raw)) return raw;
+
+  const { interceptPdvTags } = window.PdvHistoryClient;
+  const r = await interceptPdvTags(raw, {
+    svc: 'school', ipv6: _studentProfile?.user_guid || 'anonymous',
+    // TODO(확인 필요): K-Tax 통합과 동일한 이유로 실제 인증 세션의 레벨을
+    // 아직 반영하지 못한 잠정 토큰이다 — 배포 전 교체 필요.
+    authToken: { exp: Math.floor(Date.now()/1000) + 3600, level: 'L1' },
+    resumeContext: { userMessage },
+  });
+  if (!r || r.redirecting) return raw; // 리다이렉트 중이면 반환값은 사실상 안 쓰임
+
+  const summaryText = (r.results || []).map(x => {
+    if (x.error) return `(${x.scope} 이력 조회 실패: ${x.error})`;
+    if (!x.summary || x.summary.available === false) return `(${x.scope} 이전 학습 기록 없음)`;
+    return `(${x.scope} 이전 학습 기록: ${JSON.stringify(x.summary)})`;
+  }).join('\n');
+
+  // 조회 결과를 대화 이력에 시스템 메모로 추가한 뒤, 같은 사용자 발화로
+  // 다시 한 번 호출해 최종 답변을 받는다(마지막 push된 user 메시지는
+  // _sendToAIProfessorRaw 안에서 이미 히스토리에 들어가 있으므로 중복
+  // push하지 않도록 assistant 메모만 추가).
+  _chatHistory.push({ role: 'assistant', content: `[PDV 조회 결과]\n${summaryText}\n위 내용을 반영해서 이어가겠습니다.` });
+  return _sendToAIProfessorRaw('(이전 기록을 반영해서 이어서 진행해줘)');
+}
+
+// 2026-07-04: consent.html에서 돌아온 직후인지 확인 — PDV_HISTORY_REQUEST 파일럿.
+// (K-Tax 통합과 동일 패턴. UI 콜백은 앱의 실제 채팅 렌더러에 맞춰 교체 필요 —
+// 여기서는 자리표시자로 console.info만 남긴다.)
+document.addEventListener('DOMContentLoaded', () => {
+  if (!window.PdvHistoryClient) return;
+  const back = window.PdvHistoryClient.checkPdvConsentReturn();
+  if (!back) return;
+  if (back.denied) {
+    console.info('[K-School PDV] 사용자가 이전 기록 조회에 동의하지 않음');
+    return;
+  }
+  if (back.granted && back.resumeContext?.userMessage) {
+    console.info('[K-School PDV] 동의 완료 — 이어서 진행:', back.resumeContext.userMessage);
+    // TODO: 실제 채팅 UI 렌더 함수(예: renderChatBubble)를 호출해 결과를
+    // 화면에 표시하도록 연결할 것 — 이 저장소의 실제 렌더링 함수명을
+    // 확인 후 sendToAIProfessor(back.resumeContext.userMessage)의 결과를 붙인다.
+  }
+});
 
 // AI 교수 탭 렌더링
 function renderAIProfessor() {

@@ -2,6 +2,7 @@
 <html lang="ko">
 <head>
     <script src="/gopang-wallet.js"></script>
+    <script src="/js/pdv-history-client.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>K-School — AI 교수와 함께하는 새로운 교육</title>
@@ -2242,7 +2243,7 @@ async function panelChatSend() {
   msgs.scrollTop = msgs.scrollHeight;
 
   try {
-    const res = await fetch('https://gopang-proxy.tensor-city.workers.dev/deepseek', {
+    const res = await fetch('https://hondi-proxy.tensor-city.workers.dev/deepseek', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
