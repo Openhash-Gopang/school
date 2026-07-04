@@ -465,9 +465,6 @@ async function sendToAIProfessor(userMessage) {
   const { interceptPdvTags } = window.PdvHistoryClient;
   const r = await interceptPdvTags(raw, {
     svc: 'school', ipv6: _studentProfile?.user_guid || 'anonymous',
-    // TODO(확인 필요): K-Tax 통합과 동일한 이유로 실제 인증 세션의 레벨을
-    // 아직 반영하지 못한 잠정 토큰이다 — 배포 전 교체 필요.
-    authToken: { exp: Math.floor(Date.now()/1000) + 3600, level: 'L1' },
     resumeContext: { userMessage },
   });
   if (!r || r.redirecting) return raw; // 리다이렉트 중이면 반환값은 사실상 안 쓰임
