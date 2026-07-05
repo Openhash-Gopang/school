@@ -2248,6 +2248,7 @@ async function panelChatSend() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         model: 'deepseek-chat', max_tokens: 600, temperature: 0.7,
+        service_id: 'kedu', // 2026-07-05: worker.js가 UNIVERSAL 레이어 강제 주입
         messages: [
           { role: 'system', content: 'You are K-School AI Professor. Answer concisely in Korean.' },
           ..._panelHistory,
