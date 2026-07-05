@@ -4,8 +4,8 @@
 //
 // 의존:
 //   - Supabase (school_* 테이블 조회)
-//   - gopang-proxy /pdv/report  (PDV 전송)
-//   - gopang-proxy /deepseek    (AI 교수 코멘트 생성)
+//   - hondi-proxy /pdv/report  (PDV 전송)
+//   - hondi-proxy /deepseek    (AI 교수 코멘트 생성)
 //   - config.js  (SUPA_URL, SUPA_ANON)
 //
 // 고팡 PDV 6하원칙 매핑:
@@ -16,7 +16,7 @@
 //   어떻게 — AI 교수 튜터링 + OER + Bloom 평가
 //   왜    — 진로 균형점 달성 + 사회 효용 기여
 
-const PROXY    = 'https://gopang-proxy.tensor-city.workers.dev';
+const PROXY    = 'https://hondi-proxy.tensor-city.workers.dev';
 const SVC_ID   = 'school';
 const REPORT_V = '1.0';
 
