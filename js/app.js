@@ -437,6 +437,7 @@ async function _sendToAIProfessorRaw(userMessage) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       model:       'deepseek-chat',
+      service_id:  'kedu', // 2026-07-07: worker.js가 UNIVERSAL-INTEGRITY/UNIVERSAL-common 강제 주입
       max_tokens:  1024,
       temperature: 0.7,
       messages,
