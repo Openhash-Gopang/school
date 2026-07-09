@@ -445,6 +445,10 @@ function toast(msg) {
 
 let hist=[], mc=0;
 
+// ── GWP_DONE 보고용 세션 메타(2026-07-10 신설) ──────────────────────
+const _gwpSessionId = (crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random().toString(36).slice(2));
+const _gwpSessionStartedAt = new Date().toISOString();
+
 function appendMsg(role,text) {
   const id='mb'+(mc++), body=document.getElementById('mob-chat-body');
   const wrap=document.createElement('div'); wrap.id=id;
@@ -608,5 +612,30 @@ window._onGopangAuth = function(user) {
   console.log('[K-School] ✅', user.level, (user.ipv6||'').slice(-8));
 };
 </script>
+
+<script>
+// ── GWP_DONE 보고 — 공유모듈(gwp-report-client.js) 동적 import ──────
+// jeju와 동일한 이유로 pagehide 1회 발신(자유대화형, 완료 시점 없음,
+// engine.js가 GWP_DONE 수신 즉시 탭을 닫으므로 매 턴 발신 금지).
+window.addEventListener('pagehide', () => {
+  if (!window.opener || !hist.length) return;
+  let guid = 'anonymous';
+  try { guid = JSON.parse(sessionStorage.getItem('gopang_sso_token') || '{}').ipv6 || 'anonymous'; } catch (e) {}
+  import('https://hondi.net/src/gopang/gwp/gwp-report-client.js')
+    .then(({ reportGwpSessionEnd }) => reportGwpSessionEnd({
+      agencyId: 'kedu',
+      guid,
+      messages: hist,
+      resultText: hist[hist.length - 1]?.content || '',
+      summaryLine: 'K-School 학습 상담 종료',
+      gwpMode: true,
+      gwpOrigin: 'https://hondi.net',
+      sessionId: _gwpSessionId,
+      sessionStartedAt: _gwpSessionStartedAt,
+    }))
+    .catch(() => {});
+});
+</script>
+
 </body>
 </html>
