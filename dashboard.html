@@ -266,9 +266,13 @@ function switchTab(n) {
 // ── 인증 콜백 (subsystem-auth.js) ────────────────────────
 window._onGopangAuth = async function(user) {
   if (!user) return;
-  // URL 파라미터 guid 우선, 없으면 인증 user.ipv6 사용
-  const params = new URLSearchParams(location.search);
-  const guid = params.get('guid') || user.ipv6;
+  // 2026-07-18 수정: URL 파라미터(?guid=)로 다른 학생의 guid를 지정하면
+  // 그대로 조회되는 IDOR가 있었다(본인 소유 확인 코드가 전혀 없었음).
+  // 학부모/교사가 자녀·학생 데이터를 열람하는 기능이 필요하다면, 클라이언트가
+  // 보낸 guid를 그대로 믿는 지금 방식이 아니라 서버가 "요청자-학생 관계"를
+  // 실제로 검증하는 별도 기능으로 새로 설계해야 한다(법적 검토 포함) — 지금은
+  // 로그인한 본인 것만 보이도록 완전히 잠근다.
+  const guid = user.ipv6;
   load(guid);
 };
 
