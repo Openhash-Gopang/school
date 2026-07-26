@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>K-School 교육 정책 데이터 (시안)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Pretendard:wght@400;500;600;700&display=swap">
+
+<script src="https://cdn.jsdelivr.net/gh/Openhash-Gopang/health@main/k-health-privacy-utils.js"></script>
+<script src="./k-school-privacy-utils.js"></script>
+<style>
+/* ══ RESET & BASE ══ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f0f2f8;--bg2:#fff;--bg3:#e8ebf4;--bg4:#d8dce8;
+  --txt1:#0a0f1e;--txt2:#3d4560;--txt3:#8892a8;
+  --border:#dde3f0;--border2:#c8d0e4;
+  --c-blue:#1a56db;--c-blue-lt:#e8f0ff;
+  --c-green:#0e9f6e;--c-green-lt:#e0f7f0;
+  --c-red:#c81e1e;--c-red-lt:#fde8e8;
+  --c-amber:#b45309;--c-amber-lt:#fef3c7;
+  --c-purple:#6c2bd9;--c-purple-lt:#ede9fe;
+  --c-teal:#0694a2;--c-teal-lt:#d5f5f6;
+  --c-rose:#e02424;--c-rose-lt:#fde8e8;
+  --mono:'IBM Plex Mono',monospace;
+  --r:8px;--r-sm:5px;--r-lg:12px;
+  --sh:0 1px 3px rgba(10,15,40,.06),0 0 0 0.5px rgba(10,15,40,.06);
+  --sh-md:0 4px 16px rgba(10,15,40,.08),0 0 0 0.5px rgba(10,15,40,.06);
+  --sb-w:56px;
+  --sb-full:240px;
+}
+html,body{height:100%;overflow:hidden;font-family:'Pretendard','Apple SD Gothic Neo',sans-serif;font-size:13px;color:var(--txt1);background:var(--bg);-webkit-font-smoothing:antialiased}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+select,input{font-family:inherit}
+
+/* ══ APP SHELL ══ */
+.app{display:grid;grid-template-rows:52px 1fr;grid-template-columns:var(--sb-w) 1fr;height:100vh;overflow:hidden}
+.sidebar{position:absolute;top:52px;left:0;bottom:0;z-index:50;width:var(--sb-w);transition:width .22s ease}
+.sidebar:hover{width:var(--sb-full);box-shadow:4px 0 20px rgba(10,15,40,.12)}
+/* main은 항상 56px 오프셋 유지 */
+.main{grid-column:2;overflow:hidden;display:flex;flex-direction:column}
+
+/* ══ TOPBAR ══ */
+.topbar{grid-column:1/-1;background:var(--bg2);border-bottom:0.5px solid var(--border);display:flex;align-items:center;padding:0 20px;gap:14px;z-index:100;box-shadow:0 1px 0 var(--border)}
+.tb-logo{display:flex;align-items:center;gap:9px}
+.tb-logo-mark{width:28px;height:28px;border-radius:7px;background:linear-gradient(135deg,#1a56db 0%,#0e9f6e 100%);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.tb-logo-mark i{font-size:14px;color:#fff}
+.tb-logo-text{font-size:14px;font-weight:700;letter-spacing:-.3px}
+.tb-sep{width:0.5px;height:18px;background:var(--border2)}
+.tb-sub{font-size:12px;color:var(--txt3);font-weight:400}
+.tb-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.tb-date{font-size:11px;color:var(--txt3);background:var(--bg3);padding:3px 9px;border-radius:var(--r-sm);border:0.5px solid var(--border)}
+.live-chip{display:flex;align-items:center;gap:5px;font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;background:var(--c-amber-lt);color:var(--c-amber);letter-spacing:.02em}
+.live-chip::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--c-amber)}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.85)}}
+.clock{font-family:var(--mono);font-size:12px;color:var(--txt2);background:var(--bg3);padding:3px 10px;border-radius:var(--r-sm);border:0.5px solid var(--border);letter-spacing:.04em}
+.tb-btn{width:30px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:var(--r-sm);color:var(--txt3);transition:background .12s}
+.tb-btn:hover{background:var(--bg3);color:var(--txt1)}
+.tb-btn i{font-size:16px}
+
+/* ══ SIDEBAR ══ */
+/* 아이콘 컬럼은 항상 56px 고정, 텍스트가 오른쪽으로 펼쳐짐 */
+.sidebar{
+  position:absolute;top:52px;left:0;bottom:0;z-index:50;
+  width:56px;
+  background:var(--bg2);
+  border-right:0.5px solid var(--border);
+  display:flex;flex-direction:column;
+  overflow:hidden;
+  transition:width .22s cubic-bezier(.4,0,.2,1);
+}
+.sidebar:hover{
+  width:248px;
+  box-shadow:4px 0 20px rgba(10,15,40,.1);
+}
+
+/* 헤더 — hover 시만 텍스트 표시 */
+.sb-head{
+  padding:14px 0 10px;
+  border-bottom:0.5px solid var(--border);
+  flex-shrink:0;
+  height:40px;
+  display:flex;align-items:center;
+  overflow:hidden;white-space:nowrap;
+}
+.sb-head-title{
+  font-size:10px;font-weight:700;color:var(--txt3);
+  letter-spacing:.1em;text-transform:uppercase;
+  padding-left:16px;
+  opacity:0;transition:opacity .15s .05s;
+}
+.sidebar:hover .sb-head-title{opacity:1}
+
+/* 스크롤 영역 */
+.sb-scroll{flex:1;overflow-y:auto;overflow-x:hidden;padding:8px 0;scrollbar-width:thin;scrollbar-color:var(--border) transparent}
+.sb-scroll::-webkit-scrollbar{width:3px}
+.sb-scroll::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+
+/* 그룹 레이블 */
+.sb-group-label{
+  height:28px;display:flex;align-items:center;
+  padding-left:18px;
+  font-size:10px;font-weight:700;color:var(--txt3);
+  letter-spacing:.08em;text-transform:uppercase;
+  white-space:nowrap;overflow:hidden;
+}
+.sb-group-label span{
+  opacity:0;transition:opacity .15s .05s;
+}
+.sidebar:hover .sb-group-label span{opacity:1}
+
+/* ── 메뉴 아이템 핵심 ── */
+.sb-item{
+  display:flex;
+  align-items:center;
+  height:40px;
+  padding:0;
+  margin:1px 4px;
+  border-radius:var(--r);
+  font-size:12.5px;
+  color:var(--txt2);
+  cursor:pointer;
+  transition:background .12s,color .12s;
+  position:relative;
+  border:0.5px solid transparent;
+  overflow:hidden;
+  white-space:nowrap;
+  width:48px;           /* 항상 아이콘 너비만 */
+  transition:width .22s cubic-bezier(.4,0,.2,1), background .12s, color .12s;
+}
+.sidebar:hover .sb-item{width:236px}   /* hover 시 전체 너비로 */
+
+.sb-item:hover{background:var(--bg3);color:var(--txt1)}
+.sb-item.active{background:var(--c-blue-lt);color:var(--c-blue);font-weight:600;border-color:#c5d7ff}
+
+/* 아이콘 영역 — 항상 56px 중앙에 고정 */
+.sb-icon-cell{
+  width:48px;height:40px;
+  flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+}
+.sb-icon-cell .icon{width:20px;height:20px}
+.sb-icon-cell .icon svg{width:20px;height:20px;display:block}
+.sb-item.active .sb-icon-cell .icon{color:var(--c-blue)}
+
+/* 텍스트+뱃지 영역 — 아이콘 오른쪽 */
+.sb-text{
+  display:flex;align-items:center;gap:6px;
+  flex:1;min-width:0;
+  opacity:0;
+  transition:opacity .12s .08s;
+  padding-right:8px;
+}
+.sidebar:hover .sb-text{opacity:1}
+.sb-label{flex:1;font-size:12.5px}
+.sb-badge{font-size:9px;font-weight:700;padding:2px 5px;border-radius:3px;letter-spacing:.02em;flex-shrink:0}
+
+/* 푸터 */
+.sb-foot{
+  border-top:0.5px solid var(--border);
+  padding:10px 0;
+  flex-shrink:0;overflow:hidden;white-space:nowrap;
+}
+.sb-stat{
+  display:flex;justify-content:space-between;
+  font-size:10px;color:var(--txt3);margin-bottom:4px;
+  padding:0 16px;
+  opacity:0;transition:opacity .12s .05s;
+}
+.sidebar:hover .sb-stat{opacity:1}
+.sb-stat span:last-child{font-weight:600;color:var(--txt2);font-family:var(--mono)}
+
+/* ══ MAIN ══ */
+/* .main은 위 규칙으로 처리 */
+.panel{display:none;flex:1;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border) transparent;flex-direction:column}
+.panel::-webkit-scrollbar{width:4px}
+.panel::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+.panel.active{display:flex}
+
+/* ══ FILTER BAR ══ */
+.fbar{background:var(--bg2);border-bottom:0.5px solid var(--border);padding:8px 20px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;flex-shrink:0;position:sticky;top:0;z-index:20}
+.flabel{font-size:11px;font-weight:500;color:var(--txt3);white-space:nowrap}
+.fbar select,.fbar input[type=date]{font-size:12px;color:var(--txt1);background:var(--bg3);border:0.5px solid var(--border);border-radius:var(--r-sm);padding:4px 8px;outline:none;cursor:pointer}
+.fbar select:hover,.fbar input:hover{border-color:var(--border2)}
+.f-btn{font-size:12px;font-weight:600;padding:4px 14px;border-radius:var(--r-sm);background:var(--c-blue);color:#fff;transition:opacity .12s}
+.f-btn:hover{opacity:.88}
+.f-right{margin-left:auto;display:flex;align-items:center;gap:6px}
+.toggle-group{display:flex;border:0.5px solid var(--border);border-radius:var(--r-sm);overflow:hidden}
+.toggle-group button{padding:4px 10px;font-size:11px;font-weight:500;color:var(--txt3);transition:all .12s}
+.toggle-group button.on{background:var(--c-blue);color:#fff}
+
+/* ══ KPI STRIP ══ */
+.kpi-strip{display:grid;gap:10px;padding:14px 20px;background:var(--bg);flex-shrink:0}
+.kpi-strip.cols5{grid-template-columns:repeat(5,1fr)}
+.kpi-strip.cols4{grid-template-columns:repeat(4,1fr)}
+.kpi-card{background:var(--bg2);border-radius:var(--r-lg);border:0.5px solid var(--border);padding:13px 15px;display:flex;align-items:center;gap:11px;box-shadow:var(--sh)}
+.kpi-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.kpi-icon i{font-size:18px}
+.kpi-val{font-size:19px;font-weight:700;line-height:1;letter-spacing:-.4px}
+.kpi-lbl{font-size:10px;color:var(--txt3);margin-top:3px;font-weight:400}
+.kpi-chg{font-size:10px;font-weight:600;margin-top:2px}
+.kpi-chg.up{color:var(--c-red)}
+.kpi-chg.dn{color:var(--c-green)}
+
+/* ══ CARDS ══ */
+.pad{padding:0 20px 20px;display:flex;flex-direction:column;gap:14px}
+.card{background:var(--bg2);border-radius:var(--r-lg);border:0.5px solid var(--border);box-shadow:var(--sh);overflow:hidden}
+.card-hd{padding:12px 16px;border-bottom:0.5px solid var(--border);display:flex;align-items:center;gap:8px}
+.card-hd i{font-size:15px;color:var(--txt3)}
+.card-title{font-size:13px;font-weight:600;flex:1}
+.card-meta{font-size:11px;color:var(--txt3)}
+.card-bd{padding:14px 16px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+
+/* ══ TABLES ══ */
+.tbl{width:100%;border-collapse:collapse;font-size:12px}
+.tbl th{background:var(--bg3);padding:7px 10px;text-align:left;font-weight:600;color:var(--txt2);border-bottom:0.5px solid var(--border);font-size:11px;white-space:nowrap}
+.tbl td{padding:6px 10px;border-bottom:0.5px solid var(--border);color:var(--txt2)}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:var(--bg3)}
+.badge{display:inline-block;font-size:10px;font-weight:600;padding:2px 7px;border-radius:20px;white-space:nowrap}
+.pbar{height:6px;background:var(--bg3);border-radius:3px;overflow:hidden}
+.pbar-fill{height:100%;border-radius:3px;transition:width .5s}
+
+/* ══ ALERT BANNER ══ */
+.alert-banner{border-radius:var(--r);padding:9px 14px;display:flex;align-items:center;gap:10px;font-size:12px;margin:14px 20px 0;flex-shrink:0;border:0.5px solid}
+.alert-banner i{font-size:15px;flex-shrink:0}
+
+/* ══ DRILL POPUP ══ */
+.drill{position:fixed;bottom:20px;right:20px;width:270px;background:var(--bg2);border-radius:var(--r-lg);border:0.5px solid var(--border2);box-shadow:var(--sh-md);padding:14px;z-index:200;display:none;animation:sUp .18s ease}
+@keyframes sUp{from{transform:translateY(8px);opacity:0}to{transform:translateY(0);opacity:1}}
+.drill.show{display:block}
+.drill-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.drill-name{font-size:13px;font-weight:700}
+.drill-close{width:22px;height:22px;display:flex;align-items:center;justify-content:center;border-radius:4px;color:var(--txt3)}
+.drill-close:hover{background:var(--bg3)}
+.drill-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.drill-stat{background:var(--bg3);border-radius:var(--r-sm);padding:7px 9px}
+.drill-stat-val{font-size:14px;font-weight:700}
+.drill-stat-lbl{font-size:10px;color:var(--txt3);margin-top:1px}
+
+/* ══ MISC ══ */
+.row-list-item{display:flex;align-items:center;gap:9px;padding:7px 0;border-bottom:0.5px solid var(--border);font-size:12px}
+.row-list-item:last-child{border-bottom:none}
+.sido-rank{width:20px;font-family:var(--mono);font-size:10px;color:var(--txt3);text-align:center;flex-shrink:0}
+.sido-bar{width:72px;height:5px;background:var(--bg3);border-radius:2px;flex-shrink:0;overflow:hidden}
+.sido-bar-fill{height:100%;background:var(--c-blue);border-radius:2px}
+
+/* ══ ICON SVG ══ */
+.icon{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
+.icon svg{display:block}
+
+/* 사이드바 아이콘 — 20px, 완전 가운데 */
+.sb-item .icon, .sb-icon{width:20px;height:20px;flex-shrink:0}
+.sb-item .icon svg, .sb-icon svg{width:20px;height:20px}
+.sidebar:not(:hover) .sb-item{justify-content:center}
+
+/* topbar 로고 */
+.tb-logo-mark .icon{width:16px;height:16px}
+.tb-logo-mark .icon svg{width:16px;height:16px}
+
+/* topbar 버튼 */
+.tb-btn .icon{width:18px;height:18px}
+.tb-btn .icon svg{width:18px;height:18px}
+
+/* KPI 카드 아이콘 */
+.kpi-icon .icon{width:20px;height:20px}
+.kpi-icon .icon svg{width:20px;height:20px}
+
+/* 카드 헤더 아이콘 */
+.card-hd .icon{width:16px;height:16px;color:var(--txt3)}
+.card-hd .icon svg{width:16px;height:16px}
+
+/* 인라인 일반 아이콘 */
+.icon-sm{display:inline-flex;align-items:center;justify-content:center}
+.icon-sm svg{width:14px;height:14px;display:block}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- ══ TOPBAR ══ -->
+<header class="topbar">
+  <div class="tb-logo">
+    <div class="tb-logo-mark"><span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h3l2-8 4 16 3-10 2 4h4"/><rect x="2" y="5" width="20" height="14" rx="2"/></svg></span></i></div>
+    <span class="tb-logo-text">K-School 교육 정책 데이터 (시안)</span>
+  </div>
+  <div class="tb-sep"></div>
+  <span class="tb-sub">화면 시안 — 실제 교육부·시도교육청과 무관, 고팡 이용자 표본 기반 자체 집계</span>
+  <div class="tb-right">
+    <div class="live-chip" style="background:var(--c-amber-lt);color:var(--c-amber)"><span>시안</span></div>
+    <div class="clock" id="clock">--:--:--</div>
+    <button class="tb-btn" title="새로고침" onclick="refreshCurrent()"><span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9A9 9 0 0 1 20.49 15M20.49 15A9 9 0 0 1 3.51 9"/></svg></span></i></button>
+    <button class="tb-btn" title="전체화면" onclick="toggleFull()"><span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg></span></i></button>
+  </div>
+</header>
+
+<!-- ══ SIDEBAR ══ -->
+<nav class="sidebar" aria-label="대시보드 메뉴">
+  <div class="sb-head">
+    <div class="sb-head-title">교육 정책 데이터 (시안)</div>
+  </div>
+  <div class="sb-scroll">
+    <div class="sb-group-label"><span>개요</span></div>
+    <button class="sb-item active" onclick="switchPanel('p01',this)">
+      <span class="sb-icon-cell"><span class="icon sb-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 18.5L5 21V6l7-3 7 3v6"/><path d="M9 3v18"/><path d="M15 6v6"/><circle cx="17" cy="17" r="3"/><path d="M17 14v3l2 1"/></svg></span></span>
+      <span class="sb-text"><span class="sb-label">개요·범위 고지</span></span>
+    </button>
+    <div class="sb-group-label"><span>정책 통계</span></div>
+    <button class="sb-item" onclick="switchPanel('p02',this)">
+      <span class="sb-icon-cell"><span class="icon sb-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="20" x2="21" y2="20"/><polyline points="5 16 9 10 13 12 17 7 21 11"/></svg></span></span>
+      <span class="sb-text"><span class="sb-label">교육과정 단원별 추이</span></span>
+    </button>
+    <button class="sb-item" onclick="switchPanel('p03',this)">
+      <span class="sb-icon-cell"><span class="icon sb-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 20V10M12 20V4M6 20v-6"/></svg></span></span>
+      <span class="sb-text"><span class="sb-label">이해도 착시 격차</span><span class="sb-badge" style="background:var(--c-green-lt);color:var(--c-green)">핵심</span></span>
+    </button>
+    <button class="sb-item" onclick="switchPanel('p04',this)">
+      <span class="sb-icon-cell"><span class="icon sb-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 12h6"/><path d="M12 9v6"/></svg></span></span>
+      <span class="sb-text"><span class="sb-label">교육 자원 현황</span></span>
+    </button>
+    <div class="sb-group-label"><span>조기 경보</span></div>
+    <button class="sb-item" onclick="switchPanel('p05',this)">
+      <span class="sb-icon-cell"><span class="icon sb-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="12"/><circle cx="12" cy="16" r=".5" fill="currentColor"/></svg></span></span>
+      <span class="sb-text"><span class="sb-label">학습부진 조기 경보</span></span>
+    </button>
+  </div>
+  <div class="sb-foot">
+    <div class="sb-stat"><span>집계 기준</span><span id="sb-time">집계 대기 중</span></div>
+    <div class="sb-stat"><span>집계 주기</span><span>월 단위(설계값)</span></div>
+    <div class="sb-stat"><span>표본</span><span style="color:var(--c-amber)">고팡 연동 표본 한정</span></div>
+  </div>
+</nav>
+
+<!-- ══ MAIN ══ -->
+<main class="main" id="main">
+
+<!-- ─── 개요 및 범위 고지 ─── -->
+<section class="panel active" id="p01" aria-label="개요 및 범위 고지">
+  <div style="padding:24px;max-width:820px">
+    <div style="background:#fef3c7;border:1px solid #fde68a;border-radius:8px;padding:10px 14px;margin-bottom:16px;font-size:12px;color:#92400e;display:flex;gap:8px;align-items:flex-start">
+      <span style="flex-shrink:0">⚠️</span>
+      <span><strong>표본 고지:</strong> 이 통계는 고팡 이용자·K-Professor(교수 AI 페르소나) 이용 학생을 표본으로 한 자체 집계이며, <strong>전국을 대표하는 공식 통계가 아닙니다.</strong> 실제 정부 공식 통계는 교육부·시도교육청 발표 자료를 참고하십시오.</span>
+    </div>
+    <h2 style="font-size:16px;font-weight:700;color:var(--txt1);margin-bottom:10px">이 대시보드가 하는 일</h2>
+    <p style="color:var(--txt2);line-height:1.7;margin-bottom:14px">K-School은 개별 학생을 가르치는 시스템이 아닙니다(개인 학습 지도·평가는 K-Professor의 역할입니다). 이 대시보드는 <strong>다수의 PDV(학습자 + 교수 AI 페르소나)를 코드 실행 방식으로 집계</strong>해, 정책 결정자에게 참고 자료가 될 공공교육 통계를 생산하는 것을 목표로 합니다.</p>
+    <h2 style="font-size:16px;font-weight:700;color:var(--txt1);margin:18px 0 10px">현재 구현 상태</h2>
+    <table style="width:100%;border-collapse:collapse;font-size:12.5px">
+      <thead><tr style="border-bottom:1px solid var(--border)"><th style="text-align:left;padding:6px 8px;color:var(--txt3)">구성 요소</th><th style="text-align:left;padding:6px 8px;color:var(--txt3)">상태</th></tr></thead>
+      <tbody>
+        <tr style="border-bottom:1px solid var(--border)"><td style="padding:6px 8px">학습자·교수 페르소나 PDV 샌드박스 실행 파이프라인</td><td style="padding:6px 8px;color:var(--c-amber)">개발 중</td></tr>
+        <tr style="border-bottom:1px solid var(--border)"><td style="padding:6px 8px">소규모 셀 억제(k-익명성) 로직</td><td style="padding:6px 8px;color:var(--c-green)">설계·구현 완료 (k-school-privacy-utils.js — health 저장소 재사용) · 실집계 연동 전</td></tr>
+        <tr style="border-bottom:1px solid var(--border)"><td style="padding:6px 8px">교차 검증(자기평가 vs 실제평가) 로직</td><td style="padding:6px 8px;color:var(--c-green)">설계·구현 완료 · 실집계 연동 전</td></tr>
+        <tr style="border-bottom:1px solid var(--border)"><td style="padding:6px 8px">교수 AI 페르소나(K-Professor) 스코프·PDV 기록 방식</td><td style="padding:6px 8px;color:var(--txt3)">미확정 — 페르소나 정리 시점 재검토 예정</td></tr>
+        <tr><td style="padding:6px 8px">아래 패널의 실제 통계 표시</td><td style="padding:6px 8px;color:var(--txt3)">집계 파이프라인 연동 전까지 "집계 대기 중"</td></tr>
+      </tbody>
+    </table>
+    <p style="margin-top:14px;font-size:11.5px;color:var(--txt3)">설계 근거: <code>docs/K_SCHOOL_PUBLIC_EDUCATION_DATA_SYSTEM_v1_0.md</code></p>
+  </div>
+</section>
+
+<!-- ─── 교육과정 단원별 추이 ─── -->
+<section class="panel" id="p02" aria-label="교육과정 단원별 추이">
+  <div style="padding:24px;max-width:820px">
+    <div style="background:#fef3c7;border:1px solid #fde68a;border-radius:8px;padding:10px 14px;margin-bottom:16px;font-size:12px;color:#92400e;display:flex;gap:8px;align-items:flex-start">
+      <span style="flex-shrink:0">⚠️</span>
+      <span><strong>표본 고지:</strong> 이 통계는 고팡 이용자·K-Professor(교수 AI 페르소나) 이용 학생을 표본으로 한 자체 집계이며, <strong>전국을 대표하는 공식 통계가 아닙니다.</strong> 실제 정부 공식 통계는 교육부·시도교육청 발표 자료를 참고하십시오.</span>
+    </div>
+    <h2 style="font-size:15px;font-weight:700;color:var(--txt1);margin-bottom:8px">교육과정 단원별 추이 (대단원 단위)</h2>
+    <p style="color:var(--txt2);font-size:12.5px;line-height:1.6;margin-bottom:14px">개별 학생 성적이 아니라 <strong>교육과정 대단원 × 학년군 × 시군구 단위 이상 × 학기/월</strong> 단위로만 집계합니다. 학교 단위 집계는 하지 않습니다 — 학교는 병원보다 훨씬 작고 폐쇄적인 커뮤니티라 재식별 위험이 크기 때문입니다(설계 문서 §3.1).</p>
+    <table class="tbl" style="width:100%">
+      <thead><tr><th>단원(교육과정 대단원)</th><th>이번 달</th><th>전월 대비</th><th>표본 상태</th></tr></thead>
+      <tbody>
+        <tr><td>중2 수학 — 함수</td><td colspan="3" style="color:var(--txt3)">집계 대기 중</td></tr>
+        <tr><td>중1 수학 — 일차방정식</td><td colspan="3" style="color:var(--txt3)">집계 대기 중</td></tr>
+        <tr><td>고1 국어 — 문학 감상</td><td colspan="3" style="color:var(--txt3)">집계 대기 중</td></tr>
+        <tr><td>중3 과학 — 화학반응</td><td colspan="3" style="color:var(--txt3)">집계 대기 중</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ─── 이해도 착시 격차 (핵심) ─── -->
+<section class="panel" id="p03" aria-label="이해도 착시 격차">
+  <div style="padding:24px;max-width:820px">
+    <div style="background:#fef3c7;border:1px solid #fde68a;border-radius:8px;padding:10px 14px;margin-bottom:16px;font-size:12px;color:#92400e;display:flex;gap:8px;align-items:flex-start">
+      <span style="flex-shrink:0">⚠️</span>
+      <span><strong>표본 고지:</strong> 이 통계는 고팡 이용자·K-Professor(교수 AI 페르소나) 이용 학생을 표본으로 한 자체 집계이며, <strong>전국을 대표하는 공식 통계가 아닙니다.</strong> 실제 정부 공식 통계는 교육부·시도교육청 발표 자료를 참고하십시오.</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+      <h2 style="font-size:15px;font-weight:700;color:var(--txt1)">이해도 착시 격차</h2>
+      <span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;background:var(--c-green-lt);color:var(--c-green)">이중 PDV 소스 · 이 시스템의 핵심 차별점</span>
+    </div>
+    <p style="color:var(--txt2);font-size:12.5px;line-height:1.6;margin-bottom:14px">학습자 PDV의 <strong>자기평가 이해도</strong>와 교수 AI 페르소나 PDV의 <strong>실제 평가 충족률</strong>을 같은 단원·학년군 단위로 교차 비교합니다. 자기평가가 실제 평가보다 유의하게 높은 단원은 "학생이 이해했다고 느끼지만 실제로는 못 따라가는 구간"으로 플래그됩니다 — 시험 성적만으로는(사후 확인) 보기 어려운 지표입니다.</p>
+    <table class="tbl" style="width:100%">
+      <thead><tr><th>단원</th><th>자기평가 이해도</th><th>실제 평가 충족률</th><th>격차 판정</th></tr></thead>
+      <tbody>
+        <tr><td>—</td><td colspan="3" style="color:var(--txt3)">학습자·교수 페르소나 양쪽 PDV 표본이 모두 최소 표본(k) 이상 쌓이기 전까지 표시할 수 없습니다.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ─── 교육 자원 현황 ─── -->
+<section class="panel" id="p04" aria-label="교육 자원 현황">
+  <div style="padding:24px;max-width:820px">
+    <div style="background:#fef3c7;border:1px solid #fde68a;border-radius:8px;padding:10px 14px;margin-bottom:16px;font-size:12px;color:#92400e;display:flex;gap:8px;align-items:flex-start">
+      <span style="flex-shrink:0">⚠️</span>
+      <span><strong>표본 고지:</strong> 이 통계는 고팡 이용자·K-Professor(교수 AI 페르소나) 이용 학생을 표본으로 한 자체 집계이며, <strong>전국을 대표하는 공식 통계가 아닙니다.</strong> 실제 정부 공식 통계는 교육부·시도교육청 발표 자료를 참고하십시오.</span>
+    </div>
+    <h2 style="font-size:15px;font-weight:700;color:var(--txt1);margin-bottom:8px">교육 자원 현황</h2>
+    <p style="color:var(--txt2);font-size:12.5px;line-height:1.6;margin-bottom:14px">K-Professor(교수 AI 페르소나) 이용 현황을 학년군·과목별로 집계합니다. 개별 학생·개별 페르소나 세션 단위가 아니라 집계만 다룹니다.</p>
+    <table class="tbl" style="width:100%">
+      <thead><tr><th>과목군</th><th>평균 세션 참여도</th><th>중도 이탈률</th></tr></thead>
+      <tbody>
+        <tr><td>수학</td><td colspan="2" style="color:var(--txt3)">집계 대기 중</td></tr>
+        <tr><td>국어</td><td colspan="2" style="color:var(--txt3)">집계 대기 중</td></tr>
+        <tr><td>과학</td><td colspan="2" style="color:var(--txt3)">집계 대기 중</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ─── 학습부진 조기 경보 ─── -->
+<section class="panel" id="p05" aria-label="학습부진 조기 경보">
+  <div style="padding:24px;max-width:820px">
+    <div style="background:#fef3c7;border:1px solid #fde68a;border-radius:8px;padding:10px 14px;margin-bottom:16px;font-size:12px;color:#92400e;display:flex;gap:8px;align-items:flex-start">
+      <span style="flex-shrink:0">⚠️</span>
+      <span><strong>표본 고지:</strong> 이 통계는 고팡 이용자·K-Professor(교수 AI 페르소나) 이용 학생을 표본으로 한 자체 집계이며, <strong>전국을 대표하는 공식 통계가 아닙니다.</strong> 실제 정부 공식 통계는 교육부·시도교육청 발표 자료를 참고하십시오.</span>
+    </div>
+    <h2 style="font-size:15px;font-weight:700;color:var(--txt1);margin-bottom:8px">학습부진 조기 경보</h2>
+    <p style="color:var(--txt2);font-size:12.5px;line-height:1.6;margin-bottom:14px">단원 단위 이해도 착시 격차나 중도 이탈률이 직전 대비 유의하게 증가하면 경보를 표시하는 것이 목표입니다. 실시간이 아니라 학기/월 단위 집계를 기반으로 하며, 특수교육 대상·다문화가정 학생 등 낙인 위험이 있는 범주는 일반 학년군보다 높은 임계값을 적용합니다(설계 문서 §3.1 — 정책 검토위원회 승인 없이는 목록을 채우지 않습니다).</p>
+    <div style="padding:14px;background:var(--bg3);border-radius:8px;color:var(--txt3);font-size:12.5px">현재 발행된 경보가 없습니다 — 집계 파이프라인 연동 전입니다.</div>
+  </div>
+</section>
+
+</main>
+</div><!-- .app -->
+
+<!-- ── DRILL POPUP ── -->
+<aside class="drill" id="drill" aria-live="polite">
+  <div class="drill-hd">
+    <div class="drill-name" id="drill-name">—</div>
+    <button class="drill-close" onclick="document.getElementById('drill').classList.remove('show')" aria-label="닫기"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span></i></button>
+  </div>
+  <div class="drill-grid" id="drill-body"></div>
+</aside>
+
+<script>
+/* ══════════════════════════════════════════════════
+   UTILS
+══════════════════════════════════════════════════ */
+/* ══ PANEL SWITCHING (실제 동작 — 데이터 생성 없음) ══ */
+function switchPanel(pid, btn) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.sb-item').forEach(b => b.classList.remove('active'));
+  document.getElementById(pid).classList.add('active');
+  btn.classList.add('active');
+}
+function refreshCurrent() {
+  // 실제 집계 파이프라인이 연동되기 전까지, 새로고침해도 가짜 숫자를
+  // 만들어내지 않는다(설계 문서 §6-4 — LIVE 프레이밍 금지 원칙).
+}
+
+/* ══ 시계 ══ */
+const nowStr = () => new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
+setInterval(() => {
+  const t = nowStr();
+  const clockEl = document.getElementById('clock');
+  const sbTimeEl = document.getElementById('sb-time');
+  if (clockEl) clockEl.textContent = t;
+  if (sbTimeEl) sbTimeEl.textContent = '시안 (실데이터 아님)';
+}, 1000);
+</script>
+</body>
+</html>
