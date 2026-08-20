@@ -1,0 +1,46 @@
+From b2da97c7a1fae53515b14db3ed51ab3fd8c12ce8 Mon Sep 17 00:00:00 2001
+From: Claude <claude@anthropic.local>
+Date: Thu, 30 Jul 2026 20:23:30 +0000
+Subject: [PATCH] =?UTF-8?q?feat:=20=EA=B8=B0=EC=A1=B4=20=EC=9E=90=EC=B2=B4?=
+ =?UTF-8?q?=20=EC=9C=84=EC=B9=98=20=ED=95=B4=EC=84=9D(buildLocNote)?=
+ =?UTF-8?q?=EC=9D=84=20callDeepSeek=20=EC=84=9C=EB=B2=84=EC=B8=A1=20?=
+ =?UTF-8?q?=EA=B0=95=EC=A0=9C=20=EC=A3=BC=EC=9E=85=20=EC=B2=B4=EA=B3=84?=
+ =?UTF-8?q?=EC=99=80=EB=8F=84=20=EC=97=B0=EA=B2=B0?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+---
+ webapp.html | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
+
+diff --git a/webapp.html b/webapp.html
+index 2907eed..0ae0dc8 100644
+--- a/webapp.html
++++ b/webapp.html
+@@ -1436,6 +1436,13 @@ async function callAI(userText, imageFile) {
+         stream: true,
+         max_tokens: 800,
+         thinking: { type: "disabled" },
++        // ★ 2026-07-30 — 기존 buildLocNote()의 텍스트 삽입과 별개로,
++        // 서버(callDeepSeek)가 항상 같은 위치(대화 시작 직전)에 결정론적
++        // 으로 붙이도록 구조화된 필드로도 보낸다(주피터 지시 — 서비스
++        // 전반 확장). GPS 우선, 없으면 GWP facts 힌트.
++        currentLocation: userLocation
++          ? `${userLocation.lat.toFixed(5)},${userLocation.lng.toFixed(5)}`
++          : (_urlFactsLocation || null),
+       })
+     });
+ 
+@@ -1626,7 +1633,7 @@ async function callAI(userText, imageFile) {
+       const res2 = await fetch(PROXY_BASE + '/deepseek', {
+         method: 'POST',
+         headers: { 'Content-Type':'application/json' },
+-        body: JSON.stringify({ model: CFG.model, service_id: 'kcommerce', messages: messages2, stream: true, max_tokens: 800, thinking: { type: "disabled" } }),
++        body: JSON.stringify({ model: CFG.model, service_id: 'kcommerce', messages: messages2, stream: true, max_tokens: 800, thinking: { type: "disabled" }, currentLocation: userLocation ? `${userLocation.lat.toFixed(5)},${userLocation.lng.toFixed(5)}` : (_urlFactsLocation || null) }),
+       });
+       if (res2.ok) {
+         const reader2 = res2.body.getReader();
+-- 
+2.43.0
+

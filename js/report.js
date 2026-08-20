@@ -3,10 +3,10 @@
 //       부모/교사/gopang PDV에 전송한다.
 //
 // 의존:
-//   - Supabase (school_* 테이블 조회)
+//   - PocketBase l1-hanlim (school_* 컬렉션 조회 — 2026-08-20 Supabase에서 전환)
 //   - hondi-proxy /pdv/report  (PDV 전송)
 //   - hondi-proxy /deepseek    (AI 교수 코멘트 생성)
-//   - config.js  (SUPA_URL, SUPA_ANON)
+//   - config.js  (PB_BASE)
 //
 // 고팡 PDV 6하원칙 매핑:
 //   누가  — student.user_guid
@@ -20,57 +20,64 @@ const PROXY    = 'https://hondi-proxy.tensor-city.workers.dev';
 const SVC_ID   = 'school';
 const REPORT_V = '1.0';
 
-// ── 1. Supabase에서 학생 데이터 조회 ────────────────────────────
+// ── 1. PocketBase(l1-hanlim)에서 학생 데이터 조회 ───────────────
+
+// 2026-08-20: Supabase(SUPA_URL/HDR)가 2026-08-12 사고 이후 죽어있던 걸
+// PocketBase(l1-hanlim, config.js의 PB_BASE)로 전환. klaw 저장소의 L1_URL
+// 패턴과 동일하게 직접 https://l1-hanlim.hondi.net을 호출한다. PocketBase는
+// 목록 조회 시 { items: [...] } 로 감싸서 응답하므로 각 함수에서 .items를
+// 꺼내 기존 Supabase 응답 형태(순수 배열)와 동일하게 반환해, 이 파일의
+// 나머지 집계 로직(예: sessions.reduce(...))은 손대지 않아도 되게 했다.
 
 async function fetchStudentProfile(userGuid) {
+  const filter = encodeURIComponent(`user_guid='${userGuid}'`);
   const res = await fetch(
-    `${SUPA_URL}/rest/v1/school_student_profiles?user_guid=eq.${userGuid}&limit=1`,
-    { headers: { ...HDR, 'Accept': 'application/json' } }
+    `${PB_BASE}school_student_profiles/records?filter=(${filter})&perPage=1`
   );
-  const rows = await res.json();
-  return rows[0] || null;
+  const data = await res.json();
+  return data.items?.[0] || null;
 }
 
 async function fetchSessionsInPeriod(userGuid, startDate, endDate) {
   const start = startDate.toISOString();
   const end   = endDate.toISOString();
-  const res = await fetch(
-    `${SUPA_URL}/rest/v1/school_sessions` +
-    `?user_guid=eq.${userGuid}` +
-    `&created_at=gte.${start}&created_at=lte.${end}` +
-    `&order=created_at.asc`,
-    { headers: { ...HDR, 'Accept': 'application/json' } }
+  const filter = encodeURIComponent(
+    `user_guid='${userGuid}' && created>='${start}' && created<='${end}'`
   );
-  return await res.json();
+  const res = await fetch(
+    `${PB_BASE}school_sessions/records?filter=(${filter})&sort=created&perPage=500`
+  );
+  const data = await res.json();
+  return data.items || [];
 }
 
 async function fetchProgressAll(userGuid) {
+  const filter = encodeURIComponent(`user_guid='${userGuid}'`);
   const res = await fetch(
-    `${SUPA_URL}/rest/v1/school_progress` +
-    `?user_guid=eq.${userGuid}`,
-    { headers: { ...HDR, 'Accept': 'application/json' } }
+    `${PB_BASE}school_progress/records?filter=(${filter})&perPage=200`
   );
-  return await res.json();
+  const data = await res.json();
+  return data.items || [];
 }
 
 async function fetchSubjects(userGuid) {
+  const filter = encodeURIComponent(`user_guid='${userGuid}' && status='active'`);
   const res = await fetch(
-    `${SUPA_URL}/rest/v1/school_subjects` +
-    `?user_guid=eq.${userGuid}&status=eq.active`,
-    { headers: { ...HDR, 'Accept': 'application/json' } }
+    `${PB_BASE}school_subjects/records?filter=(${filter})&perPage=200`
   );
-  return await res.json();
+  const data = await res.json();
+  return data.items || [];
 }
 
 async function fetchAssessmentsInPeriod(userGuid, startDate, endDate) {
-  const res = await fetch(
-    `${SUPA_URL}/rest/v1/school_assessments` +
-    `?user_guid=eq.${userGuid}` +
-    `&assessed_at=gte.${startDate.toISOString()}` +
-    `&assessed_at=lte.${endDate.toISOString()}`,
-    { headers: { ...HDR, 'Accept': 'application/json' } }
+  const filter = encodeURIComponent(
+    `user_guid='${userGuid}' && assessed_at>='${startDate.toISOString()}' && assessed_at<='${endDate.toISOString()}'`
   );
-  return await res.json();
+  const res = await fetch(
+    `${PB_BASE}school_assessments/records?filter=(${filter})&perPage=500`
+  );
+  const data = await res.json();
+  return data.items || [];
 }
 
 // ── 2. AI 교수 코멘트 생성 (DeepSeek) ───────────────────────────
@@ -480,17 +487,17 @@ async function sendToPDV(report) {
   }
 }
 
-// ── 7. Supabase school_reports 저장 ────────────────────────────
+// ── 7. PocketBase school_reports 저장 ───────────────────────────
+// 2026-08-20: Supabase(HDR)가 죽어있던 걸 PocketBase로 전환. report_hash/
+// sent_to/generated_at은 별도 컬럼으로 안 두고 report_data(json) 안에 이미
+// report.metadata로 들어있어 중복 저장하지 않는다 — school_reports 마이그
+// 레이션 참고.
 
-async function saveReportToSupabase(report, ackId) {
+async function saveReportToPocketBase(report, ackId) {
   report.metadata.pdv_entry_id = ackId;
-  await fetch(`${SUPA_URL}/rest/v1/school_reports`, {
+  await fetch(`${PB_BASE}school_reports/records`, {
     method:  'POST',
-    headers: {
-      ...HDR,
-      'Content-Type':  'application/json',
-      'Prefer':        'return=minimal',
-    },
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       user_guid:    report.student.user_guid,
       report_type:  report.report_type,
@@ -498,9 +505,6 @@ async function saveReportToSupabase(report, ackId) {
       period_end:   report.period.end,
       report_data:  report,
       pdv_entry_id: ackId,
-      report_hash:  report.metadata.report_hash,
-      sent_to:      report.metadata.sent_to,
-      generated_at: report.metadata.generated_at,
     }),
   });
 }
@@ -543,7 +547,7 @@ async function generateWeeklyReport(userGuid, recipients = ['gopang_pdv']) {
   await notifyRecipients(report, recipients.filter(r => r !== 'gopang_pdv'));
 
   // Supabase 저장
-  await saveReportToSupabase(report, ackId);
+  await saveReportToPocketBase(report, ackId);
 
   console.info('[Report] 주간 보고서 완료:', report.report_id);
   return report;
@@ -566,7 +570,7 @@ async function generateMonthlyReport(userGuid, recipients = ['parent', 'teacher'
   }
 
   await notifyRecipients(report, recipients.filter(r => r !== 'gopang_pdv'));
-  await saveReportToSupabase(report, ackId);
+  await saveReportToPocketBase(report, ackId);
 
   console.info('[Report] 월간 보고서 완료:', report.report_id);
   return report;
@@ -576,10 +580,14 @@ async function generateMonthlyReport(userGuid, recipients = ['parent', 'teacher'
  * 보고서 조회 (학생·부모·교사용)
  */
 async function fetchReports(userGuid, type = null, limit = 10) {
-  let url = `${SUPA_URL}/rest/v1/school_reports?user_guid=eq.${userGuid}&order=generated_at.desc&limit=${limit}`;
-  if (type) url += `&report_type=eq.${type}`;
-  const res = await fetch(url, { headers: { ...HDR, 'Accept': 'application/json' } });
-  return await res.json();
+  let filterExpr = `user_guid='${userGuid}'`;
+  if (type) filterExpr += ` && report_type='${type}'`;
+  const filter = encodeURIComponent(filterExpr);
+  const res = await fetch(
+    `${PB_BASE}school_reports/records?filter=(${filter})&sort=-created&perPage=${limit}`
+  );
+  const data = await res.json();
+  return data.items || [];
 }
 
 /**

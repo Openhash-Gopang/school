@@ -1,0 +1,79 @@
+From c750d5e63d1e08c78bc55d08178525566fc30cfb Mon Sep 17 00:00:00 2001
+From: Claude <claude@anthropic.local>
+Date: Thu, 30 Jul 2026 20:23:30 +0000
+Subject: [PATCH] =?UTF-8?q?feat:=20=EA=B8=B0=EC=A1=B4=20=EC=9E=90=EC=B2=B4?=
+ =?UTF-8?q?=20=EC=9C=84=EC=B9=98=20=ED=95=B4=EC=84=9D(locationHint)?=
+ =?UTF-8?q?=EC=9D=84=20handleGovRelay=20=EC=84=9C=EB=B2=84=EC=B8=A1=20?=
+ =?UTF-8?q?=EA=B0=95=EC=A0=9C=20=EC=A3=BC=EC=9E=85=20=EC=B2=B4=EA=B3=84?=
+ =?UTF-8?q?=EC=99=80=20=EC=97=B0=EA=B2=B0?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+---
+ webapp.html | 16 ++++++++++------
+ 1 file changed, 10 insertions(+), 6 deletions(-)
+
+diff --git a/webapp.html b/webapp.html
+index 95a5f26..605d633 100644
+--- a/webapp.html
++++ b/webapp.html
+@@ -326,13 +326,17 @@ function _getUserGuid() {
+ // (2026-07-21 신설).
+ // gov_do/gov_national은 SP_DELEGATION_ORIGINATORS(위임 시작 가능)라
+ // 서버가 stream을 강제로 끄므로 여기서도 stream:false로 요청한다.
+-async function _govRelayCompletion(agencyPrompt, messages, agency, provinceCode = null) {
++async function _govRelayCompletion(agencyPrompt, messages, agency, provinceCode = null, currentLocation = null) {
+   const guid = _getUserGuid();
+   try {
+     const r = await fetch(`${PROXY}/gov/relay`, {
+       method: 'POST',
+       headers: { 'Content-Type': 'application/json' },
+-      body: JSON.stringify({ guid, agency, agencyPrompt, messages, provinceCode, max_tokens: 2000, stream: false, tier: 'gov-flash' }),
++      // ★ 2026-07-30 — locationHint는 지금까지 SP 선택(라우팅)에만
++      // 쓰이고 정작 서버(handleGovRelay)의 위치·날짜 강제 주입에는
++      // 전달된 적이 없었다. 명시적으로 같이 보낸다(주피터 지시 —
++      // gov 도메인 전체로 확장).
++      body: JSON.stringify({ guid, agency, agencyPrompt, messages, provinceCode, currentLocation, max_tokens: 2000, stream: false, tier: 'gov-flash' }),
+     });
+     if (!r.ok) {
+       const errBody = await r.json().catch(() => ({}));
+@@ -385,7 +389,7 @@ async function _callAIRaw(messages, latestUserText, onProgress) {
+   document.getElementById('trace-badge').textContent = trace.join(' > ');
+   document.getElementById('trace-badge').style.display = trace.length ? 'inline-block' : 'none';
+ 
+-  let text = await _govRelayCompletion(sp, messages, agency, provinceCode);
++  let text = await _govRelayCompletion(sp, messages, agency, provinceCode, locationHint);
+ 
+   // Step 5 연장: SP가 PDV 필드를 요청했으면 나만의 AI 비서에게 중개 요청
+   const pdvReq = _parsePdvRequestTag(text);
+@@ -409,7 +413,7 @@ async function _callAIRaw(messages, latestUserText, onProgress) {
+       { role: 'assistant', content: text },
+       { role: 'user', content: pdvContext },
+     ];
+-    text = await _govRelayCompletion(sp, followup, agency, provinceCode);
++    text = await _govRelayCompletion(sp, followup, agency, provinceCode, locationHint);
+   }
+ 
+   // Step 5 연장: SP가 정부24 등 외부 서류를 요청했으면(G19) 나만의 AI 비서에게
+@@ -442,7 +446,7 @@ async function _callAIRaw(messages, latestUserText, onProgress) {
+       { role: 'assistant', content: text },
+       { role: 'user', content: docContext },
+     ];
+-    text = await _govRelayCompletion(sp, docFollowup, agency);
++    text = await _govRelayCompletion(sp, docFollowup, agency, undefined, locationHint);
+   }
+ 
+   // Step 5 재연장: SP가 담당부서 확인·승인을 요청했으면(G18, 2026-07-19
+@@ -475,7 +479,7 @@ async function _callAIRaw(messages, latestUserText, onProgress) {
+       { role: 'assistant', content: text },
+       { role: 'user', content: staffContext },
+     ];
+-    text = await _govRelayCompletion(sp, staffFollowup, agency);
++    text = await _govRelayCompletion(sp, staffFollowup, agency, undefined, locationHint);
+   }
+ 
+   return { text, trace };
+-- 
+2.43.0
+

@@ -1,0 +1,58 @@
+From 262920d0cbf0cb1cf8fb140cc302b520c622a889 Mon Sep 17 00:00:00 2001
+From: Claude <claude@anthropic.local>
+Date: Thu, 30 Jul 2026 20:23:30 +0000
+Subject: [PATCH] =?UTF-8?q?feat:=20GWP=20facts(currentLocation)=20?=
+ =?UTF-8?q?=EB=B0=B0=EC=84=A0=20=E2=80=94=20/ai/chat,=20/chat/completions?=
+ =?UTF-8?q?=20=EC=96=91=EC=AA=BD=20=EC=97=B0=EA=B2=B0?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+---
+ webapp.html | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
+
+diff --git a/webapp.html b/webapp.html
+index c0dc1dc..4ddb1c5 100644
+--- a/webapp.html
++++ b/webapp.html
+@@ -569,6 +569,20 @@ async function buildSystemPrompt(question) {
+ }
+ 
+ // ── AI 호출 — Proxy(DeepSeek) + Claude 폴백 ───────────────────
++// ★ 2026-07-30 신설 — GWP facts(currentLocation) 파싱 (주피터 지시 —
++// gov 도메인을 넘어 서비스 전반으로 확장). handleAIChat/callDeepSeek
++// 둘 다 이미 currentLocation을 받으면 강제 주입하도록 되어 있다.
++let GWP_FACTS = null;
++try {
++  const _qs = new URLSearchParams(location.search);
++  if (_qs.get('facts')) {
++    const raw = (_qs.get('facts_enc') === 'b64')
++      ? decodeURIComponent(escape(atob(_qs.get('facts'))))
++      : decodeURIComponent(_qs.get('facts'));
++    GWP_FACTS = JSON.parse(raw);
++  }
++} catch (e) { console.warn('[QnA] facts 파싱 실패(무시):', e.message); }
++
+ async function callAI(messages, question) {
+   const sp = await buildSystemPrompt(question || '');
+   try {
+@@ -581,6 +595,7 @@ async function callAI(messages, question) {
+         system:   sp,
+         messages: messages.slice(-CFG.maxHistory),
+         max_tokens: 2000,
++        currentLocation: GWP_FACTS?.currentLocation || null,
+       }),
+     });
+     if (!r.ok) throw new Error(`proxy ${r.status}`);
+@@ -598,6 +613,7 @@ async function callAI(messages, question) {
+         model: 'deepseek-v4-pro',
+         max_tokens: 1000, temperature: 0.7,
+         messages: [{ role: 'system', content: sp }, ...messages.slice(-8)],
++        currentLocation: GWP_FACTS?.currentLocation || null,
+       }),
+     });
+     if (!r2.ok) throw new Error(`fallback ${r2.status}`);
+-- 
+2.43.0
+

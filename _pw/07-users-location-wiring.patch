@@ -1,0 +1,34 @@
+From c17b652eb2ece3bbc34a7c9c54dffc15addd41ad Mon Sep 17 00:00:00 2001
+From: Claude <claude@anthropic.local>
+Date: Thu, 30 Jul 2026 20:23:30 +0000
+Subject: [PATCH] =?UTF-8?q?feat:=20=EA=B8=B0=EC=A1=B4=20=EC=9E=90=EC=B2=B4?=
+ =?UTF-8?q?=20GPS(userLocation)=EB=A5=BC=20handleAIChat=20=EC=84=9C?=
+ =?UTF-8?q?=EB=B2=84=EC=B8=A1=20=EA=B0=95=EC=A0=9C=20=EC=A3=BC=EC=9E=85=20?=
+ =?UTF-8?q?=EC=B2=B4=EA=B3=84=EC=99=80=20=EC=97=B0=EA=B2=B0?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+---
+ webapp.html | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/webapp.html b/webapp.html
+index 84358d6..dd95875 100644
+--- a/webapp.html
++++ b/webapp.html
+@@ -690,6 +690,11 @@ async function sendMsg() {
+         system:     sp + '\n\n[컨텍스트]\n' + contextNote,
+         messages:   chatHistory,
+         max_tokens: 1500,
++        // ★ 2026-07-30 — 기존 userLocation(자체 GPS 감지)을 handleAIChat의
++        // 강제 주입 체계와도 연결한다(주피터 지시 — 서비스 전반 확장).
++        // 위 contextNote의 텍스트 삽입과 별개로, 서버가 항상 같은 위치에
++        // (대화 시작 직전) 결정론적으로 붙이도록 구조화된 필드로도 보낸다.
++        currentLocation: userLocation ? `${userLocation.lat.toFixed(5)},${userLocation.lng.toFixed(5)}` : null,
+       }),
+     });
+     const data  = await r.json();
+-- 
+2.43.0
+

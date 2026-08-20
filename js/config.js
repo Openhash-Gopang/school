@@ -1,7 +1,11 @@
 // ── K-School 설정 ────────────────────────────────────────
-const SUPA_URL  = '' /* -2026-08-12 secret removed, see README_SECRETS_INCIDENT.md */;
-const SUPA_ANON = '' /* -2026-08-12 secret removed, rotate + migrate to PocketBase, see README_SECRETS_INCIDENT.md */;
-const HDR = { 'apikey': SUPA_ANON, 'Authorization': 'Bearer ' + SUPA_ANON };
+// 2026-08-20: Supabase(SUPA_URL/SUPA_ANON)는 2026-08-12 시크릿 사고 이후
+// 자격증명이 빈 문자열로 남아 report.js의 모든 조회가 조용히 실패하고
+// 있었다. klaw 저장소가 이미 쓰는 패턴(L1_URL, webapp.html 참고)을 따라
+// PocketBase(l1-hanlim, gopang pb_migrations의 school_* 컬렉션)로 전환한다.
+// school_* 컬렉션은 공개 read/write 규칙(listRule/createRule 등 null)이라
+// 별도 API 키가 필요 없다 — HDR도 더 이상 필요 없어 제거했다.
+const PB_BASE = 'https://l1-hanlim.hondi.net/api/collections/';
 
 // AI 교수 시스템 프롬프트 경로
 const SYSTEM_PROMPT_URL = '/prompts/system_prompt.txt';
