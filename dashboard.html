@@ -278,18 +278,20 @@ window._onGopangAuth = async function(user) {
 };
 
 async function load(guid) {
-  if (typeof SUPA_URL === 'undefined') return;
+  if (typeof PB_BASE === 'undefined') return;
 
   if (!guid) {
     document.getElementById('s-name').textContent = '로그인 필요';
     return;
   }
 
-  const H = { apikey: SUPA_ANON, Authorization: 'Bearer ' + SUPA_ANON, Accept: 'application/json' };
-  const get = url => fetch(url, { headers: H }).then(r => r.json()).catch(() => []);
+  // 2026-08-20: Supabase(H/get) → PocketBase(config.js의 fetchSchool* 헬퍼).
+  // school_student_dashboard(Postgres 뷰)와 school_progress 임베드 조인은
+  // PocketBase에 대응물이 없어서 헬퍼 쪽에서 클라이언트 집계/병합으로
+  // 대체했다 — desktop.html의 loadDashData와 동일한 방식.
 
   // 1. 프로파일
-  const [prof] = await get(`${SUPA_URL}/rest/v1/school_student_profiles?user_guid=eq.${encodeURIComponent(guid)}&limit=1`);
+  const prof = await fetchSchoolProfile(guid);
   if (prof) {
     const init = (prof.display_name||'?').slice(0,1).toUpperCase();
     set('s-avatar', init);
@@ -313,23 +315,25 @@ async function load(guid) {
     const dims = {C:prof.c_score,P:prof.p_score,Cr:prof.cr_score,S:prof.s_score,J:prof.j_score};
     Object.entries(dims).forEach(([k,v]) => { const val=parseFloat(v)||50; set('c-'+k,val.toFixed(0)); bar('b-'+k,val); });
 
-    const tags = [...(prof.personality||[]),...(prof.interests||[])];
+    // personality/interests는 배열이 아니라 단문 text(report.js와 동일 스키마) —
+    // spread하면 글자 단위로 쪼개지는 버그가 생겨 Boolean 필터로만 감쌌다.
+    const tags = [prof.personality, prof.interests].filter(Boolean);
     if (tags.length) document.getElementById('s-tags').innerHTML = tags.map(t=>`<span class="tag">${t}</span>`).join('');
   }
 
   // 2. 집계 뷰
-  const [dash] = await get(`${SUPA_URL}/rest/v1/school_student_dashboard?user_guid=eq.${encodeURIComponent(guid)}&limit=1`);
+  const dash = await fetchSchoolDashboardAggregate(guid);
   if (dash) {
-    const hrs = ((parseInt(dash.total_study_minutes)||0)/60).toFixed(1);
+    const hrs = ((dash.total_study_minutes||0)/60).toFixed(1);
     ['s-hours','k-hours'].forEach(id => set(id, hrs+'h'));
-    set('s-comp', (parseFloat(dash.overall_comprehension)||0).toFixed(1)+'%');
-    set('k-comp', (parseFloat(dash.overall_comprehension)||0).toFixed(1)+'%');
+    set('s-comp', (dash.overall_comprehension||0).toFixed(1)+'%');
+    set('k-comp', (dash.overall_comprehension||0).toFixed(1)+'%');
     set('k-sessions', dash.total_sessions_done||'—');
     set('k-active', dash.active_subjects||'—');
   }
 
   // 3. 과목
-  const subjects = await get(`${SUPA_URL}/rest/v1/school_subjects?user_guid=eq.${encodeURIComponent(guid)}&select=*,school_progress(progress_pct,completed_sessions,total_sessions)`);
+  const subjects = await fetchSchoolSubjectsWithProgress(guid);
   if (subjects.length) {
     const active    = subjects.filter(s => { const p=pct(s); return p>0&&p<100; });
     const completed = subjects.filter(s => pct(s)>=100);
@@ -365,8 +369,8 @@ async function load(guid) {
     }
   }
 
-  // 4. 보고서
-  const reports = await get(`${SUPA_URL}/rest/v1/school_reports?user_guid=eq.${encodeURIComponent(guid)}&order=generated_at.desc&limit=3`);
+  // 4. 보고서 (2026-08-20: Supabase → PocketBase)
+  const reports = await fetchSchoolReports(guid, 3);
   if (reports.length) {
     document.getElementById('list-reports').innerHTML = reports.map(r => {
       const note = (r.report_data?.ai_professor_note||'').slice(0,250);

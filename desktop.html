@@ -1973,17 +1973,13 @@ function switchDTab(n) {
 }
 
 async function loadDashData() {
-  if (typeof SUPA_URL === 'undefined') return;
+  if (typeof PB_BASE === 'undefined') return;
   const guid = (typeof _currentUser !== 'undefined' && _currentUser?.ipv6) || window._dashGuid;
   if (!guid) { document.getElementById('dash-name').textContent = '로그인 필요'; return; }
   window._dashGuid = guid;
   try {
-    // 프로파일
-    const pRes = await fetch(
-      `${SUPA_URL}/rest/v1/school_student_profiles?user_guid=eq.${encodeURIComponent(guid)}&limit=1`,
-      { headers: { apikey: SUPA_ANON, Authorization: 'Bearer ' + SUPA_ANON, Accept: 'application/json' } }
-    );
-    const prof = (await pRes.json())?.[0];
+    // 프로파일 (2026-08-20: Supabase → PocketBase, config.js의 fetchSchoolProfile 재사용)
+    const prof = await fetchSchoolProfile(guid);
     if (prof) {
       document.getElementById('dash-avatar').textContent = (prof.display_name||'?').slice(0,1).toUpperCase();
       document.getElementById('dash-name').textContent = prof.display_name || '—';
@@ -2011,36 +2007,35 @@ async function loadDashData() {
         const bar=document.getElementById('cb-'+k); if(bar) bar.style.width=val+'%';
       });
 
-      const tags = [...(prof.personality||[]),...(prof.interests||[])];
+      // 2026-08-20: personality/interests는 school_student_profiles에서
+      // 배열이 아니라 단문 text이므로(report.js와 동일 스키마), 문자열을
+      // 그대로 spread하면 글자 단위로 쪼개지는 버그가 생긴다 — Boolean 필터로
+      // 두 값을 태그 배열로만 감싼다.
+      const tags = [prof.personality, prof.interests].filter(Boolean);
       if (tags.length) document.getElementById('dash-personality').innerHTML = tags.map(t =>
         `<span style="background:#f5f7fa;border:1px solid #e2e5ea;border-radius:2px;padding:3px 9px;font-size:12px;color:#374151">${t}</span>`
       ).join('');
     }
 
-    // 집계 뷰
-    const dRes = await fetch(
-      `${SUPA_URL}/rest/v1/school_student_dashboard?user_guid=eq.${encodeURIComponent(guid)}&limit=1`,
-      { headers: { apikey: SUPA_ANON, Authorization: 'Bearer ' + SUPA_ANON, Accept: 'application/json' } }
-    );
-    const dash = (await dRes.json())?.[0];
+    // 집계 뷰 (2026-08-20: Postgres 뷰 school_student_dashboard는 PocketBase에
+    // 대응물이 없어서 report.js와 동일한 방식으로 세션/과목을 직접 집계)
+    const dash = await fetchSchoolDashboardAggregate(guid);
     if (dash) {
-      const mins = parseInt(dash.total_study_minutes)||0;
+      const mins = dash.total_study_minutes || 0;
       const hrs  = (mins/60).toFixed(1);
       document.getElementById('dash-total-min').textContent = hrs + 'h';
       document.getElementById('dp-hours').textContent = hrs + 'h';
       document.getElementById('dp-sessions').textContent = dash.total_sessions_done || '—';
-      const comp = parseFloat(dash.overall_comprehension)||0;
+      const comp = dash.overall_comprehension || 0;
       document.getElementById('dash-comprehension').textContent = comp.toFixed(1)+'%';
       document.getElementById('dp-comp').textContent = comp.toFixed(1)+'%';
       document.getElementById('dp-active-count').textContent = dash.active_subjects || '—';
     }
 
-    // 과목 현황
-    const sRes = await fetch(
-      `${SUPA_URL}/rest/v1/school_subjects?user_guid=eq.${encodeURIComponent(guid)}&select=*,school_progress(progress_pct,completed_sessions,total_sessions)`,
-      { headers: { apikey: SUPA_ANON, Authorization: 'Bearer ' + SUPA_ANON, Accept: 'application/json' } }
-    );
-    const subjects = await sRes.json();
+    // 과목 현황 (2026-08-20: PostgREST 임베드 조인 대신 config.js의
+    // fetchSchoolSubjectsWithProgress가 클라이언트에서 병합해 동일한
+    // s.school_progress[0] 접근 형태를 유지)
+    const subjects = await fetchSchoolSubjectsWithProgress(guid);
     if (Array.isArray(subjects) && subjects.length) {
       const active    = subjects.filter(s => { const p=parseFloat(s.school_progress?.[0]?.progress_pct)||0; return p>0&&p<100; });
       const completed = subjects.filter(s => (parseFloat(s.school_progress?.[0]?.progress_pct)||0)>=100);
@@ -2088,12 +2083,8 @@ async function loadDashData() {
       }
     }
 
-    // 보고서
-    const rRes = await fetch(
-      `${SUPA_URL}/rest/v1/school_reports?user_guid=eq.${encodeURIComponent(guid)}&order=generated_at.desc&limit=3`,
-      { headers: { apikey: SUPA_ANON, Authorization: 'Bearer ' + SUPA_ANON, Accept: 'application/json' } }
-    );
-    const reports = await rRes.json();
+    // 보고서 (2026-08-20: Supabase → PocketBase)
+    const reports = await fetchSchoolReports(guid, 3);
     if (Array.isArray(reports) && reports.length) {
       document.getElementById('dp-reports-list').innerHTML = reports.map(r => {
         const note = (r.report_data?.ai_professor_note||'').slice(0,200);

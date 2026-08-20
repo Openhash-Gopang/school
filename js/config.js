@@ -38,3 +38,56 @@ const AI_PROFESSOR = {
   domains: ['논리·철학','수학·통계','과학','언어','예술','체육','사회','기술','심리','진로'],
   desc:    '세상의 모든 지식을 갖추고, 학생 한 명을 유치원부터 대학원까지 수십 년간 전담 지도합니다.',
 };
+
+// ── PocketBase 공용 헬퍼 (2026-08-20 신설) ─────────────────────
+// desktop.html/dashboard.html이 각자 따로 Supabase를 직접 호출하던 걸
+// 여기 한 곳으로 모았다. school_student_dashboard(Postgres 집계 뷰)는
+// PocketBase에 대응물이 없어서, report.js가 이미 하던 것과 같은 방식으로
+// school_sessions/school_subjects를 직접 읽어 클라이언트에서 집계한다.
+// school_subjects?select=*,school_progress(...)의 PostgREST 임베드 조인도
+// PocketBase에 없어서, subjects와 progress를 각각 조회 후 subject.id 기준
+// 클라이언트에서 합쳐 기존 s.school_progress[0] 접근 형태를 그대로 유지한다.
+
+async function pbList(collectionName, filterExpr, extraQuery) {
+  const filter = encodeURIComponent(filterExpr);
+  const res = await fetch(`${PB_BASE}${collectionName}/records?filter=(${filter})${extraQuery || ''}`);
+  const data = await res.json();
+  return data.items || [];
+}
+
+async function fetchSchoolProfile(guid) {
+  const rows = await pbList('school_student_profiles', `user_guid='${guid}'`, '&perPage=1');
+  return rows[0] || null;
+}
+
+async function fetchSchoolDashboardAggregate(guid) {
+  const [sessions, subjects] = await Promise.all([
+    pbList('school_sessions', `user_guid='${guid}'`, '&perPage=500'),
+    pbList('school_subjects', `user_guid='${guid}' && status='active'`, '&perPage=200'),
+  ]);
+  const total_study_minutes = sessions.reduce((s, r) => s + (r.session_minutes || 0), 0);
+  const overall_comprehension = sessions.length
+    ? sessions.reduce((s, r) => s + (r.comprehension || 0), 0) / sessions.length
+    : 0;
+  return {
+    total_study_minutes,
+    total_sessions_done: sessions.length,
+    overall_comprehension,
+    active_subjects: subjects.length,
+  };
+}
+
+async function fetchSchoolSubjectsWithProgress(guid) {
+  const [subjects, progress] = await Promise.all([
+    pbList('school_subjects', `user_guid='${guid}'`, '&perPage=200'),
+    pbList('school_progress', `user_guid='${guid}'`, '&perPage=200'),
+  ]);
+  return subjects.map(s => ({
+    ...s,
+    school_progress: progress.filter(p => p.subject_id === s.id),
+  }));
+}
+
+async function fetchSchoolReports(guid, limit) {
+  return pbList('school_reports', `user_guid='${guid}'`, `&sort=-created&perPage=${limit || 3}`);
+}
