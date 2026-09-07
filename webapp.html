@@ -429,6 +429,12 @@ async function callAI(messages) {
   // (SP-COMMON-05 H2 — 클라이언트가 빠뜨리거나 조작할 수 없게 하는 원칙).
   let guid = 'anonymous';
   try { guid = JSON.parse(sessionStorage.getItem('gopang_sso_token') || '{}').ipv6 || 'anonymous'; } catch (e) {}
+  // 2026-09-07 신설 — gopang_sso_token은 오늘 제거된 구 subsystem-auth.js가
+  // 로그인 성공 시에만 채워주던 값이라, 그 스크립트가 없는 지금은 영원히
+  // 비어 'anonymous'로만 떨어진다(회귀). k-service-auth-client.js 로그인
+  // 상태를 phone_verify_token으로 대신 실어 보내 서버가 직접 guid를
+  // 도출하게 한다.
+  const _schoolPvt = (guid === 'anonymous' && window.KAuth && KAuth.hasValidLogin()) ? KAuth.getToken() : null;
   try {
     const r = await fetch(`${PROXY}/deepseek`, {
       method:'POST', headers:{'Content-Type':'application/json'},
@@ -436,7 +442,7 @@ async function callAI(messages) {
       // callDeepSeek는 messages가 배열이면(항상 그렇다) 주입 텍스트를 messages 앞에만
       // 붙이고 별도 system 필드는 건드리지 않는다. 그 필드로 sp를 보내면 실제 DeepSeek
       // API가 top-level system 필드를 읽지 않아 K-School 고유 지시문이 조용히 유실된다.
-      body: JSON.stringify({ model:'deepseek-chat', service_id:'kedu', guid, messages:[{role:'system',content:sp}, ...messages.slice(-10)], max_tokens:2000, currentLocation: GWP_FACTS?.currentLocation || null }),
+      body: JSON.stringify({ model:'deepseek-chat', service_id:'kedu', guid, phone_verify_token: _schoolPvt, messages:[{role:'system',content:sp}, ...messages.slice(-10)], max_tokens:2000, currentLocation: GWP_FACTS?.currentLocation || null }),
     });
     if (!r.ok) throw new Error(`proxy ${r.status}`);
     const d = await r.json();
@@ -659,6 +665,12 @@ window.addEventListener('pagehide', () => {
   if (!window.opener || !hist.length) return;
   let guid = 'anonymous';
   try { guid = JSON.parse(sessionStorage.getItem('gopang_sso_token') || '{}').ipv6 || 'anonymous'; } catch (e) {}
+  if (guid === 'anonymous' && window.KAuth && KAuth.hasValidLogin()) {
+    // 지갑 ipv6는 없지만 phone_verify_token은 있는 세션 — 이 필드는
+    // ipv6 형태 표시를 기대하는 자리라 토큰 원문 대신 표시용 플레이스홀더만
+    // 남긴다(실제 guid 도출은 /deepseek 호출 쪽 phone_verify_token이 담당).
+    guid = 'phone-verified';
+  }
   import('https://hondi.net/src/gopang/gwp/gwp-report-client.js')
     .then(({ reportGwpSessionEnd }) => reportGwpSessionEnd({
       agencyId: 'kedu',
