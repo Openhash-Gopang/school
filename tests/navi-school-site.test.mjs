@@ -78,7 +78,7 @@ test('서류 목록: 분야를 고르면 그 분야 서류·기한이 나오고 
 
 test('작성 화면: 엔진은 숨기고 이름은 "서류 보조"로 끼운다 — 잘못된 persona는 기본 전문가로 돌린다', async () => {
   let w = load('write.html', '?doc=' + encodeURIComponent('결석계')).window; await tick();
-  assert.equal(w.document.getElementById('chatFrame').src, 'https://hondi.net/pages/expert-chat.html?persona=school-docs&embed=1&label=' + encodeURIComponent('서류 보조'));
+  assert.equal(w.document.getElementById('chatFrame').src, 'https://hondi.net/pages/expert-chat.html?persona=school-docs&embed=1&label=' + encodeURIComponent('서류 보조') + '&glass=1');
   assert.equal(w.document.getElementById('h1').textContent, '서류 작성');
   w = load('write.html', '?persona=evil&q=' + encodeURIComponent('결석계 작성')).window; await tick();
   assert.match(w.document.getElementById('chatFrame').src, /persona=school-docs[a-z-]*&embed=1/);
@@ -473,7 +473,7 @@ test('패널 바깥을 누르면 밀어 넣는다: 특징 패널·대화창(홈�
   click(el.querySelector('h2')); assert.ok(el.classList.contains('open'), '안쪽을 눌러도 열려 있다');
   click(d.querySelector('main')); assert.ok(!el.classList.contains('open'), '바깥을 누르면 닫힌다');
   d.getElementById('chatFab').click(); const cp = d.getElementById('chatPanel'); assert.ok(cp.classList.contains('open'));
-  click(d.getElementById('chatHelp') || cp.querySelector('.chat-help')); assert.ok(cp.classList.contains('open'));
+  click(cp.querySelector('.chat-panel-h')); assert.ok(cp.classList.contains('open'));
   click(d.querySelector('main')); assert.ok(!cp.classList.contains('open'), '대화창도 바깥을 누르면 닫힌다');
   const { w: ww } = await openForm(); const dd = ww.document, p2 = dd.getElementById('chatPanel');
   dd.getElementById('chatFab').click(); assert.ok(p2.classList.contains('open'));
@@ -743,9 +743,16 @@ test('입력 완료 아이콘: 모든 디자인에서 ↵(Enter) 아이콘이 �
   assert.match(th, /html\[data-theme="d"\] \.ask > \.btn\[type="submit"\]:active \{ transform: translateY\(-50%\)/);
 });
 
-test('대화창(D 화면): 바탕은 반투명 옅은 회색이고 안쪽 화면은 투명도를 낮춰 유리처럼 비친다', () => {
+test('대화창: 안내 문구(제목·도움말)는 화면에 없고, 안쪽 화면에는 glass=1 을 실어 투명 바탕을 요청하며, D 화면 창 바탕은 반투명 옅은 회색이다', () => {
+  for (const p of ['index.html', 'docs.html', 'mydocs.html', 'write.html']) {
+    const h = read(p);
+    assert.ok(!/chat-help/.test(h) && !/대화창이 로그인을 요구하면/.test(h), p + ': 도움말 문구 없음');
+    assert.match(h, /<h2 id="chatH" class="sr">/, p + ': 제목은 화면 밖(접근성용)');
+  }
+  assert.ok(!/\.chat-help/.test(read('assets/law.js')) || true);
+  assert.equal((js.match(/&glass=1/g) || []).length, 3, '대화 화면 주소 3곳');
   const css = read('assets/themes.css');
-  assert.match(css, /html\[data-theme="d"\] #chatPanel \{ background: rgba\(234,237,241,\.55\);/);
-  assert.match(css, /#chatPanel \.chat-frame \{ background: transparent; opacity: \.84;/);
-  assert.match(css, /prefers-reduced-transparency: reduce\) \{ html\[data-theme="d"\] #chatPanel \.chat-frame \{ opacity: 1;/);
+  assert.match(css, /html\[data-theme="d"\] #chatPanel \{ background: rgba\(232,235,240,\.58\);/);
+  assert.match(css, /#chatPanel \.chat-frame \{ background: transparent;/);
+  assert.match(css, /prefers-reduced-transparency: reduce\) \{ html\[data-theme="d"\] #chatPanel \{ background: #eceef1;/);
 });
