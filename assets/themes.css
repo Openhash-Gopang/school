@@ -215,6 +215,10 @@ html[data-theme="d"] body::after { content: ""; position: fixed; inset: 0; z-ind
 html[data-theme="d"] #chatPanel, html[data-theme="d"] .promo-tab {
   background: rgba(255,255,255,.62); -webkit-backdrop-filter: blur(14px) saturate(1.5); backdrop-filter: blur(14px) saturate(1.5);
   box-shadow: var(--e2), inset 0 1px 0 rgba(255,255,255,.9); }
+/* 대화창 반투명 회색: 안쪽 대화 화면(iframe)은 다른 도메인이라 내부 배경을 바꿀 수 없으므로, 창 바탕을 옅은 회색 반투명으로 하고 iframe 은 투명도를 낮춰 뒤쪽 유리 효과가 비치게 한다 */
+html[data-theme="d"] #chatPanel { background: rgba(234,237,241,.55); -webkit-backdrop-filter: blur(18px) saturate(1.4); backdrop-filter: blur(18px) saturate(1.4); }
+html[data-theme="d"] #chatPanel .chat-frame { background: transparent; opacity: .84; color-scheme: normal; }
+@media (prefers-reduced-transparency: reduce) { html[data-theme="d"] #chatPanel .chat-frame { opacity: 1; background: #fff; } }
 html[data-theme="d"] .head { background: transparent; box-shadow: var(--e2), inset 0 1px 0 rgba(255,255,255,.9); }
 html[data-theme="d"] .head::before { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; background: rgba(255,255,255,.62); -webkit-backdrop-filter: blur(14px) saturate(1.5); backdrop-filter: blur(14px) saturate(1.5); transition: background .22s ease; }
 html[data-theme="d"] .promo-tab, html[data-theme="d"] .promo-tab.how-tab { color: var(--navy); border-color: rgba(11,87,208,.35); }

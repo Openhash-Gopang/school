@@ -742,3 +742,10 @@ test('입력 완료 아이콘: 모든 디자인에서 ↵(Enter) 아이콘이 �
   assert.match(th, /html\[data-theme="d"\] \.ask > \.btn\[type="submit"\] \{ background: url[^}]*linear-gradient\(180deg, #3f86ee, #0b57d0\)/);
   assert.match(th, /html\[data-theme="d"\] \.ask > \.btn\[type="submit"\]:active \{ transform: translateY\(-50%\)/);
 });
+
+test('대화창(D 화면): 바탕은 반투명 옅은 회색이고 안쪽 화면은 투명도를 낮춰 유리처럼 비친다', () => {
+  const css = read('assets/themes.css');
+  assert.match(css, /html\[data-theme="d"\] #chatPanel \{ background: rgba\(234,237,241,\.55\);/);
+  assert.match(css, /#chatPanel \.chat-frame \{ background: transparent; opacity: \.84;/);
+  assert.match(css, /prefers-reduced-transparency: reduce\) \{ html\[data-theme="d"\] #chatPanel \.chat-frame \{ opacity: 1;/);
+});
