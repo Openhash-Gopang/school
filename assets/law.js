@@ -118,7 +118,7 @@
     var fab = $('chatFab'), panel = $('chatPanel'); if (!fab || !panel) return;
     var loaded = false;
     function setChat(open) {
-      if (open && !loaded) { loaded = true; $('chatFrame').src = HONDI + '/pages/expert-chat.html?persona=' + enc(ENGINE_P) + '&embed=1&label=' + enc(LABEL); }
+      if (open && !loaded) { loaded = true; $('chatFrame').src = HONDI + '/pages/expert-chat.html?persona=' + enc(ENGINE_P) + '&embed=1&label=' + enc(LABEL) + '&glass=1'; }
       panel.classList.toggle('open', open);
       panel.setAttribute('aria-hidden', open ? 'false' : 'true');
       fab.setAttribute('aria-expanded', open ? 'true' : 'false');
@@ -407,7 +407,7 @@
         if (frame) frame.remove();
         fReady = false; fQueue = [];
         frame = document.createElement('iframe'); frame.className = 'gen-frame'; frame.setAttribute('data-pid', pid); frame.setAttribute('title', '서류 작성 AI'); frame.setAttribute('aria-hidden', 'true'); frame.tabIndex = -1;
-        frame.src = HONDI + '/pages/expert-chat.html?persona=' + enc(ENGINE_P) + '&embed=1&label=' + enc(LABEL);
+        frame.src = HONDI + '/pages/expert-chat.html?persona=' + enc(ENGINE_P) + '&embed=1&label=' + enc(LABEL) + '&glass=1';
         document.body.appendChild(frame);
       }
       fSend(draftStartMessage(title, '', '') + extra);
@@ -743,7 +743,7 @@
       $('h1').textContent = '서류 작성' + (fieldName ? ' · ' + fieldName : '');
       $('back').href = 'mydocs.html';
       frame = $('chatFrame');
-      frame.src = HONDI + '/pages/expert-chat.html?persona=' + enc(ENGINE_P) + '&embed=1&label=' + enc(LABEL);
+      frame.src = HONDI + '/pages/expert-chat.html?persona=' + enc(ENGINE_P) + '&embed=1&label=' + enc(LABEL) + '&glass=1';
       bind();
       if (fresh) {
         $('fDoc').value = doc;
